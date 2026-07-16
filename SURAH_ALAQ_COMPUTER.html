@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surah_Al_Alaq_96_1_10_Pro</title>
+    <style>
+        /* Theme Definitions */
+        :root, [data-theme="light-mint"] {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --accent-color: #16a085;
+            --accent-hover: #1abc9c;
+            --correct-color: #2ecc71;
+            --incorrect-color: #e74c3c;
+            --border-color: #e2e8f0;
+            --sub-text: #5f6c6d;
+            --derived-bg: #f9fbfb;
+            --visualizer-line: #cbd5e0;
+        }
+
+        [data-theme="light-blue"] {
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1a2a3a;
+            --accent-color: #2b6cb0;
+            --accent-hover: #3182ce;
+            --correct-color: #38a169;
+            --incorrect-color: #e53e3e;
+            --border-color: #cbd5e0;
+            --sub-text: #4a5568;
+            --derived-bg: #f7fafc;
+            --visualizer-line: #cbd5e0;
+        }
+
+        [data-theme="dark-charcoal"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e8e8e8;
+            --accent-color: #1abc9c;
+            --accent-hover: #16a085;
+            --correct-color: #27ae60;
+            --incorrect-color: #c0392b;
+            --border-color: #3a4454;
+            --sub-text: #cbd5e0;
+            --derived-bg: #252525;
+            --visualizer-line: #4a5568;
+        }
+
+        [data-theme="dark-blue"] {
+            --bg-color: #0b132b;
+            --card-bg: #1c2541;
+            --text-color: #f8fafc;
+            --accent-color: #4ea8de;
+            --accent-hover: #5fa8d3;
+            --correct-color: #4bb543;
+            --incorrect-color: #ff3333;
+            --border-color: #3a506b;
+            --sub-text: #cbd5e0;
+            --derived-bg: #222b45;
+            --visualizer-line: #3a506b;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            direction: rtl;
+            font-size: 1.05rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ltr-text {
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .theme-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .theme-btn {
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .theme-btn.light-toggle {
+            background-color: #2b6cb0;
+        }
+
+        .theme-btn.dark-toggle {
+            background-color: #2d3748;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: var(--border-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Resume Quiz Floating Header */
+        .resume-banner {
+            display: none;
+            background-color: rgba(22, 160, 133, 0.15);
+            border: 2px dashed var(--accent-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .resume-link-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Lesson Cards Layout with Visualizer & Progress */
+        .lesson-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lesson-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .lesson-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .root-badge {
+            font-size: 1.45rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            background-color: rgba(22, 160, 133, 0.1);
+            padding: 6px 14px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .meaning-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            flex-grow: 1;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* Progress Sleeve (Slick Bar inside Lesson Card) */
+        .progress-sleeve-container {
+            width: 100%;
+            background-color: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .progress-sleeve-bar {
+            height: 100%;
+            background-color: var(--correct-color);
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--sub-text);
+            text-align: left;
+            margin-top: -2px;
+        }
+
+        /* Visualizer Network Tree (Dynamic Area) */
+        .visualizer-area {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 5px;
+            padding: 10px;
+            background-color: var(--derived-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            animation: expandDown 0.3s ease-out forwards;
+        }
+
+        .visualizer-header {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .network-tree {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding-right: 15px;
+        }
+
+        .network-tree::before {
+            content: '';
+            position: absolute;
+            right: 4px;
+            top: 10px;
+            bottom: 25px;
+            width: 2px;
+            background-color: var(--visualizer-line);
+        }
+
+        .tree-branch {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-bottom: 8px;
+            padding-right: 12px;
+        }
+
+        .tree-branch::before {
+            content: '';
+            position: absolute;
+            right: -11px;
+            top: 15px;
+            width: 10px;
+            height: 2px;
+            background-color: var(--visualizer-line);
+        }
+
+        .tree-word {
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            font-size: 1.3rem;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        .tree-meaning {
+            font-size: 0.95rem;
+            color: var(--sub-text);
+            text-align: right;
+            max-width: 60%;
+        }
+
+        /* Selection/Configuration Screen */
+        .config-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px 5px;
+            text-align: center;
+        }
+
+        .config-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(128, 128, 128, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--sub-text);
+            margin-bottom: 4px;
+            text-align: right;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .config-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .config-btn.active {
+            border-color: var(--accent-color);
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .start-action-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .start-action-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .reset-all-btn {
+            background: none;
+            border: none;
+            color: var(--incorrect-color);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            text-decoration: underline;
+        }
+
+        /* Quiz Layout with dynamic wrapping */
+        .quiz-container {
+            text-align: center;
+        }
+
+        .question-card {
+            font-size: 1.25rem;
+            margin-bottom: 18px;
+            font-weight: bold;
+            line-height: 1.7;
+            min-height: 70px;
+            display: block;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            padding: 0 5px;
+        }
+
+        /* Dynamic Options Layout (Toggled via JS) */
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .options-grid.two-cols {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .options-grid.one-col {
+            grid-template-columns: 1fr;
+        }
+
+        .option-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 12px 8px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-color) !important;
+            color: white !important;
+            border-color: var(--correct-color) !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-color) !important;
+            color: white !important;
+            border-color: var(--incorrect-color) !important;
+        }
+
+        /* Flashcard Area Layout */
+        .flashcard-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .answer-box {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background: rgba(128, 128, 128, 0.08);
+            border: 2px dashed var(--accent-color);
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .flash-feedback-row {
+            display: none;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .flash-feed-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .flash-feed-btn.yes {
+            background-color: var(--correct-color);
+        }
+
+        .flash-feed-btn.no {
+            background-color: var(--incorrect-color);
+        }
+
+        .score-board {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--sub-text);
+        }
+
+        /* Equal Sizing Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .nav-buttons .nav-btn {
+            flex: 1;
+            width: 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .nav-buttons .nav-btn.secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .nav-buttons .nav-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .nav-buttons .nav-btn.secondary:hover {
+            background-color: var(--border-color);
+            opacity: 0.9;
+        }
+
+        .nav-buttons .nav-btn:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            color: #777;
+        }
+
+        .arabic-word {
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            font-size: 1.5rem;
+            line-height: 1.2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes expandDown {
+            from { opacity: 0; transform: translateY(-8px); max-height: 0; }
+            to { opacity: 1; transform: translateY(0); max-height: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>سورہ العلق <span class="ltr-text">(96:1-10)</span></h1>
+        <div class="theme-controls">
+            <button class="theme-btn light-toggle" id="light-btn" onclick="toggleLightThemes()">روشن موڈ</button>
+            <button class="theme-btn dark-toggle" id="dark-btn" onclick="toggleDarkThemes()">تاریک موڈ</button>
+        </div>
+    </header>
+
+    <div class="tab-buttons">
+        <button id="btn-lesson" class="tab-btn active" onclick="switchTab('lesson')">سبق کی فہرست</button>
+        <button id="btn-quiz" class="tab-btn" onclick="switchTab('quiz')">اپنے آپ کو آزمائیں</button>
+    </div>
+
+    <!-- Lesson Tab -->
+    <div id="lesson" class="tab-content active">
+        <div id="resume-banner" class="resume-banner">
+            آپ کا کوئز جاری ہے (سوال: <span id="resume-q-num">1</span>/<span id="resume-total-q">0</span>)۔ 
+            <button class="resume-link-btn" onclick="switchTab('quiz')">کوئز پر واپس جائیں</button>
+        </div>
+        <div class="lesson-list" id="lesson-cards-container">
+            <!-- Dynamic interactive lesson cards with tree visualizer load here -->
+        </div>
+    </div>
+
+    <!-- Quiz Tab -->
+    <div id="quiz" class="tab-content">
+        <!-- Configuration / Start Screen inside Quiz Tab -->
+        <div id="quiz-config-container" class="config-screen">
+            <div class="config-title">سیکھنے کا ٹیسٹ سیٹ کریں</div>
+            
+            <div class="option-group">
+                <div class="option-label">سوالات کی تعداد منتخب کریں:</div>
+                <div class="config-row">
+                    <button class="config-btn active" id="len-5" onclick="selectLength(5)">5 مادہ (مکس)</button>
+                    <button class="config-btn" id="len-10" onclick="selectLength(10)">10 مادہ</button>
+                    <button class="config-btn" id="len-all" onclick="selectLength('all')">تمام 13 مادہ</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <div class="option-label">ٹیسٹ کا طریقہ کار منتخب کریں:</div>
+                <div class="config-row">
+                    <button class="config-btn active" id="mode-mcq" onclick="selectMode('mcq')">ایم سی کیو (MCQ)</button>
+                    <button class="config-btn" id="mode-flash" onclick="selectMode('flash')">فلش کارڈز (Flashcards)</button>
+                </div>
+            </div>
+
+            <button class="start-action-btn" onclick="startConfiguredQuiz()">شروع کریں (Bismillah)</button>
+            <button class="reset-all-btn" onclick="confirmResetAll()">تمام پروگریس ری سیٹ کریں</button>
+        </div>
+
+        <!-- Real Active Quiz Screen -->
+        <div id="active-quiz-container" class="quiz-container" style="display: none;">
+            <div class="score-board">
+                سوال: <span id="current-question-num">1</span>/<span id="total-questions-num">0</span> | اسکور: <span id="score">0</span>
+            </div>
+            
+            <div class="question-card" id="question-text">
+                کوئز شروع ہو رہا ہے...
+            </div>
+
+            <!-- MCQ Container -->
+            <div class="options-grid" id="options-container">
+                <!-- MCQ option buttons load here -->
+            </div>
+
+            <!-- Flashcard Container -->
+            <div class="flashcard-area" id="flashcard-container" style="display: none;">
+                <button class="reveal-btn" id="reveal-answer-btn" onclick="revealFlashcardAnswer()">جواب دیکھیں</button>
+                <div class="answer-box" id="flashcard-answer-text">
+                    درست جواب یہاں ہے
+                </div>
+                <div class="flash-feedback-row" id="flash-feedback-container">
+                    <button class="flash-feed-btn yes" onclick="submitFlashFeedback(true)">مجھے معلوم تھا (Correct)</button>
+                    <button class="flash-feed-btn no" onclick="submitFlashFeedback(false)">میں بھول گیا (Wrong)</button>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prev-btn" onclick="prevQuestion()" disabled>پیچھے</button>
+                <button class="nav-btn secondary" onclick="exitToConfig()">تبدیل کریں</button>
+                <button class="nav-btn" id="next-btn" onclick="nextQuestion()">اگلا سوال</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rootData = [
+        { 
+            id: "qra",
+            root: "ق ر أ", 
+            basic: "پڑھنا، تلاوت کرنا",
+            derived1: "اقْرَأْ", dMean1: "تو پڑھ! (آیت ۱)",
+            derived2: "قَرَأْتُ", dMean2: "میں نے پڑھا",
+            distractorsRoot: ["ق ر ن", "ق ر ي", "ق ر ر"],
+            distractorsBasic: ["پاس ہونا یا ملنا", "بستی بنانا", "قرار پانا"]
+        },
+        { 
+            id: "khlq",
+            root: "خ ل ق", 
+            basic: "پیدا کرنا، وجود میں لانا",
+            derived1: "خَلَقَ", dMean1: "اس نے پیدا کیا (آیت ۱)",
+            derived2: "الْخَالِقُ", dMean2: "پیدا کرنے والا",
+            distractorsRoot: ["خ ل ف", "خ l w", "خ ل ص"],
+            distractorsBasic: ["پیچھے آنا یا خلیفہ بنانا", "خالی ہونا یا تنہائی", "خالص ہونا"]
+        },
+        { 
+            id: "alq",
+            root: "ع ل ق", 
+            basic: "جما ہوا خون، لٹکنا",
+            derived1: "عَلَقٍ", dMean1: "جما ہوا خون (آیت ۲)",
+            derived2: "تُعَلَّقُ", dMean2: "وہ لٹکائی جاتی ہے",
+            distractorsRoot: ["ع ل م", "ع ل و", "ع ق ل"],
+            distractorsBasic: ["جاننا یا علم سکھانا", "بلند ہونا", "عقل استعمال کرنا"]
+        },
+        { 
+            id: "krm",
+            root: "ك ر م", 
+            basic: "عزت والا ہونا، نہایت سخی",
+            derived1: "الْأَكْرَمُ", dMean1: "سب سے زیادہ معزز (آیت ٣)",
+            derived2: "كَرِيمٌ", dMean2: "عزت والا یا سخی",
+            distractorsRoot: ["ك ر ه", "ك س ب", "ك ت ب"],
+            distractorsBasic: ["ناپسند کرنا", "کمانا", "لکھنا"]
+        },
+        { 
+            id: "qlm",
+            root: "ق ل م", 
+            basic: "قلم، تراشنا، کاٹنا",
+            derived1: "بِالْقَلَمِ", dMean1: "قلم کے ذریعے (آیت ٤)",
+            derived2: "أَقْلَامٌ", dMean2: "بہت سے قلم (جمع)",
+            distractorsRoot: ["ق ل ب", "ق ل ل", "ق ل د"],
+            distractorsBasic: ["پلٹنا یا دل", "تھوڑا ہونا", "تقلید کرنا"]
+        },
+        { 
+            id: "alm",
+            root: "ع ل م", 
+            basic: "جاننا، علم حاصل کرنا، سکھانا",
+            derived1: "عَلَّمَ", dMean1: "اس نے سکھایا (آیت ٤)",
+            derived2: "الْعَالِمُ", dMean2: "جانے والا یا عالم",
+            distractorsRoot: ["ع ل ق", "ع ل و", "ع م ل"],
+            distractorsBasic: ["لٹکنا یا جما خون", "بلند ہونا", "عمل کرنا یا کام"]
+        },
+        { 
+            id: "tghy",
+            root: "ط غ ي", 
+            basic: "سرکشی کرنا، حد سے بڑھنا",
+            derived1: "لَيَطْغَىٰ", dMean1: "وہ یقیناً سرکشی کرتا ہے (آیت ۶)",
+            derived2: "الطَّاغُوتُ", dMean2: "سرکش یا بت",
+            distractorsRoot: ["ط ب ع", "ط ل ع", "ط و ع"],
+            distractorsBasic: ["مہر لگانا", "طلوع ہونا", "فرمانبرداری کرنا"]
+        },
+        { 
+            id: "ry",
+            root: "ر أ ي", 
+            basic: "دیکھنا، رائے قائم کرنا",
+            derived1: "رَآهُ", dMean1: "اس نے دیکھا اسے (آیت ۷)",
+            derived2: "رَأْيٌ", dMean2: "سوچ یا نظریع",
+            distractorsRoot: ["ر ء ف", "ر و ح", "ر ب ب"],
+            distractorsBasic: ["نرم ہونا یا مہربانی", "آرام پانا یا روح", "پرورش کرنا"]
+        },
+        { 
+            id: "gny",
+            root: "غ ن ي", 
+            basic: "بے پروا ہونا، غنی ہونا",
+            derived1: "اسْتَغْنَىٰ", dMean1: "وہ بے پروا ہو گیا (آیت ۷)",
+            derived2: "الْغَنِيُّ", dMean2: "بے نیاز یا غنی",
+            distractorsRoot: ["غ ن م", "غ ف ر", "غ و ي"],
+            distractorsBasic: ["غنیمت پانا", "بخشنا یا ڈھانپنا", "بہک جانا یا گمراہ ہونا"]
+        },
+        { 
+            id: "rjc",
+            root: "ر ج ع", 
+            basic: "لوٹنا، رجوع کرنا، واپس آنا",
+            derived1: "الرُّجْعَىٰ", dMean1: "لوٹنا یا واپسی (آیت ۸)",
+            derived2: "تُرْجَعُونَ", dMean2: "تم سب لوٹائے جاؤ گے",
+            distractorsRoot: ["ر ج ف", "ر ج م", "ر ح ل"],
+            distractorsBasic: ["کانپنا", "سنگسار کرنا", "کوچ کرنا یا سفر"]
+        },
+        { 
+            id: "nhy",
+            root: "ن ه ي", 
+            basic: "روکنا، منع کرنا، باز رکھنا",
+            derived1: "يَنْهَىٰ", dMean1: "وہ روکتا ہے (آیت ۹)",
+            derived2: "النَّاهِي", dMean2: "روکنے والا",
+            distractorsRoot: ["ن ب أ", "ن ف خ", "ن ه ر"],
+            distractorsBasic: ["خبر دینا", "پھونکنا", "بہنا یا نہر"]
+        },
+        { 
+            id: "abd",
+            root: "ع ب د", 
+            basic: "بندگی کرنا، غلامی کرنا",
+            derived1: "عَبْدًا", dMean1: "بندے کو (آیت ۱۰)",
+            derived2: "الْعَابِدُونَ", dMean2: "عبادت کرنے والے",
+            distractorsRoot: ["ع ب ر", "ع د ل", "ع ه د"],
+            distractorsBasic: ["عبرت لینا", "انصاف کرنا", "وعدہ کرنا"]
+        },
+        { 
+            id: "slw",
+            root: "ص ل و", 
+            basic: "نماز پڑھنا، رحمت بھیجنا",
+            derived1: "صَلَّىٰ", dMean1: "اس نے نماز پڑھی (آیت ۱۰)",
+            derived2: "الصَّلَاةُ", dMean2: "نماز",
+            distractorsRoot: ["ص ل ح", "ص ب ر", "ص ل ب"],
+            distractorsBasic: ["اصلاح کرنا", "صبر کرنا", "سخت ہونا یا مصلوب کرنا"]
+        }
+    ];
+
+    // Local Storage Progress State Handler
+    let studentHistory = {}; 
+    /* Structure of studentHistory:
+       {
+          "qra": { correctCount: 3, totalSeen: 4, scorePercentage: 75 }
+       }
+    */
+
+    let quizQuestions = [];
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let answered = false;
+    let quizStarted = false;
+
+    // Config options
+    let selectedLen = 5; 
+    let selectedQuizMode = 'mcq';
+
+    // Themes
+    let currentLightIdx = 0;
+    let currentDarkIdx = 0;
+    const lightThemes = ["light-mint", "light-blue"];
+    const darkThemes = ["dark-charcoal", "dark-blue"];
+    const lightLabels = ["روشن: منٹ", "روشن: نیلا"];
+    const darkLabels = ["تاریک: رات", "تاریک: نیلا"];
+
+    function initProgressHistory() {
+        const saved = localStorage.getItem('surah_alaq_progress');
+        if (saved) {
+            studentHistory = JSON.parse(saved);
+        } else {
+            rootData.forEach(item => {
+                studentHistory[item.id] = { correct: 0, total: 0 };
+            });
+            saveProgressToLocal();
+        }
+    }
+
+    function saveProgressToLocal() {
+        localStorage.setItem('surah_alaq_progress', JSON.stringify(studentHistory));
+    }
+
+    function recordProgress(rootId, isCorrect) {
+        if (!studentHistory[rootId]) {
+            studentHistory[rootId] = { correct: 0, total: 0 };
+        }
+        studentHistory[rootId].total += 1;
+        if (isCorrect) {
+            studentHistory[rootId].correct += 1;
+        }
+        saveProgressToLocal();
+    }
+
+    function getRetentionRate(rootId) {
+        const stat = studentHistory[rootId];
+        if (!stat || stat.total === 0) return 0;
+        return Math.round((stat.correct / stat.total) * 100);
+    }
+
+    function confirmResetAll() {
+        if (confirm("کیا آپ واقعی اپنی تمام پچھلی سیکھنے کی تاریخ اور حفظ کی پروگریس کو صفر (Reset) کرنا چاہتے ہیں؟")) {
+            localStorage.removeItem('surah_alaq_progress');
+            studentHistory = {};
+            initProgressHistory();
+            loadLesson();
+            alert("پروگریس کامیابی سے صفر کر دی گئی ہے!");
+        }
+    }
+
+    function toggleLightThemes() {
+        document.body.setAttribute('data-theme', lightThemes[currentLightIdx]);
+        document.getElementById('light-btn').innerText = lightLabels[currentLightIdx];
+        document.getElementById('dark-btn').innerText = "تاریک موڈ";
+        currentLightIdx = (currentLightIdx + 1) % lightThemes.length;
+    }
+
+    function toggleDarkThemes() {
+        document.body.setAttribute('data-theme', darkThemes[currentDarkIdx]);
+        document.getElementById('dark-btn').innerText = darkLabels[currentDarkIdx];
+        document.getElementById('light-btn').innerText = "روشن موڈ";
+        currentDarkIdx = (currentDarkIdx + 1) % darkThemes.length;
+    }
+
+    function loadLesson() {
+        const container = document.getElementById('lesson-cards-container');
+        container.innerHTML = '';
+        rootData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'lesson-card';
+            
+            const retention = getRetentionRate(item.id);
+            
+            card.innerHTML = `
+                <div onclick="toggleRootVisualizer('${item.id}')">
+                    <div class="lesson-card-header">
+                        <div class="root-badge arabic-word">${item.root}</div>
+                        <div class="meaning-text">${item.basic}</div>
+                    </div>
+                    <div class="progress-sleeve-container">
+                        <div class="progress-sleeve-bar" style="width: ${retention}%"></div>
+                    </div>
+                    <div class="progress-text">حفظ کی سطح: ${retention}%</div>
+                </div>
+                
+                <!-- Animated Visualizer Area -->
+                <div class="visualizer-area" id="visualizer-${item.id}">
+                    <div class="visualizer-header">روٹ نیٹ ورک ویژولائزر (Root Tree)</div>
+                    <div class="network-tree">
+                        <div class="tree-branch">
+                            <span class="tree-word">${item.derived1}</span>
+                            <span class="tree-meaning">${item.dMean1}</span>
+                        </div>
+                        <div class="tree-branch">
+                            <span class="tree-word">${item.derived2}</span>
+                            <span class="tree-meaning">${item.dMean2}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        const banner = document.getElementById('resume-banner');
+        if (quizStarted) {
+            document.getElementById('resume-q-num').innerText = currentQuestionIdx + 1;
+            document.getElementById('resume-total-q').innerText = quizQuestions.length;
+            banner.style.display = 'block';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    function toggleRootVisualizer(id) {
+        const element = document.getElementById(`visualizer-${id}`);
+        if (element.style.display === 'flex') {
+            element.style.display = 'none';
+        } else {
+            // Close other open trees first
+            document.querySelectorAll('.visualizer-area').forEach(el => el.style.display = 'none');
+            element.style.display = 'flex';
+        }
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        if(tabId === 'lesson') {
+            document.getElementById('btn-lesson').classList.add('active');
+            document.getElementById('lesson').classList.add('active');
+            loadLesson();
+        } else if(tabId === 'quiz') {
+            document.getElementById('btn-quiz').classList.add('active');
+            document.getElementById('quiz').classList.add('active');
+        }
+    }
+
+    // Config Panel Handlers
+    function selectLength(len) {
+        document.querySelectorAll('[id^="len-"]').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`len-${len}`).classList.add('active');
+        selectedLen = len;
+    }
+
+    function selectMode(mode) {
+        document.querySelectorAll('[id^="mode-"]').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`mode-${mode}`).classList.add('active');
+        selectedQuizMode = mode;
+    }
+
+    function exitToConfig() {
+        quizStarted = false;
+        document.getElementById('active-quiz-container').style.display = 'none';
+        document.getElementById('quiz-config-container').style.display = 'flex';
+        loadLesson();
+    }
+
+    // Initialize customized Smart Quiz using Spaced Repetition Logic
+    function startConfiguredQuiz() {
+        let pool = [...rootData];
+        
+        // --- Spaced Repetition sorting logic ---
+        // We calculate a weight based on history.
+        // Low retention rate = higher weight (higher priority to be tested first)
+        pool.sort((a, b) => {
+            const retentionA = getRetentionRate(a.id);
+            const retentionB = getRetentionRate(b.id);
+            
+            // If the user hasn't seen 'a' yet, prioritize it.
+            const totalSeenA = studentHistory[a.id] ? studentHistory[a.id].total : 0;
+            const totalSeenB = studentHistory[b.id] ? studentHistory[b.id].total : 0;
+            
+            if (totalSeenA === 0 && totalSeenB > 0) return -1;
+            if (totalSeenB === 0 && totalSeenA > 0) return 1;
+            
+            // Sort ascending: Lower retention rates float to the top
+            return retentionA - retentionB;
+        });
+
+        // Slice roots if specified length
+        if (selectedLen !== 'all') {
+            pool = pool.slice(0, parseInt(selectedLen));
+        }
+
+        const tempQuestions = [];
+
+        pool.forEach(item => {
+            // Type 1: Root to Basic Meaning
+            tempQuestions.push({
+                rootId: item.id,
+                type: 'root-to-basic',
+                question: `مادہ <span class="arabic-word" style="color:var(--accent-color); font-weight:bold;">"${item.root}"</span> کا بنیادی اور حقیقی معنی کیا ہے؟`,
+                options: [...item.distractorsBasic, item.basic].sort(() => 0.5 - Math.random()),
+                correct: item.basic
+            });
+
+            // Type 2: Basic Meaning to Root
+            tempQuestions.push({
+                rootId: item.id,
+                type: 'basic-to-root',
+                question: `بنیادی مفہوم <span style="color:var(--accent-color); font-weight:bold;">"${item.basic}"</span> کس مادہ کا ہے؟`,
+                options: [...item.distractorsRoot, item.root].sort(() => 0.5 - Math.random()),
+                correct: item.root
+            });
+
+            // Type 3: Derived word to Root
+            tempQuestions.push({
+                rootId: item.id,
+                type: 'derived-to-root',
+                question: `قرآنی لفظ <span class="arabic-word" style="color:var(--accent-color); font-weight:bold;">"${item.derived1}"</span> کس بنیادی مادہ سے بنا ہے؟`,
+                options: [...item.distractorsRoot, item.root].sort(() => 0.5 - Math.random()),
+                correct: item.root
+            });
+        });
+
+        // Keep the worst-performing roots grouped near the front, but shuffle the exact question order within limits
+        quizQuestions = tempQuestions;
+        
+        // Gentle shuffle to avoid predictable question sequences of the same root
+        for (let i = quizQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            // Prevent shuffling too far away to preserve Spaced Repetitive prioritization
+            if (Math.abs(i - j) < 4) {
+                [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
+            }
+        }
+
+        currentQuestionIdx = 0;
+        score = 0;
+        quizStarted = true;
+
+        document.getElementById('score').innerText = score;
+        document.getElementById('total-questions-num').innerText = quizQuestions.length;
+        
+        document.getElementById('quiz-config-container').style.display = 'none';
+        document.getElementById('active-quiz-container').style.display = 'block';
+
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        answered = false;
+        const q = quizQuestions[currentQuestionIdx];
+        document.getElementById('current-question-num').innerText = currentQuestionIdx + 1;
+        document.getElementById('question-text').innerHTML = q.question;
+
+        const optionsContainer = document.getElementById('options-container');
+        const flashcardContainer = document.getElementById('flashcard-container');
+
+        if (selectedQuizMode === 'mcq') {
+            optionsContainer.style.display = 'grid';
+            flashcardContainer.style.display = 'none';
+            optionsContainer.innerHTML = '';
+
+            // Dynamic Layout Check
+            const hasLongOption = q.options.some(opt => opt.length > 15);
+            if (hasLongOption) {
+                optionsContainer.className = 'options-grid one-col';
+            } else {
+                optionsContainer.className = 'options-grid two-cols';
+            }
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(btn, opt, q.correct);
+                optionsContainer.appendChild(btn);
+            });
+        } else {
+            // Flashcard Mode Configuration
+            optionsContainer.style.display = 'none';
+            flashcardContainer.style.display = 'flex';
+            
+            document.getElementById('reveal-answer-btn').style.display = 'block';
+            document.getElementById('flashcard-answer-text').style.display = 'none';
+            document.getElementById('flash-feedback-container').style.display = 'none';
+            
+            document.getElementById('flashcard-answer-text').innerHTML = `درست جواب: <strong class="arabic-word" style="color:var(--accent-color);">${q.correct}</strong>`;
+        }
+
+        document.getElementById('prev-btn').disabled = currentQuestionIdx === 0;
+        document.getElementById('next-btn').innerText = currentQuestionIdx === (quizQuestions.length - 1) ? "دوبارہ شروع کریں" : "اگلا سوال";
+    }
+
+    function selectOption(btn, selected, correct) {
+        if (answered) return;
+        answered = true;
+        
+        const q = quizQuestions[currentQuestionIdx];
+        const isCorrect = (selected === correct);
+        
+        // Real-time Progress Recording
+        recordProgress(q.rootId, isCorrect);
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+            score++;
+            document.getElementById('score').innerText = score;
+        } else {
+            btn.classList.add('incorrect');
+            Array.from(document.querySelectorAll('.option-btn')).forEach(b => {
+                if(b.innerText === correct) {
+                    b.classList.add('correct');
+                }
+            });
+        }
+    }
+
+    // Flashcard Actions
+    function revealFlashcardAnswer() {
+        document.getElementById('reveal-answer-btn').style.display = 'none';
+        document.getElementById('flashcard-answer-text').style.display = 'block';
+        document.getElementById('flash-feedback-container').style.display = 'flex';
+    }
+
+    function submitFlashFeedback(isCorrect) {
+        if (answered) return;
+        answered = true;
+
+        const q = quizQuestions[currentQuestionIdx];
+        recordProgress(q.rootId, isCorrect);
+
+        if (isCorrect) {
+            score++;
+            document.getElementById('score').innerText = score;
+        }
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        if (!answered && selectedQuizMode === 'mcq') {
+            // Force save incorrect if they skip MCQ
+            const q = quizQuestions[currentQuestionIdx];
+            recordProgress(q.rootId, false);
+            answered = true;
+        }
+
+        if(currentQuestionIdx === (quizQuestions.length - 1)) {
+            exitToConfig();
+            return;
+        }
+        currentQuestionIdx++;
+        loadQuestion();
+    }
+
+    function prevQuestion() {
+        if(currentQuestionIdx > 0) {
+            currentQuestionIdx--;
+            loadQuestion();
+        }
+    }
+
+    window.onload = () => {
+        initProgressHistory();
+        loadLesson();
+    };
+</script>
+
+</body>
+</html>
