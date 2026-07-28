@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جڑ کی تلاش — البقرہ 2:1–10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1c2a2e;
+    --parchment: #ece2c8;
+    --parchment-light: #f5eeda;
+    --gold: #b8863b;
+    --gold-bright: #d9a84e;
+    --teal: #3e6b64;
+    --teal-deep: #24423d;
+    --red-muted: #9a4b3f;
+    --shadow: rgba(20,25,20,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(216,168,78,0.06), transparent 45%),
+      radial-gradient(ellipse at 85% 85%, rgba(62,107,100,0.10), transparent 50%),
+      var(--ink);
+    color: var(--parchment-light);
+    font-family: 'Noto Nastaliq Urdu', serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 40px 16px 80px;
+  }
+
+  .manuscript-rule{
+    width:100%;
+    max-width:760px;
+    height:10px;
+    margin-bottom: 28px;
+    background-image: repeating-linear-gradient(90deg, var(--gold) 0 8px, transparent 8px 20px);
+    opacity:0.55;
+    border-radius:2px;
+  }
+
+  header{
+    text-align:center;
+    max-width:680px;
+    margin-bottom: 8px;
+  }
+  .eyebrow{
+    font-size:0.85rem;
+    letter-spacing:0.08em;
+    color: var(--gold-bright);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Amiri', serif;
+    font-size: 2.6rem;
+    margin: 0 0 6px;
+    color: var(--parchment-light);
+    font-weight:700;
+  }
+  h1 .arabic-accent{
+    display:block;
+    font-size:1.5rem;
+    color: var(--gold-bright);
+    margin-top:4px;
+  }
+  .subhead{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:1.3rem;
+    color: rgba(236,226,200,0.85);
+    max-width:540px;
+    margin: 10px auto 0;
+    line-height:2;
+  }
+
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin: 26px 0 8px;
+  }
+  .seal-dot{
+    width:13px;height:13px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    transition: all 0.4s ease;
+  }
+  .seal-dot.done{ background: var(--gold); box-shadow: 0 0 8px rgba(217,168,78,0.7); }
+  .seal-dot.current{ background: var(--teal); border-color: var(--teal); transform:scale(1.25); }
+  .score-tag{
+    font-family:'Noto Nastaliq Urdu';
+    font-size:1rem;
+    color: var(--gold-bright);
+    border:1px solid rgba(217,168,78,0.4);
+    padding: 4px 16px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+
+  .stage{
+    width:100%;
+    max-width: 620px;
+    margin-top: 18px;
+  }
+  .card{
+    position:relative;
+    background: linear-gradient(180deg, var(--parchment-light), var(--parchment));
+    color: var(--teal-deep);
+    border-radius: 18px;
+    padding: 42px 36px 34px;
+    box-shadow: 0 25px 60px var(--shadow), 0 2px 0 rgba(217,168,78,0.5) inset;
+    border: 1px solid rgba(184,134,59,0.5);
+    text-align:center;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset: 10px;
+    border: 1px solid rgba(62,107,100,0.25);
+    border-radius: 12px;
+    pointer-events:none;
+  }
+  .verse-ref{
+    font-size:0.95rem;
+    color: var(--teal);
+    margin-bottom: 18px;
+  }
+  .word-arabic{
+    font-family:'Amiri', serif;
+    font-size: 3.6rem;
+    direction: rtl;
+    color: var(--ink);
+    margin: 6px 0 6px;
+    line-height:1.3;
+  }
+  .word-meaning{
+    font-family:'Noto Nastaliq Urdu', serif;
+    color: var(--teal);
+    font-size: 1.3rem;
+    margin-bottom: 26px;
+  }
+  .prompt{
+    font-size:1.15rem;
+    color: var(--teal-deep);
+    margin-bottom: 18px;
+    font-weight:600;
+  }
+
+  .options{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 480px){
+    .options{ grid-template-columns: 1fr; }
+    .word-arabic{ font-size: 2.7rem; }
+    h1{ font-size:2rem; }
+  }
+  .opt-btn{
+    font-family:'Amiri', serif;
+    direction: rtl;
+    font-size: 1.5rem;
+    background: rgba(62,107,100,0.06);
+    border: 1.5px solid rgba(62,107,100,0.35);
+    color: var(--teal-deep);
+    border-radius: 10px;
+    padding: 14px 10px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+  .opt-btn:hover:not(:disabled){
+    border-color: var(--gold);
+    background: rgba(184,134,59,0.12);
+    transform: translateY(-2px);
+  }
+  .opt-btn:disabled{ cursor:default; }
+  .opt-btn.correct{
+    background: rgba(62,107,100,0.85);
+    border-color: var(--teal-deep);
+    color: var(--parchment-light);
+  }
+  .opt-btn.wrong{
+    background: rgba(154,75,63,0.85);
+    border-color: var(--red-muted);
+    color: var(--parchment-light);
+  }
+
+  .seal-wrap{
+    display:flex;
+    justify-content:center;
+    margin: 18px 0 10px;
+    min-height: 96px;
+    align-items:center;
+  }
+  .seal{
+    width: 84px; height: 84px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, #8a621f 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    transform: scale(0);
+    opacity:0;
+    transition: transform 0.5s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+  }
+  .seal.show{ transform: scale(1); opacity:1; }
+  .seal.wrong-seal{
+    background: radial-gradient(circle at 35% 30%, #c67a68, var(--red-muted) 60%, #5e2c23 100%);
+  }
+  .seal-mark{
+    font-family:'Amiri', serif;
+    color: var(--ink);
+    font-size: 1.9rem;
+  }
+
+  .type-badge{
+    display:inline-block;
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:0.95rem;
+    color: var(--teal-deep);
+    background: rgba(184,134,59,0.18);
+    border: 1px solid rgba(184,134,59,0.5);
+    padding: 3px 14px;
+    border-radius: 999px;
+    margin: 6px 0 2px;
+  }
+
+  .reveal-meaning{
+    font-family:'Amiri', serif;
+    font-size: 1.4rem;
+    color: var(--ink);
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition: all 0.5s ease;
+  }
+  .reveal-meaning.open{
+    max-height:400px;
+    opacity:1;
+    margin-top:8px;
+  }
+  .reveal-meaning b{ color: var(--teal-deep); font-family:'Noto Nastaliq Urdu', serif; font-size:1.05rem; }
+
+  .explain{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition: all 0.5s ease;
+    text-align:right;
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size: 1.25rem;
+    color: var(--teal-deep);
+    line-height:2.1;
+  }
+  .explain.open{
+    max-height: 3000px;
+    opacity:1;
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(62,107,100,0.4);
+  }
+  .explain b{ color: var(--ink); font-family:'Amiri', serif; }
+  .family{
+    margin-top:12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:flex-start;
+  }
+  .family span{
+    font-family:'Amiri', serif;
+    direction:rtl;
+    background: rgba(62,107,100,0.1);
+    border:1px solid rgba(62,107,100,0.3);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size:1.1rem;
+  }
+  .family .meaning-ur{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size: 0.95rem;
+  }
+
+  .stage2{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition: all 0.6s ease;
+    margin-top:0;
+  }
+  .stage2.open{
+    max-height:4000px;
+    opacity:1;
+    margin-top:22px;
+    padding-top:20px;
+    border-top: 2px dotted rgba(184,134,59,0.5);
+  }
+  .stage2-title{
+    font-family:'Noto Nastaliq Urdu';
+    font-size:1.05rem;
+    color: var(--red-muted);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .stage2-prompt{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:1.1rem;
+    color: var(--teal-deep);
+    margin-bottom:16px;
+    line-height:1.8;
+  }
+  .stage2-feedback{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:1.1rem;
+    color: var(--teal-deep);
+    line-height:1.9;
+    text-align:right;
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition: all 0.5s ease;
+  }
+  .stage2-feedback.open{
+    max-height:800px;
+    opacity:1;
+    margin-top:14px;
+  }
+  .stage2-meaning{
+    font-family:'Noto Nastaliq Urdu';
+    font-size:0.85rem;
+    display:none;
+  }
+  .stage2Options-answered .stage2-meaning{
+    display:inline;
+  }
+
+  .stage2-feedback b{ font-family:'Amiri', serif; color:var(--ink); }
+
+  .controls{
+    display:flex;
+    justify-content:center;
+    margin-top: 26px;
+  }
+  .next-btn{
+    font-family:'Noto Nastaliq Urdu';
+    font-size:1rem;
+    background: var(--teal-deep);
+    color: var(--parchment-light);
+    border:none;
+    padding: 12px 32px;
+    border-radius: 999px;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+  }
+  .next-btn.ready{ opacity:1; pointer-events:auto; }
+  .next-btn:hover.ready{ transform: translateY(-2px); background:#1b3733; }
+
+  .done-screen{ display:none; }
+  .done-screen.show{ display:block; }
+  .done-screen h2{
+    font-family:'Amiri', serif;
+    font-size: 2rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .done-screen p{
+    font-family:'Noto Nastaliq Urdu', serif;
+    font-size:1.3rem;
+    color: var(--teal);
+    margin-bottom: 22px;
+  }
+  .restart-btn{
+    font-family:'Noto Nastaliq Urdu';
+    font-size:1rem;
+    background: var(--gold);
+    color: var(--ink);
+    border:none;
+    padding: 12px 30px;
+    border-radius: 999px;
+    cursor:pointer;
+  }
+
+  footer{
+    margin-top: 34px;
+    font-size:0.95rem;
+    color: rgba(236,226,200,0.6);
+    text-align:center;
+    max-width: 540px;
+    font-family:'Noto Nastaliq Urdu', serif;
+    line-height:1.9;
+  }
+</style>
+</head>
+<body>
+
+  <div class="manuscript-rule"></div>
+
+  <header>
+    <div class="eyebrow">معکوس جڑ کا مطالعہ · دو مرحلوں کا چیلنج</div>
+    <h1>جڑ کی تلاش
+      <span class="arabic-accent">﴿ الجذر ﴾</span>
+    </h1>
+    <p class="subhead">سورۃ البقرہ کی آیات 1 تا 50 سے دس نہایت مشکل الفاظ — جن میں کمزور اور مدغم حروف چھپے ہیں۔ ہر لفظ کے دو مرحلے ہیں: پہلے جڑ پہچانیں، پھر ایک مشکل چیلنج میں بتائیں کہ چار ملتے جلتے الفاظ میں سے کون سا اصل میں اِس جڑ کا نہیں ہے۔</p>
+  </header>
+
+  <div class="progress-row" id="progressRow"></div>
+
+  <div class="stage">
+    <div class="card" id="quizCard">
+      <div class="verse-ref" id="verseRef"></div>
+      <div class="word-arabic" id="wordArabic"></div>
+      <div class="prompt">یہ لفظ کس جڑ سے نکلا ہے؟</div>
+      <div class="options" id="options"></div>
+
+      <div class="seal-wrap">
+        <div class="seal" id="seal"><span class="seal-mark" id="sealMark"></span></div>
+      </div>
+
+      <div class="reveal-meaning" id="revealMeaning"></div>
+      <div class="explain" id="explain"></div>
+
+      <div class="stage2" id="stage2">
+        <div class="stage2-title">🔥 چیلنج راؤنڈ</div>
+        <div class="stage2-prompt" id="stage2Prompt"></div>
+        <div class="options" id="stage2Options"></div>
+        <div class="stage2-feedback" id="stage2Feedback"></div>
+      </div>
+
+      <div class="controls">
+        <button class="next-btn" id="nextBtn">اگلا لفظ ←</button>
+      </div>
+    </div>
+
+    <div class="card done-screen" id="doneScreen">
+      <h2>تکمیل کی مہر</h2>
+      <p id="finalScore"></p>
+      <button class="restart-btn" id="restartBtn">دوبارہ مطالعہ کریں</button>
+    </div>
+  </div>
+
+  <footer>نکتہ: حنس ویہر جیسی زیادہ تر عربی لغات میں الفاظ اُن کی جڑ کے تحت درج ہوتے ہیں — یہی مہارت لغت میں لفظ تلاش کرنے کے کام آتی ہے۔</footer>
+
+<script>
+const WORDS = [
+  {
+    verse: "سورۃ البقرہ 2:30",
+    arabic: "قَالُوا",
+    meaning: "انہوں نے کہا",
+    root: "ق-و-ل",
+    type: "اجوف — درمیانی حرفِ علت",
+    gloss: "بظاہر لگتا ہے جڑ <b>ق-ا-ل</b> ہے، لیکن الف دراصل ایک چھپا ہوا <b>و</b> ہے۔ یہ \"اجوف\" (کھوکھلی) جڑ ہے — درمیانی حرفِ علت و مختلف صیغوں میں الف، و یا ي کی شکل اختیار کر لیتا ہے۔ اصل جڑ <b>ق-و-ل</b> ہے، یعنی \"کہنا\"۔",
+    family: [
+      {ar:"قَوْل", ur:"(بات، قول)"},
+      {ar:"قائِل", ur:"(کہنے والا)"},
+      {ar:"مَقُول", ur:"(جو کہا گیا)"},
+      {ar:"يَقُول", ur:"(وہ کہتا ہے)"}
+    ],
+    options: ["ق-و-ل", "ق-ا-ل", "ق-ل-ل", "ق-ي-ل"],
+    oddOneOut: {
+      prompt: "ان چار الفاظ میں سے تین جڑ ق-و-ل سے ہیں، ایک نہیں — پہچانیں کہ کون سا لفظ اِس جڑ کا نہیں ہے؟",
+      options: [
+        {ar:"قَوْل", ur:"(بات، قول)", real:true},
+        {ar:"مَقُول", ur:"(جو کہا گیا)", real:true},
+        {ar:"قَوِيّ", ur:"(طاقتور)", real:false, actualRoot:"ق-و-ي"},
+        {ar:"يَقُول", ur:"(وہ کہتا ہے)", real:true}
+      ],
+      explain: "<b>قَوِيّ</b> دراصل جڑ <b>ق-و-ي</b> سے ہے (طاقت رکھنا)، ق-و-ل (کہنا) سے نہیں۔ پہلے دو حروف (ق و) مشترک ہونے کی وجہ سے دھوکہ ہوتا ہے، مگر تیسرا حرف مختلف ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:3",
+    arabic: "الصَّلَاةَ",
+    meaning: "نماز",
+    root: "ص-ل-و",
+    type: "ناقص — آخری حرفِ علت",
+    gloss: "آخری حرف الف نظر آتا ہے، اس لیے بظاہر جڑ <b>ص-ل-ا</b> لگتی ہے۔ مگر یہ \"ناقص\" (نامکمل) جڑ ہے جس کا آخری حرف اصل میں <b>و</b> ہے، جو الف میں بدل جاتا ہے۔ اصل جڑ <b>ص-ل-و</b> ہے۔",
+    family: [
+      {ar:"مُصَلِّي", ur:"(نماز پڑھنے والا)"},
+      {ar:"مُصَلَّى", ur:"(نماز کی جگہ)"},
+      {ar:"صَلَّى", ur:"(اُس نے نماز پڑھی)"},
+      {ar:"صَلَوَات", ur:"(نمازیں، جمع)"}
+    ],
+    options: ["ص-ل-و", "ص-ل-ا", "ص-ل-ي", "ص-ل-ح"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ص-ل-و سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"مُصَلِّي", ur:"(نماز پڑھنے والا)", real:true},
+        {ar:"مُصَلَّى", ur:"(نماز کی جگہ)", real:true},
+        {ar:"صَالِح", ur:"(نیک، اچھا)", real:false, actualRoot:"ص-ل-ح"},
+        {ar:"صَلَّى", ur:"(اُس نے نماز پڑھی)", real:true}
+      ],
+      explain: "<b>صَالِح</b> دراصل جڑ <b>ص-ل-ح</b> سے ہے (نیک ہونا)، ص-ل-و (نماز) سے نہیں۔ پہلے دو حروف (ص ل) مشترک ہونے کے باعث یہ لفظ دھوکہ دیتا ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:4",
+    arabic: "يُوقِنُونَ",
+    meaning: "وہ یقین رکھتے ہیں",
+    root: "ي-ق-ن",
+    type: "جڑ کا پہلا حرف خود حرفِ علت ہے",
+    gloss: "شروع کا <b>ي</b> فعل کی علامت لگتا ہے (جیسے یَفْعَلُ میں ہوتا ہے)، اس لیے طالب علم اسے ہٹا کر جڑ <b>و-ق-ن</b> سمجھ لیتے ہیں۔ مگر یہاں <b>ي</b> خود جڑ کا پہلا حرف ہے! اصل جڑ <b>ي-ق-ن</b> ہے، یعنی \"یقین\"۔",
+    family: [
+      {ar:"يَقِين", ur:"(یقین)"},
+      {ar:"مُوقِن", ur:"(یقین رکھنے والا)"},
+      {ar:"تَيَقُّن", ur:"(یقین کر لینا)"},
+      {ar:"مُتَيَقِّن", ur:"(یقین کر چکا)"}
+    ],
+    options: ["ي-ق-ن", "و-ق-ن", "ق-ي-ن", "ي-ق-ظ"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ي-ق-ن سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"يَقِين", ur:"(یقین)", real:true},
+        {ar:"مُوقِن", ur:"(یقین رکھنے والا)", real:true},
+        {ar:"يَقْظَان", ur:"(بیدار، جاگتا ہوا)", real:false, actualRoot:"ي-ق-ظ"},
+        {ar:"تَيَقُّن", ur:"(یقین کر لینا)", real:true}
+      ],
+      explain: "<b>يَقْظَان</b> دراصل جڑ <b>ي-ق-ظ</b> سے ہے (بیدار ہونا)، ي-ق-ن (یقین) سے نہیں۔ پہلے دو حروف (ي ق) مشترک ہونے کی وجہ سے الجھن پیدا ہوتی ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:29",
+    arabic: "اسْتَوَى",
+    meaning: "وہ متمکن ہوا / بلند ہوا",
+    root: "س-و-ي",
+    type: "اجوف + باب اِسْتِفْعَال",
+    gloss: "باب اِسْتِفْعَال کے آغاز کا اِسْتَ حصہ جڑ کا حصہ نہیں بلکہ وزن ہے۔ اسے ہٹانے کے بعد بھی و اور ي دونوں حرفِ علت ہونے کی وجہ سے الجھن پیدا کرتے ہیں۔ اصل جڑ <b>س-و-ي</b> ہے، یعنی \"برابر ہونا، ٹھیک بیٹھنا\"۔",
+    family: [
+      {ar:"سَواء", ur:"(برابر)"},
+      {ar:"تَسْوِيَة", ur:"(برابر کرنا)"},
+      {ar:"مُسْتَوٍ", ur:"(ہموار، سیدھا)"},
+      {ar:"سَوِيّ", ur:"(درست، ٹھیک)"}
+    ],
+    options: ["س-و-ي", "س-ت-و", "س-و-ا", "س-ن-و"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ س-و-ي سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"سَواء", ur:"(برابر)", real:true},
+        {ar:"تَسْوِيَة", ur:"(برابر کرنا)", real:true},
+        {ar:"سُوق", ur:"(بازار)", real:false, actualRoot:"س-و-ق"},
+        {ar:"مُسْتَوٍ", ur:"(ہموار، سیدھا)", real:true}
+      ],
+      explain: "<b>سُوق</b> دراصل جڑ <b>س-و-ق</b> سے ہے (بازار/ہانکنا)، س-و-ي (برابر ہونا) سے نہیں۔ پہلے دو حروف (س و) مشترک ہونے کے باعث دھوکہ ہوتا ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:37",
+    arabic: "فَتَابَ",
+    meaning: "پس اُس نے توبہ قبول کی",
+    root: "ت-و-ب",
+    type: "اجوف — درمیانی حرفِ علت",
+    gloss: "الف کی وجہ سے بظاہر جڑ <b>ت-ا-ب</b> لگتی ہے، مگر یہ بھی \"اجوف\" جڑ ہے جس کا درمیانی حرف اصل میں <b>و</b> ہے۔ اصل جڑ <b>ت-و-ب</b> ہے، یعنی \"لوٹنا، توبہ کرنا\"۔",
+    family: [
+      {ar:"تَوْبَة", ur:"(توبہ)"},
+      {ar:"تَوَّاب", ur:"(بہت توبہ قبول کرنے والا)"},
+      {ar:"مَتَاب", ur:"(توبہ کی جگہ/وقت)"},
+      {ar:"تائِب", ur:"(توبہ کرنے والا)"}
+    ],
+    options: ["ت-و-ب", "ت-ا-ب", "ت-ب-ب", "ت-ي-ب"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ت-و-ب سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"تَوْبَة", ur:"(توبہ)", real:true},
+        {ar:"مَتَاب", ur:"(توبہ کی جگہ)", real:true},
+        {ar:"تَوْق", ur:"(شدید خواہش، تڑپ)", real:false, actualRoot:"ت-و-ق"},
+        {ar:"تائِب", ur:"(توبہ کرنے والا)", real:true}
+      ],
+      explain: "<b>تَوْق</b> دراصل جڑ <b>ت-و-ق</b> سے ہے (تڑپنا/شدید خواہش)، ت-و-ب (توبہ) سے نہیں۔ پہلے دو حروف (ت و) مشترک ہونے کے باعث دھوکہ ہوتا ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:24، 2:48",
+    arabic: "وَاتَّقُوا",
+    meaning: "اور ڈرو / تقویٰ اختیار کرو",
+    root: "و-ق-ي",
+    type: "باب افتعال — حرفِ علت کا ادغام",
+    gloss: "یہ باب افتعال (اِفْتَعَلَ) ہے، جس میں جڑ کا پہلا حرف <b>و</b> دبِ کر تّ (دوہرے ت) میں بدل گیا ہے۔ اکثر طالب علم اسے <b>ت-ق-ي</b> سمجھ لیتے ہیں۔ اصل جڑ <b>و-ق-ي</b> ہے، یعنی \"بچانا، حفاظت کرنا\"۔",
+    family: [
+      {ar:"تَقْوَى", ur:"(تقویٰ، پرہیزگاری)"},
+      {ar:"وَاقِي", ur:"(بچانے والا)"},
+      {ar:"وِقَايَة", ur:"(حفاظت)"},
+      {ar:"مُتَّقِين", ur:"(پرہیزگار لوگ)"}
+    ],
+    options: ["و-ق-ي", "ت-ق-ي", "ت-ق-و", "و-ق-ت"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ و-ق-ي سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"تَقْوَى", ur:"(تقویٰ)", real:true},
+        {ar:"وَاقِي", ur:"(بچانے والا)", real:true},
+        {ar:"وَقْت", ur:"(وقت)", real:false, actualRoot:"و-ق-ت"},
+        {ar:"وِقَايَة", ur:"(حفاظت)", real:true}
+      ],
+      explain: "<b>وَقْت</b> دراصل جڑ <b>و-ق-ت</b> سے ہے (زمانہ/وقت)، و-ق-ي (بچانا) سے نہیں۔ پہلے دو حروف (و ق) مشترک ہونے کے باعث دھوکہ ہوتا ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:45",
+    arabic: "اسْتَعِينُوا",
+    meaning: "مدد طلب کرو",
+    root: "ع-و-ن",
+    type: "اجوف + باب اِسْتِفْعَال",
+    gloss: "باب اِسْتِفْعَال کا صیغہ ہے۔ درمیانی حرفِ علت <b>و</b> یہاں ي کی شکل میں آ گیا ہے، اس لیے جڑ <b>ع-ي-ن</b> لگتی ہے۔ لیکن اصل جڑ <b>ع-و-ن</b> ہے، یعنی \"مدد\"۔",
+    family: [
+      {ar:"عَوْن", ur:"(مدد)"},
+      {ar:"مُعِين", ur:"(مدد کرنے والا)"},
+      {ar:"تَعَاوُن", ur:"(باہمی تعاون)"},
+      {ar:"اِسْتِعَانَة", ur:"(مدد طلب کرنا)"}
+    ],
+    options: ["ع-و-ن", "ع-ي-ن", "س-ع-ن", "ع-ن-و"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ع-و-ن سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"عَوْن", ur:"(مدد)", real:true},
+        {ar:"تَعَاوُن", ur:"(باہمی تعاون)", real:true},
+        {ar:"عَيْن", ur:"(آنکھ، چشمہ)", real:false, actualRoot:"ع-ي-ن"},
+        {ar:"اِسْتِعَانَة", ur:"(مدد طلب کرنا)", real:true}
+      ],
+      explain: "<b>عَيْن</b> دراصل جڑ <b>ع-ي-ن</b> سے ہے (آنکھ/چشمہ)، ع-و-ن (مدد) سے نہیں۔ استعينوا کے ہجے میں و، ي کی شکل میں آنے کی وجہ سے یہ ٹریپ خاص طور پر گمراہ کن ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:16",
+    arabic: "اشْتَرَوُا",
+    meaning: "انہوں نے خرید لیا",
+    root: "ش-ر-ي",
+    type: "ناقص + باب افتعال",
+    gloss: "باب افتعال (اِفْتَعَلَ) کا صیغہ ہے، اور آخری حرفِ علت <b>ي</b> بدل کر واو میں ضم ہو گیا ہے۔ اسی لیے یہ جڑ <b>ش-ت-ر</b> جیسی لگتی ہے۔ اصل جڑ <b>ش-ر-ي</b> ہے، یعنی \"خریدنا / بیچنا\"۔",
+    family: [
+      {ar:"شِرَاء", ur:"(خریداری)"},
+      {ar:"مُشْتَرِي", ur:"(خریدار)"},
+      {ar:"شَرَى", ur:"(اُس نے خریدا)"},
+      {ar:"اِشْتَرَى", ur:"(اُس نے خرید لیا)"}
+    ],
+    options: ["ش-ر-ي", "ش-ت-ر", "ش-ر-و", "ش-ر-ر"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ش-ر-ي سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"شِرَاء", ur:"(خریداری)", real:true},
+        {ar:"مُشْتَرِي", ur:"(خریدار)", real:true},
+        {ar:"شَرّ", ur:"(برائی، شر)", real:false, actualRoot:"ش-ر-ر"},
+        {ar:"اِشْتَرَى", ur:"(اُس نے خرید لیا)", real:true}
+      ],
+      explain: "<b>شَرّ</b> دراصل جڑ <b>ش-ر-ر</b> سے ہے (برائی)، ش-ر-ي (خریدنا) سے نہیں۔ پہلے دو حروف (ش ر) مشترک ہونے کے باعث دھوکہ ہوتا ہے۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:49",
+    arabic: "يَسُومُونَكُمْ",
+    meaning: "وہ تمہیں مبتلا رکھتے تھے",
+    root: "س-و-م",
+    type: "اجوف — درمیانی حرفِ علت",
+    gloss: "درمیانی حرفِ علت <b>و</b> یہاں ضمہ کے ساتھ نمایاں ہے، مگر بہت سے صیغوں میں یہ غائب ہو جاتا ہے، اس لیے جڑ پہچاننا مشکل ہو جاتا ہے۔ جڑ <b>س-و-م</b> ہے، جس کا مفہوم ہے \"کسی حال پر برقرار رکھنا / سزا میں مبتلا رکھنا\"۔",
+    family: [
+      {ar:"سَوْم", ur:"(مسلط رکھنا)"},
+      {ar:"مُسَاوَمَة", ur:"(سودے بازی)"},
+      {ar:"سَامَ", ur:"(اُس نے مبتلا رکھا)"},
+      {ar:"سَائِمَة", ur:"(چرنے والا جانور)"}
+    ],
+    options: ["س-و-م", "س-م-ن", "س-ي-م", "س-م-و"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ س-و-م سے ہیں، ایک نہیں — بتائیں کون سا؟ (خیال رہے: حروف کی ترتیب بھی جڑ کا حصہ ہے)",
+      options: [
+        {ar:"سَوْم", ur:"(مسلط رکھنا)", real:true},
+        {ar:"مُسَاوَمَة", ur:"(سودے بازی)", real:true},
+        {ar:"سَمَاء", ur:"(آسمان)", real:false, actualRoot:"س-م-و"},
+        {ar:"سَائِمَة", ur:"(چرنے والا جانور)", real:true}
+      ],
+      explain: "<b>سَمَاء</b> دراصل جڑ <b>س-م-و</b> سے ہے (بلندی)، س-و-م سے نہیں — حروف تقریباً وہی ہیں مگر ترتیب مختلف ہے (س-و-م بمقابلہ س-م-و)۔ عربی میں حرفوں کی ترتیب بدلنے سے جڑ اور معنی بالکل بدل جاتے ہیں۔"
+    }
+  },
+  {
+    verse: "سورۃ البقرہ 2:49",
+    arabic: "نَجَّيْنَاكُمْ",
+    meaning: "ہم نے تمہیں نجات دی",
+    root: "ن-ج-و",
+    type: "ناقص + باب تفعیل (دوہرا حرف)",
+    gloss: "درمیانی جّ کی دوہری تشدید (باب تفعیل) اور آخری حرفِ علت کی تبدیلی دونوں مل کر جڑ کو پہچاننا مشکل بنا دیتے ہیں۔ نَا اور كُمْ ضمائر ہیں۔ اصل جڑ <b>ن-ج-و</b> ہے (نجا)، یعنی \"بچنا، نجات پانا\"۔",
+    family: [
+      {ar:"نَجَاة", ur:"(نجات)"},
+      {ar:"مُنجِي", ur:"(نجات دینے والا)"},
+      {ar:"نَاجِي", ur:"(بچ نکلنے والا)"},
+      {ar:"نَجَّى", ur:"(اُس نے نجات دی)"}
+    ],
+    options: ["ن-ج-و", "ن-ج-ا", "ن-ج-ن", "ن-ج-ي"],
+    oddOneOut: {
+      prompt: "تین الفاظ جڑ ن-ج-و سے ہیں، ایک نہیں — بتائیں کون سا؟",
+      options: [
+        {ar:"نَجَاة", ur:"(نجات)", real:true},
+        {ar:"مُنجِي", ur:"(نجات دینے والا)", real:true},
+        {ar:"نَجْم", ur:"(ستارہ)", real:false, actualRoot:"ن-ج-م"},
+        {ar:"نَاجِي", ur:"(بچ نکلنے والا)", real:true}
+      ],
+      explain: "<b>نَجْم</b> دراصل جڑ <b>ن-ج-م</b> سے ہے (ستارہ)، ن-ج-و (نجات پانا) سے نہیں۔ پہلے دو حروف (ن ج) مشترک ہونے کے باعث دھوکہ ہوتا ہے۔"
+    }
+  }
+];
+
+
+
+let current = 0;
+let score = 0;
+let answered = false;
+let stage2Answered = false;
+let streak = 0;
+let bestStreak = 0;
+
+const progressRow = document.getElementById('progressRow');
+const verseRef = document.getElementById('verseRef');
+const wordArabic = document.getElementById('wordArabic');
+const revealMeaning = document.getElementById('revealMeaning');
+const optionsEl = document.getElementById('options');
+const seal = document.getElementById('seal');
+const sealMark = document.getElementById('sealMark');
+const explain = document.getElementById('explain');
+const nextBtn = document.getElementById('nextBtn');
+const stage2 = document.getElementById('stage2');
+const stage2Prompt = document.getElementById('stage2Prompt');
+const stage2Options = document.getElementById('stage2Options');
+const stage2Feedback = document.getElementById('stage2Feedback');
+const quizCard = document.getElementById('quizCard');
+const doneScreen = document.getElementById('doneScreen');
+const finalScore = document.getElementById('finalScore');
+const restartBtn = document.getElementById('restartBtn');
+
+function buildProgress(){
+  progressRow.innerHTML = '';
+  const tag = document.createElement('div');
+  tag.className = 'score-tag';
+  tag.id = 'scoreTag';
+  tag.textContent = 'اسکور: 0 / ' + (WORDS.length * 2);
+  progressRow.appendChild(tag);
+  const streakTag = document.createElement('div');
+  streakTag.className = 'score-tag';
+  streakTag.id = 'streakTag';
+  streakTag.textContent = 'تسلسل: 0';
+  progressRow.appendChild(streakTag);
+  WORDS.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'seal-dot';
+    dot.id = 'dot-' + i;
+    progressRow.appendChild(dot);
+  });
+}
+
+function updateProgress(){
+  WORDS.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    dot.classList.remove('current','done');
+    if (i < current) dot.classList.add('done');
+    else if (i === current) dot.classList.add('current');
+  });
+  document.getElementById('scoreTag').textContent = 'اسکور: ' + score + ' / ' + (WORDS.length * 2);
+  document.getElementById('streakTag').textContent = 'تسلسل: ' + streak + (bestStreak > streak ? '  (بہترین: ' + bestStreak + ')' : '');
+}
+
+function shuffled(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function loadWord(){
+  answered = false;
+  stage2Answered = false;
+  const w = WORDS[current];
+  verseRef.textContent = w.verse;
+  wordArabic.textContent = w.arabic;
+  revealMeaning.classList.remove('open');
+  revealMeaning.innerHTML = '';
+  optionsEl.innerHTML = '';
+  seal.classList.remove('show','wrong-seal');
+  sealMark.textContent = '';
+  explain.classList.remove('open');
+  explain.innerHTML = '';
+  stage2.classList.remove('open');
+  stage2Prompt.textContent = '';
+  stage2Options.innerHTML = '';
+  stage2Feedback.classList.remove('open');
+  stage2Feedback.innerHTML = '';
+  nextBtn.classList.remove('ready');
+
+  const opts = shuffled(w.options);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectAnswer(btn, opt, w));
+    optionsEl.appendChild(btn);
+  });
+
+  updateProgress();
+}
+
+function selectAnswer(btn, opt, w){
+  if (answered) return;
+  answered = true;
+  const allBtns = optionsEl.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = opt === w.root;
+  if (isCorrect){
+    btn.classList.add('correct');
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    seal.classList.add('show');
+    sealMark.textContent = '✓';
+  } else {
+    btn.classList.add('wrong');
+    streak = 0;
+    seal.classList.add('show','wrong-seal');
+    sealMark.textContent = '✕';
+    allBtns.forEach(b => { if (b.textContent === w.root) b.classList.add('correct'); });
+  }
+
+  revealMeaning.innerHTML = 'معنی: <b>' + w.meaning + '</b><br><span class="type-badge">' + w.type + '</span>';
+  revealMeaning.classList.add('open');
+
+  const familyHtml = w.family.map(f => '<span>'+f.ar+' <span class="meaning-ur">'+f.ur+'</span></span>').join('');
+  explain.innerHTML = w.gloss + '<div class="family">' + familyHtml + '</div>';
+  explain.classList.add('open');
+  updateProgress();
+
+  loadStage2(w);
+}
+
+function loadStage2(w){
+  const oq = w.oddOneOut;
+  stage2Prompt.textContent = oq.prompt;
+  stage2Options.innerHTML = '';
+  stage2Options.classList.remove('stage2Options-answered');
+  stage2Feedback.classList.remove('open');
+  stage2Feedback.innerHTML = '';
+
+  const opts = shuffled(oq.options);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = opt.ar + '<br><span class="stage2-meaning">' + opt.ur + '</span>';
+    btn.addEventListener('click', () => selectOddOne(btn, opt, oq));
+    stage2Options.appendChild(btn);
+  });
+
+  stage2.classList.add('open');
+}
+
+function selectOddOne(btn, opt, oq){
+  if (stage2Answered) return;
+  stage2Answered = true;
+  const allBtns = stage2Options.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  stage2Options.classList.add('stage2Options-answered');
+
+  const isCorrect = (opt.real === false);
+  if (isCorrect){
+    btn.classList.add('correct');
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+  } else {
+    btn.classList.add('wrong');
+    streak = 0;
+    // reveal the actual impostor (the correct answer) in teal, distinct from the wrong pick
+    oq.options.forEach(o => {
+      if (o.real === false){
+        const match = [...allBtns].find(b => b.textContent.includes(o.ar));
+        if (match) match.classList.add('correct');
+      }
+    });
+  }
+
+  stage2Feedback.innerHTML = oq.explain;
+  stage2Feedback.classList.add('open');
+  nextBtn.classList.add('ready');
+  updateProgress();
+}
+
+nextBtn.addEventListener('click', () => {
+  if (!nextBtn.classList.contains('ready')) return;
+  current++;
+  if (current >= WORDS.length){
+    quizCard.style.display = 'none';
+    doneScreen.classList.add('show');
+    finalScore.textContent = 'آپ نے ' + (WORDS.length * 2) + ' میں سے ' + score + ' پوائنٹس حاصل کیے۔ بہترین تسلسل: ' + bestStreak + '۔';
+    updateProgress();
+  } else {
+    loadWord();
+  }
+});
+
+restartBtn.addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  streak = 0;
+  bestStreak = 0;
+  quizCard.style.display = 'block';
+  doneScreen.classList.remove('show');
+  loadWord();
+});
+
+buildProgress();
+loadWord();
+</script>
+
+</body>
+</html>
