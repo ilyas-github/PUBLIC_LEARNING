@@ -1,0 +1,15 @@
+{
+  "name": "قرآنی الفاظ کا ذخیرہ",
+  "short_name": "قرآنی جڑیں",
+  "description": "Quranic Arabic root-word learning app — Al-Alaq, Al-Qadr, Al-Bayyinah",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef8f2",
+  "theme_color": "#21875a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
