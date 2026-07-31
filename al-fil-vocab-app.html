@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>سورۃ الفیل — لغوی مطالعہ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+    --font-ar: 'Amiri', serif;
+    --font-ur: 'Noto Nastaliq Urdu', serif;
+    --font-ui: 'Inter', sans-serif;
+  }
+
+  /* ---------- THEMES ---------- */
+  [data-theme="light-mint"]{
+    --bg: #eef8f2;
+    --bg-grad: radial-gradient(circle at 20% -10%, #d9f2e4 0%, #eef8f2 55%);
+    --card-bg: #ffffff;
+    --card-bg-2: #f4fbf7;
+    --text: #17352a;
+    --text-secondary: #557066;
+    --primary: #21875a;
+    --primary-strong: #146843;
+    --accent: #e5f6ec;
+    --border: #cfe9db;
+    --shadow: 0 18px 40px -18px rgba(20, 104, 67, 0.28);
+    --danger: #c94c4c;
+    --danger-bg: #fbe9e9;
+    --success: #1f9d63;
+  }
+  [data-theme="light-blue"]{
+    --bg: #eef4fb;
+    --bg-grad: radial-gradient(circle at 80% -10%, #dbeafd 0%, #eef4fb 55%);
+    --card-bg: #ffffff;
+    --card-bg-2: #f3f8fd;
+    --text: #14293e;
+    --text-secondary: #4d6885;
+    --primary: #2367b8;
+    --primary-strong: #184e8e;
+    --accent: #e4f0fc;
+    --border: #cfe1f5;
+    --shadow: 0 18px 40px -18px rgba(24, 78, 142, 0.28);
+    --danger: #c94c4c;
+    --danger-bg: #fbe9e9;
+    --success: #1f9d63;
+  }
+  [data-theme="dark-charcoal"]{
+    --bg: #17181a;
+    --bg-grad: radial-gradient(circle at 15% -10%, #26282b 0%, #17181a 55%);
+    --card-bg: #201f22;
+    --card-bg-2: #262528;
+    --text: #f1efe9;
+    --text-secondary: #a8a49b;
+    --primary: #cf9f43;
+    --primary-strong: #e9b654;
+    --accent: #2c2a27;
+    --border: #38363a;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.55);
+    --danger: #e07070;
+    --danger-bg: #3a2323;
+    --success: #4bbf87;
+  }
+  [data-theme="dark-blue"]{
+    --bg: #0c1524;
+    --bg-grad: radial-gradient(circle at 85% -10%, #17253f 0%, #0c1524 55%);
+    --card-bg: #101b2e;
+    --card-bg-2: #16223a;
+    --text: #eaf1fb;
+    --text-secondary: #8ea3c2;
+    --primary: #4f95e6;
+    --primary-strong: #78b1f2;
+    --accent: #17233c;
+    --border: #223252;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
+    --danger: #ef7a7a;
+    --danger-bg: #2c1a20;
+    --success: #4bbf9a;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    min-height:100vh;
+    background: var(--bg-grad);
+    background-color: var(--bg);
+    font-family: var(--font-ui);
+    color: var(--text);
+    display:flex;
+    justify-content:center;
+    padding: 18px 12px 40px;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .app-header{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding:16px 18px;
+    box-shadow: var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .app-header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .brand-ar{
+    font-family: var(--font-ar);
+    font-size:26px;
+    color: var(--primary-strong);
+    line-height:1.3;
+  }
+  .brand-ur{
+    font-family: var(--font-ur);
+    font-size:15px;
+    color: var(--text-secondary);
+  }
+  .theme-picker{
+    display:flex;
+    gap:6px;
+  }
+  .theme-dot{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid transparent;
+    cursor:pointer;
+    padding:0;
+  }
+  .theme-dot[data-t="light-mint"]{ background:#21875a; }
+  .theme-dot[data-t="light-blue"]{ background:#2367b8; }
+  .theme-dot[data-t="dark-charcoal"]{ background:#cf9f43; }
+  .theme-dot[data-t="dark-blue"]{ background:#4f95e6; }
+  .theme-dot.active{ border-color: var(--text); }
+
+  .tabs{
+    display:flex;
+    background: var(--accent);
+    border-radius: 999px;
+    padding:4px;
+    gap:4px;
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-weight:600;
+    font-size:13.5px;
+    padding:10px 6px;
+    border-radius:999px;
+    cursor:pointer;
+    transition: all .25s ease;
+  }
+  .tab-btn.active{
+    background: var(--primary);
+    color:#fff;
+    box-shadow: 0 8px 18px -8px rgba(0,0,0,0.35);
+  }
+
+  /* ---------- RESUME BANNER ---------- */
+  .resume-banner{
+    background: var(--accent);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-size:13px;
+    color: var(--text);
+  }
+  .resume-banner button{
+    border:none;
+    background: var(--primary);
+    color:#fff;
+    font-family: var(--font-ui);
+    font-weight:700;
+    font-size:12.5px;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  /* ---------- LESSON LIST ---------- */
+  .weak-panel{
+    background: var(--card-bg);
+    border:1px solid var(--danger);
+    border-radius: var(--radius-md);
+    padding:12px 14px;
+    box-shadow: var(--shadow);
+  }
+  .weak-panel-title{
+    font-size:13px;
+    font-weight:700;
+    color: var(--danger);
+    margin-bottom:8px;
+    font-family: var(--font-ui);
+  }
+  .weak-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+  .weak-badge{
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-family: var(--font-ar);
+    font-size:15px;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--danger);
+  }
+
+  .root-card{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:14px 16px;
+    box-shadow: var(--shadow);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    cursor:pointer;
+    transition: transform .15s ease, border-color .2s ease;
+  }
+  .root-card:active{ transform: scale(0.98); }
+  .root-card.is-weak{ border-color: var(--danger); }
+  .root-left{ display:flex; align-items:center; gap:12px; }
+  .root-index{
+    font-family: var(--font-ui);
+    font-size:11px;
+    font-weight:700;
+    color: var(--text-secondary);
+    background: var(--accent);
+    min-width:26px; height:26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .root-word{
+    font-family: var(--font-ar);
+    font-size:24px;
+    color: var(--text);
+  }
+  .root-meaning{
+    font-family: var(--font-ur);
+    font-size:16px;
+    font-weight:600;
+    line-height:1.7;
+    color: var(--text-secondary);
+  }
+  .chevron{ color: var(--text-secondary); font-size:18px; }
+  .meaning-line{
+    display:flex; align-items:flex-start; gap:8px;
+    font-family: var(--font-ur); font-size:16px; font-weight:600; line-height:1.7; color: var(--text);
+    margin-bottom:8px;
+  }
+  .meaning-line:last-child{ margin-bottom:0; }
+  .meaning-num{
+    flex-shrink:0; width:20px; height:20px; border-radius:50%;
+    background: var(--accent); color: var(--primary-strong);
+    font-family: var(--font-ui); font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+
+  .list-wrap{ display:flex; flex-direction:column; gap:10px; }
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0;
+    background: rgba(10,14,20,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    z-index:50;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .25s ease;
+  }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  .modal-card{
+    width:100%; max-width:420px;
+    max-height:82vh;
+    overflow-y:auto;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding:20px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+    transform: scale(0.85);
+    opacity:0;
+    transition: transform .28s cubic-bezier(.2,.9,.3,1.3), opacity .22s ease;
+  }
+  .modal-backdrop.open .modal-card{ transform: scale(1); opacity:1; }
+  .modal-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .modal-root-ar{ font-family: var(--font-ar); font-size:32px; color: var(--primary-strong); }
+  .modal-root-ur{ font-family: var(--font-ur); font-size:18px; font-weight:600; line-height:1.7; color: var(--text-secondary); margin-top:2px; }
+  .modal-close{
+    border:none; background: var(--accent); color: var(--text);
+    width:32px; height:32px; border-radius:50%;
+    font-size:16px; cursor:pointer; flex-shrink:0;
+  }
+  .derived-title{
+    font-size:11.5px; font-weight:700; color: var(--text-secondary);
+    font-family: var(--font-ui); text-transform:uppercase; letter-spacing:.04em;
+    margin: 14px 0 8px;
+  }
+  .derived-card{
+    background: var(--card-bg-2);
+    border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .derived-word{ font-family: var(--font-ar); font-size:22px; color: var(--text); }
+  .derived-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .pos-badge{
+    font-family: var(--font-ui); font-size:10.5px; font-weight:700;
+    background: var(--accent); color: var(--primary-strong);
+    padding:3px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .derived-meaning{ font-family: var(--font-ur); font-size:16px; font-weight:600; line-height:1.7; color: var(--text); margin-bottom:4px; }
+  .derived-ref{ font-family: var(--font-ui); font-size:11.5px; color: var(--text-secondary); }
+
+  /* ---------- QUIZ SETUP ---------- */
+  .panel{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:16px;
+    box-shadow: var(--shadow);
+  }
+  .panel-title{
+    font-family: var(--font-ur); font-size:17px; margin:0 0 12px;
+  }
+  .option-grid{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;
+  }
+  .opt-btn{
+    font-family: var(--font-ui); font-size:13px; font-weight:600;
+    padding:10px 4px; border-radius: var(--radius-sm);
+    border:1.5px solid var(--border); background: var(--card-bg-2); color: var(--text);
+    cursor:pointer; transition: all .2s ease;
+  }
+  .opt-btn.selected{ border-color: var(--primary); background: var(--accent); color: var(--primary-strong); }
+  .mode-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:18px; }
+  .primary-btn{
+    width:100%; border:none; background: var(--primary); color:#fff;
+    font-family: var(--font-ui); font-weight:700; font-size:15px;
+    padding:14px; border-radius: var(--radius-md); cursor:pointer;
+  }
+  .primary-btn:active{ transform: scale(0.98); }
+
+  /* ---------- QUIZ RUN ---------- */
+  .quiz-progress{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--font-ui); font-size:12.5px; color: var(--text-secondary);
+    margin-bottom:10px;
+  }
+  .progress-track{
+    height:6px; background: var(--accent); border-radius:999px; overflow:hidden; margin-bottom:16px;
+  }
+  .progress-fill{ height:100%; background: var(--primary); transition: width .3s ease; }
+  .question-prompt{
+    font-family: var(--font-ui); font-size:12px; font-weight:700; color: var(--text-secondary);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;
+  }
+  .question-focus{
+    font-family: var(--font-ar); font-size:34px; text-align:center; color: var(--text);
+    background: var(--card-bg-2); border-radius: var(--radius-md); padding:22px 10px; margin-bottom:16px;
+    border:1px solid var(--border);
+  }
+  .mcq-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mcq-grid.single-col{ grid-template-columns:1fr; }
+  .fact-box{
+    margin-top:14px; padding:12px 14px; border-radius: var(--radius-sm);
+    background: var(--accent); border:1px solid var(--border);
+    font-family: var(--font-ur); font-size:14.5px; line-height:1.8; color: var(--text);
+  }
+  .fact-box-label{
+    font-family: var(--font-ui); font-size:10.5px; font-weight:700; color: var(--primary-strong);
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;
+  }
+  .mcq-btn{
+    font-family: var(--font-ur); font-size:15px; text-align:center;
+    padding:14px 8px; border-radius: var(--radius-sm);
+    border:1.5px solid var(--border); background: var(--card-bg-2); color: var(--text);
+    cursor:pointer; transition: all .15s ease;
+  }
+  .mcq-btn.correct{ background: var(--success); color:#fff; border-color: var(--success); animation: pulseGlow .5s ease; }
+  .mcq-btn.wrong{ background: var(--danger); color:#fff; border-color: var(--danger); animation: shakeBtn .4s ease; }
+
+  @keyframes pulseGlow{
+    0%{ box-shadow: 0 0 0 0 rgba(31,157,99,0.55); transform:scale(1); }
+    50%{ box-shadow: 0 0 0 10px rgba(31,157,99,0); transform:scale(1.04); }
+    100%{ box-shadow: 0 0 0 0 rgba(31,157,99,0); transform:scale(1); }
+  }
+  @keyframes shakeBtn{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-6px); }
+    40%{ transform: translateX(6px); }
+    60%{ transform: translateX(-4px); }
+    80%{ transform: translateX(4px); }
+  }
+
+  /* ---------- FLASHCARD ---------- */
+  .flash-card{
+    background: var(--card-bg-2); border:1px solid var(--border); border-radius: var(--radius-md);
+    padding:26px 14px; text-align:center; margin-bottom:14px; cursor:pointer; min-height:150px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  }
+  .flash-front{ font-family: var(--font-ar); font-size:38px; color: var(--text); }
+  .flash-hint{ font-family: var(--font-ui); font-size:11.5px; color: var(--text-secondary); }
+  .flash-back-meaning{ font-family: var(--font-ur); font-size:18px; color: var(--primary-strong); }
+  .flash-derived-mini{ font-family: var(--font-ar); font-size:16px; color: var(--text-secondary); }
+  .flash-actions{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .know-btn, .forgot-btn{
+    border:none; font-family: var(--font-ui); font-weight:700; font-size:14px;
+    padding:13px; border-radius: var(--radius-sm); cursor:pointer; color:#fff;
+  }
+  .know-btn{ background: var(--success); }
+  .forgot-btn{ background: var(--danger); }
+
+  /* ---------- RESULTS ---------- */
+  .result-score{
+    text-align:center; font-family: var(--font-ui); font-size:44px; font-weight:800;
+    color: var(--primary-strong); margin: 6px 0 2px;
+  }
+  .result-sub{ text-align:center; font-family: var(--font-ur); font-size:15px; color: var(--text-secondary); margin-bottom:16px; }
+
+  .hidden{ display:none !important; }
+  body.no-scroll{ overflow:hidden; }
+</style>
+</head>
+<body data-theme="light-mint">
+<div class="app">
+
+  <div class="app-header">
+    <div class="app-header-top">
+      <div class="brand">
+        <div class="brand-ar">سورۃ الفیل</div>
+        <div class="brand-ur">قرآنی الفاظ کا ذخیرہ — آیات ۱ تا ۸</div>
+      </div>
+      <div class="theme-picker" id="themePicker"></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="lessons">اسباق کی فہرست</button>
+      <button class="tab-btn" data-tab="quiz">سوالات</button>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-ui); font-size:11px; color:var(--text-secondary); text-align:center; padding:0 6px;">
+    ✓ تمام آیات اور حوالہ جات براہِ راست قرآنی متن اور معارف القرآن سے تصدیق شدہ ہیں
+  </div>
+
+  <div id="resumeBanner" class="resume-banner hidden">
+    <span id="resumeText"></span>
+    <button id="resumeBtn">واپس جائیں</button>
+  </div>
+
+  <!-- LESSONS TAB -->
+  <div id="lessonsTab">
+    <div id="weakPanel" class="weak-panel hidden">
+      <div class="weak-panel-title">کمزور جڑیں — دوبارہ مطالعہ کریں</div>
+      <div class="weak-badges" id="weakBadges"></div>
+    </div>
+    <div class="list-wrap" id="rootList"></div>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="quizTab" class="hidden">
+
+    <div id="quizSetup" class="panel">
+      <div class="panel-title">سوالات کی ترتیب</div>
+      <div style="font-family:var(--font-ui);font-size:12px;color:var(--text-secondary);margin-bottom:8px;">کتنے سوالات؟</div>
+      <div class="option-grid" id="lengthOptions">
+        <button class="opt-btn" data-len="5">5</button>
+        <button class="opt-btn" data-len="10">10</button>
+        <button class="opt-btn" data-len="20">تمام 20</button>
+      </div>
+      <div style="font-family:var(--font-ui);font-size:12px;color:var(--text-secondary);margin-bottom:8px;">طریقہ منتخب کریں</div>
+      <div class="mode-grid" id="modeOptions">
+        <button class="opt-btn" data-mode="mcq">MCQ</button>
+        <button class="opt-btn" data-mode="flash">فلیش کارڈز</button>
+      </div>
+      <button class="primary-btn" id="startQuizBtn">سوالات شروع کریں</button>
+    </div>
+
+    <div id="quizRun" class="panel hidden">
+      <div class="quiz-progress">
+        <span id="progressLabel">سوال 1 از 5</span>
+        <span id="scoreLabel">اسکور: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+      <!-- MCQ block -->
+      <div id="mcqBlock">
+        <div class="question-prompt" id="mcqPromptLabel"></div>
+        <div class="question-focus" id="mcqFocus"></div>
+        <div class="mcq-grid" id="mcqOptions"></div>
+        <div class="fact-box hidden" id="factBox">
+          <div class="fact-box-label">جڑ کا فرق</div>
+          <div id="factBoxText"></div>
+        </div>
+        <button class="primary-btn hidden" id="mcqNextBtn" style="margin-top:12px;">اگلا سوال ›</button>
+      </div>
+
+      <!-- Flashcard block -->
+      <div id="flashBlock" class="hidden">
+        <div class="flash-card" id="flashCard">
+          <div class="flash-front" id="flashFront"></div>
+          <div class="flash-hint" id="flashHint">دبانے پر معنی دیکھیں</div>
+        </div>
+        <div class="flash-actions hidden" id="flashActions">
+          <button class="know-btn" id="knowBtn">مجھے یاد تھا</button>
+          <button class="forgot-btn" id="forgotBtn">میں بھول گیا</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizResult" class="panel hidden">
+      <div class="panel-title" style="text-align:center;">نتیجہ</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <button class="primary-btn" id="backToSetupBtn">نئے سوالات</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const ROOTS = [
+{ id:1, verified:true, root:"ر أ ي", meaning:"دیکھنا", meanings:["آنکھ سے دیکھنا", "دل سے سمجھنا، رائے قائم کرنا", "خواب دیکھنا (رؤیا)"], distractorRoots:["ر أ س","ر أ ف","ر و ي"], distractorMeanings:["سر، سردار ہونا","نرم دلی، رحم کرنا","بیان کرنا، روایت کرنا"], rootFamilyFact:"ر أ ي اور ر أ س پہلے دو حروف میں ایک جیسے ہیں — پہلا 'دیکھنا' ہے، دوسرا 'سر/سردار' ہے۔",
+  derived:[
+    {word:"تَرَ", pos:"فعل مضارع مجزوم", meaning:"کیا تو نے دیکھا", ref:"الفيل 105:1"},
+    {word:"أَرَأَيْتَ", pos:"فعل ماضی استفہامی", meaning:"کیا تو نے دیکھا", ref:"الماعون 107:1"},
+    {word:"رَأَىٰ", pos:"فعل ماضی", meaning:"اس نے دیکھا", ref:"الأنعام 6:76"}
+  ]},
+{ id:2, verified:true, root:"ف ع ل", meaning:"کرنا، کام کرنا", meanings:["کرنا، انجام دینا", "کسی چیز کا مسلسل و مکمل طور پر کرنے والا ہونا (فعّال)", "اثر ڈالنا، نتیجہ پیدا کرنا"], distractorRoots:["ف ع م","ج ع ل","ف ص ل"], distractorMeanings:["بھرپور، لبریز ہونا","بنانا، ٹھہرانا","الگ کرنا، فیصلہ کرنا"], rootFamilyFact:"ف ع ل اور ج ع ل صرف پہلے حرف میں مختلف ہیں — پہلا 'کرنا' ہے، دوسرا 'بنانا/ٹھہرانا' ہے، اور دونوں اسی سورت میں موجود ہیں۔",
+  derived:[
+    {word:"فَعَلَ", pos:"فعل ماضی", meaning:"اس نے کیا", ref:"الفيل 105:1"},
+    {word:"فَعَّالٌ", pos:"اسم مبالغہ", meaning:"جو چاہے کرنے والا", ref:"البروج 85:16"},
+    {word:"يَفْعَلُونَ", pos:"فعل مضارع جمع", meaning:"وہ کرتے ہیں", ref:"المائدة 5:79"}
+  ]},
+{ id:3, verified:true, root:"ص ح ب", meaning:"ساتھی، والا", meanings:["ساتھ رہنا، رفاقت اختیار کرنا", "کسی چیز کا مالک یا حامل ہونا ('صاحب' — کسی چیز والا)", "دوستی و تعلق میں رہنا"], distractorRoots:["ص ح ف","ص ح و","ص ح ح"], distractorMeanings:["ورق، صحیفہ","صاف موسم، ہوش میں ہونا","درست، صحیح ہونا"], rootFamilyFact:"ص ح ب اور ص ح ف پہلے دو حروف میں ایک جیسے ہیں — پہلا 'ساتھی' ہے، دوسرا 'ورق/صحیفہ' ہے۔",
+  derived:[
+    {word:"بِأَصْحَابِ", pos:"اسم مجرور", meaning:"والوں کے ساتھ", ref:"الفيل 105:1"},
+    {word:"أَصْحَابُ", pos:"اسم جمع", meaning:"جنت والے", ref:"الأعراف 7:42"},
+    {word:"صَاحِبُكُمْ", pos:"اسم مضاف", meaning:"تمہارا ساتھی", ref:"التكوير 81:22"}
+  ]},
+{ id:4, verified:true, root:"ف ي ل", meaning:"ہاتھی", meanings:["ہاتھی — ایک خاص جانور کا نام", "یہ لفظ پورے قرآن میں صرف اسی ایک سورت میں آیا ہے (قرآن میں غیر مکرر لفظ)"], distractorRoots:["و ي ل","ن ي ل","ك ي ل"], distractorMeanings:["ہلاکت، افسوس کا مقام","حاصل کرنا، پہنچنا","ناپنا، پیمانہ"], rootFamilyFact:"ف ي ل اور و ي ل آخری دو حروف میں ایک جیسے ہیں — پہلا 'ہاتھی' ہے، دوسرا 'ہلاکت/افسوس' ہے۔ نوٹ: 'فیل' پورے قرآن میں صرف اسی سورت میں آیا ہے۔",
+  derived:[
+    {word:"الْفِيلِ", pos:"اسم", meaning:"ہاتھی", ref:"الفيل 105:1"},
+    {word:"فِيَلَة", pos:"اسم جمع", meaning:"ہاتھی (جمع) — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"أَفْيَال", pos:"اسم جمع", meaning:"ہاتھی (ایک اور جمع) — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:5, verified:true, root:"ج ع ل", meaning:"بنانا، ٹھہرانا", meanings:["کسی چیز کو کچھ بنا دینا یا ٹھہرا دینا", "پیدا کرنا، مقرر کرنا", "کسی حالت سے دوسری حالت میں بدل دینا"], distractorRoots:["ف ع ل","ج ع ر","ج ب ل"], distractorMeanings:["کرنا، کام کرنا","(نایاب مادّہ)","پیدا کرنا، پہاڑ"], rootFamilyFact:"ج ع ل اور ف ع ل صرف پہلے حرف میں مختلف ہیں — پہلا 'بنانا/ٹھہرانا' ہے، دوسرا 'کرنا' ہے۔",
+  derived:[
+    {word:"يَجْعَلْ", pos:"فعل مضارع مجزوم", meaning:"کیا اس نے بنا نہیں دیا", ref:"الفيل 105:2"},
+    {word:"جَعَلَهُمْ", pos:"فعل ماضی مرکب", meaning:"اس نے انہیں بنا دیا", ref:"الفيل 105:5"},
+    {word:"جَعَلْنَا", pos:"فعل ماضی", meaning:"ہم نے بنایا", ref:"الأنبياء 21:30"}
+  ]},
+{ id:6, verified:true, root:"ك ي د", meaning:"چال، تدبیر", meanings:["چال چلنا، خفیہ تدبیر کرنا", "زور آزمائی کرنا، سختی سے کوشش کرنا"], distractorRoots:["ك ي س","ص ي د","ب ي د"], distractorMeanings:["ہوشیار، عقلمند ہونا","شکار کرنا","تاہم، مگر (نادر استعمال)"], rootFamilyFact:"ك ي د اور ك ي س پہلے دو حروف میں ایک جیسے ہیں — پہلا 'چال/تدبیر' ہے، دوسرا 'ہوشیاری' ہے۔",
+  derived:[
+    {word:"كَيْدَهُمْ", pos:"اسم مضاف", meaning:"ان کی چال", ref:"الفيل 105:2"},
+    {word:"كَيْدَكُنَّ", pos:"اسم مضاف", meaning:"تم عورتوں کی چال", ref:"يوسف 12:28"},
+    {word:"يَكِيدُونَ", pos:"فعل مضارع جمع", meaning:"وہ چال چلتے ہیں", ref:"الطارق 86:15"}
+  ]},
+{ id:7, verified:true, root:"ض ل ل", meaning:"گمراہی، ناکامی", meanings:["راستے سے بھٹک جانا، گمراہ ہونا", "کسی کوشش کا ضائع و بےکار ہو جانا (تضلیل)", "کھو جانا، نظروں سے اوجھل ہونا"], distractorRoots:["ذ ل ل","ظ ل ل","د ل ل"], distractorMeanings:["ذلیل ہونا، نرم ہونا","سایہ، ٹھہرے رہنا","رہنمائی کرنا، دلیل"], rootFamilyFact:"ض ل ل، ذ ل ل اور ظ ل ل تینوں آخری دو حروف میں ایک جیسے ہیں (ل-ل) — صرف پہلا حرف بدلتا ہے، اور ض، ذ، ظ تینوں آوازیں غیر عربی بولنے والوں کے لیے ایک جیسی لگتی ہیں۔ ض ل ل 'گمراہی' ہے، ذ ل ل 'ذلت' ہے، اور ظ ل ل 'سایہ' ہے۔",
+  derived:[
+    {word:"تَضْلِيلٍ", pos:"اسم", meaning:"ناکامی و بربادی میں", ref:"الفيل 105:2"},
+    {word:"الضَّالِّينَ", pos:"اسم فاعل جمع", meaning:"گمراہ لوگ", ref:"الفاتحة 1:7"},
+    {word:"أَضَلَّهُ", pos:"فعل ماضی", meaning:"اس نے اسے گمراہ کیا", ref:"الجاثية 45:23"}
+  ]},
+{ id:8, verified:true, root:"ر س ل", meaning:"بھیجنا", meanings:["کسی کو کسی کام کے لیے بھیجنا", "پیغام پہنچانے والا ہونا (رسول)", "آہستگی و نرمی سے کچھ چھوڑ دینا (ایک اور نادر معنی)"], distractorRoots:["ر س و","ر س م","ر س خ"], distractorMeanings:["لنگر انداز ہونا، ٹھہرنا","نقش بنانا، حکم لکھنا","مضبوطی سے جما ہونا"], rootFamilyFact:"ر س ل، ر س و اور ر س م تینوں پہلے دو حروف میں ایک جیسے ہیں — پہلا 'بھیجنا' ہے، دوسرا 'لنگر انداز ہونا' ہے، تیسرا 'نقش بنانا' ہے۔",
+  derived:[
+    {word:"أَرْسَلَ", pos:"فعل ماضی", meaning:"اس نے بھیجا", ref:"الفيل 105:3"},
+    {word:"أَرْسَلْنَا", pos:"فعل ماضی", meaning:"ہم نے بھیجا", ref:"نوح 71:1"},
+    {word:"الرَّسُولُ", pos:"اسم", meaning:"رسول", ref:"البقرة 2:285"}
+  ]},
+{ id:9, verified:true, root:"ط ي ر", meaning:"پرندہ", meanings:["پرندہ، اڑنے والا جانور", "اڑنا (فعل کی صورت میں)", "بدشگونی، بدفالی (تطیّر — ایک مجازی استعمال)"], distractorRoots:["ط و ر","ط ه ر","ط م ر"], distractorMeanings:["پہاڑ، مرحلہ","پاک ہونا، صاف ہونا","چھپانا، دفن کرنا"], rootFamilyFact:"ط ي ر، ط و ر اور ط ه ر تینوں پہلے اور آخری حرف میں ایک جیسے ہیں (ط___ر) — درمیانی حرف مختلف ہے۔ 'طیر' پرندہ ہے، 'طور' پہاڑ ہے، 'طہر' پاکی ہے۔",
+  derived:[
+    {word:"طَيْرًا", pos:"اسم", meaning:"پرندے", ref:"الفيل 105:3"},
+    {word:"الطَّيْرِ", pos:"اسم", meaning:"پرندوں کی (بولی)", ref:"النمل 27:16"},
+    {word:"طَيْرًا", pos:"اسم", meaning:"ایک پرندہ (اللہ کے حکم سے)", ref:"آل عمران 3:49"}
+  ]},
+{ id:10, verified:true, root:"ر م ي", meaning:"پھینکنا، پتھراؤ کرنا", meanings:["کسی چیز کو زور سے پھینکنا", "تہمت لگانا، الزام دینا (مجازی معنی)"], distractorRoots:["ر م ز","ر م د","ر أ ي"], distractorMeanings:["اشارہ کرنا، علامت","راکھ کے رنگ کا ہونا","دیکھنا"], rootFamilyFact:"ر م ي اور ر أ ي پہلے اور آخری حرف میں ایک جیسے ہیں — پہلا 'پھینکنا' ہے، دوسرا 'دیکھنا' ہے۔",
+  derived:[
+    {word:"تَرْمِيهِم", pos:"فعل مضارع مرکب", meaning:"وہ انہیں مارتی تھیں", ref:"الفيل 105:4"},
+    {word:"يَرْمُونَ", pos:"فعل مضارع جمع", meaning:"وہ تہمت لگاتے ہیں", ref:"النور 24:4"},
+    {word:"رَمَىٰ", pos:"فعل ماضی", meaning:"اس نے پھینکا", ref:"الأنفال 8:17"}
+  ]},
+{ id:11, verified:true, root:"ح ج ر", meaning:"پتھر", meanings:["پتھر، سنگ", "منع کرنا، روک دینا (حجر — قانونی/عقلی پابندی)", "گود (حِجر — بچے کو گود میں لینا)"], distractorRoots:["ه ج ر","ح ج ب","ح ج ج"], distractorMeanings:["ہجرت کرنا، چھوڑ دینا","پردہ کرنا، چھپانا","حج کرنا، دلیل دینا"], rootFamilyFact:"ح ج ر اور ه ج ر آخری دو حروف میں ایک جیسے ہیں — پہلا 'پتھر' ہے، دوسرا 'ہجرت کرنا/چھوڑ دینا' ہے۔",
+  derived:[
+    {word:"بِحِجَارَةٍ", pos:"اسم مجرور", meaning:"پتھروں کے ساتھ", ref:"الفيل 105:4"},
+    {word:"حِجْرًا", pos:"اسم", meaning:"سختی سے منع", ref:"الفرقان 25:22"},
+    {word:"الْحِجْرِ", pos:"اسم", meaning:"حجر (ثمود کی بستی)", ref:"الحجر 15:80"}
+  ]},
+{ id:12, verified:true, root:"ع ص ف", meaning:"چھلکا، تیز آندھی", meanings:["کھیتی کا سوکھا چھلکا/بھوسا", "تیز و تند آندھی (عاصف)", "زور سے اکھاڑ پھینکنا"], distractorRoots:["ع ص ر","ق ص ف","ن ص ف"], distractorMeanings:["زمانہ، نچوڑنا","توڑنا، بمباری کرنا","آدھا حصہ"], rootFamilyFact:"ع ص ف اور ع ص ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'بھوسا/آندھی' ہے، دوسرا 'زمانہ/نچوڑنا' ہے۔",
+  derived:[
+    {word:"كَعَصْفٍ", pos:"اسم مجرور", meaning:"بھوسے کی طرح", ref:"الفيل 105:5"},
+    {word:"عَاصِفٍ", pos:"اسم فاعل", meaning:"تیز آندھی والا (دن)", ref:"إبراهيم 14:18"},
+    {word:"عَصْفًا", pos:"اسم", meaning:"شدت سے اکھاڑنا", ref:"المرسلات 77:2"}
+  ]},
+{ id:13, verified:true, root:"أ ك ل", meaning:"کھانا", meanings:["کھانا، کھا جانا", "پھل، ثمر (اُکُل — جو کھایا جائے)", "کسی کا مال ناحق کھا جانا (مجازی استعمال)"], distractorRoots:["أ ج ل","أ م ل","أ ه ل"], distractorMeanings:["مدت، مہلت","امید رکھنا","گھر والے، اہل ہونا"], rootFamilyFact:"أ ك ل، أ ج ل اور أ م ل تینوں پہلے اور آخری حرف میں ایک جیسے ہیں (أ___ل) — 'اکل' کھانا ہے، 'اجل' مدت ہے، 'امل' امید ہے۔",
+  derived:[
+    {word:"مَّأْكُولٍ", pos:"اسم مفعول", meaning:"کھایا ہوا", ref:"الفيل 105:5"},
+    {word:"كُلُوا", pos:"فعل امر جمع", meaning:"کھاؤ", ref:"البقرة 2:172"},
+    {word:"أُكُلَهَا", pos:"اسم مضاف", meaning:"اس کا پھل", ref:"إبراهيم 14:25"}
+  ]}
+];
+
+/* ============ SHARED ICONS ============ */
+const checkSvg = '<svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10.5L8 14.5L16 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ============ STATE ============ */
+const state = {
+  theme: "light-mint",
+  activeTab: "lessons",
+  quiz: null // {mode, length, questions, index, score, streak, weak:Set, order:[]}
+};
+
+/* ============ THEME ============ */
+const THEMES = ["light-mint","light-blue","dark-charcoal","dark-blue"];
+function initThemePicker(){
+  const wrap = document.getElementById('themePicker');
+  THEMES.forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'theme-dot' + (t===state.theme ? ' active' : '');
+    b.dataset.t = t;
+    b.addEventListener('click', ()=> setTheme(t));
+    wrap.appendChild(b);
+  });
+}
+function setTheme(t){
+  state.theme = t;
+  document.body.setAttribute('data-theme', t);
+  document.querySelectorAll('.theme-dot').forEach(d=> d.classList.toggle('active', d.dataset.t===t));
+}
+
+/* ============ AUDIO ============ */
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+  return audioCtx;
+}
+function playCorrect(){
+  try{
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    [523.25, 659.25].forEach((freq, i)=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, now + i*0.12);
+      gain.gain.linearRampToValueAtTime(0.22, now + i*0.12 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i*0.12 + 0.22);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i*0.12);
+      osc.stop(now + i*0.12 + 0.25);
+    });
+  }catch(e){}
+}
+function playWrong(){
+  try{
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(90, now+0.28);
+    gain.gain.setValueAtTime(0.16, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+0.3);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now+0.32);
+  }catch(e){}
+}
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+});
+function switchTab(tab){
+  state.activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+  document.getElementById('lessonsTab').classList.toggle('hidden', tab!=='lessons');
+  document.getElementById('quizTab').classList.toggle('hidden', tab!=='quiz');
+  updateResumeBanner();
+}
+function updateResumeBanner(){
+  const banner = document.getElementById('resumeBanner');
+  const q = state.quiz;
+  const showBanner = q && q.active && state.activeTab === 'lessons';
+  banner.classList.toggle('hidden', !showBanner);
+  if(showBanner){
+    document.getElementById('resumeText').textContent =
+      `آپ کے سوالات جاری ہیں: سوال ${q.index+1} از ${q.questions.length} — اسکور ${q.score}`;
+  }
+}
+document.getElementById('resumeBtn').addEventListener('click', ()=>{
+  switchTab('quiz');
+  showQuizScreen('run');
+});
+
+/* ============ LESSON LIST ============ */
+function renderRootList(){
+  const wrap = document.getElementById('rootList');
+  wrap.innerHTML = '';
+  ROOTS.forEach((r, i)=>{
+    const card = document.createElement('div');
+    const isWeak = state.quiz && state.quiz.weak && state.quiz.weak.has(r.id);
+    card.className = 'root-card' + (isWeak ? ' is-weak' : '');
+    card.innerHTML = `
+      <div class="root-left">
+        <div class="root-index">${i+1}</div>
+        <div>
+          <div class="root-word">${r.root}</div>
+          <div class="root-meaning">${r.meaning}</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>`;
+    card.addEventListener('click', ()=> openModal(r));
+    wrap.appendChild(card);
+  });
+  renderWeakPanel();
+}
+function renderWeakPanel(){
+  const panel = document.getElementById('weakPanel');
+  const badgeWrap = document.getElementById('weakBadges');
+  const weak = state.quiz && state.quiz.weak ? state.quiz.weak : null;
+  if(!weak || weak.size===0){ panel.classList.add('hidden'); return; }
+  panel.classList.remove('hidden');
+  badgeWrap.innerHTML = '';
+  [...weak].forEach(id=>{
+    const r = ROOTS.find(x=>x.id===id);
+    if(!r) return;
+    const b = document.createElement('span');
+    b.className = 'weak-badge';
+    b.textContent = r.root;
+    badgeWrap.appendChild(b);
+  });
+}
+
+/* ============ MODAL ============ */
+function openModal(r){
+  const modal = document.getElementById('modalBackdrop');
+  const card = document.getElementById('modalCard');
+  card.innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div class="modal-root-ar">${r.root}</div>
+        <div class="modal-root-ur">${r.meaning}</div>
+      </div>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+    <div class="derived-title">لغوی معنی (تفصیل)</div>
+    <div class="derived-card">
+      ${r.meanings.map((m,i)=>`<div class="meaning-line"><span class="meaning-num">${i+1}</span><span>${m}</span></div>`).join('')}
+    </div>
+    <div class="derived-title">قرآن میں مشتق الفاظ</div>
+    ${r.derived.map(d=>`
+      <div class="derived-card">
+        <div class="derived-row">
+          <span class="derived-word">${d.word}</span>
+          <span class="pos-badge">${d.pos}</span>
+        </div>
+        <div class="derived-meaning">${d.meaning}</div>
+        <div class="derived-ref">${d.ref}</div>
+      </div>`).join('')}
+  `;
+  modal.classList.add('open');
+  document.body.classList.add('no-scroll');
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+}
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+document.getElementById('modalBackdrop').addEventListener('click', (e)=>{
+  if(e.target.id === 'modalBackdrop') closeModal();
+});
+
+/* ============ QUIZ SETUP ============ */
+let selectedLen = null;
+let selectedMode = null;
+document.querySelectorAll('#lengthOptions .opt-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#lengthOptions .opt-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    selectedLen = b.dataset.len === '20' ? 20 : parseInt(b.dataset.len);
+  });
+});
+document.querySelectorAll('#modeOptions .opt-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#modeOptions .opt-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    selectedMode = b.dataset.mode;
+  });
+});
+document.getElementById('startQuizBtn').addEventListener('click', ()=>{
+  if(!selectedLen) selectedLen = 5;
+  if(!selectedMode) selectedMode = 'mcq';
+  startQuiz(selectedLen, selectedMode);
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuestionPool(rootsSubset){
+  const pool = [];
+  rootsSubset.forEach(r=>{
+    // Root -> Basic meaning
+    const meaningOptions = shuffle([r.meaning, ...r.distractorMeanings]);
+    pool.push({
+      type:'root-to-meaning',
+      rootId: r.id,
+      focus: r.root,
+      promptLabel: 'اس جڑ کا بنیادی معنی منتخب کریں',
+      correct: r.meaning,
+      options: meaningOptions
+    });
+    // Derived word -> Root
+    const derivedPick = r.derived[Math.floor(Math.random()*r.derived.length)];
+    const rootOptions = shuffle([r.root, ...r.distractorRoots]);
+    pool.push({
+      type:'derived-to-root',
+      rootId: r.id,
+      focus: derivedPick.word,
+      promptLabel: 'اس لفظ کی اصل جڑ منتخب کریں',
+      correct: r.root,
+      options: rootOptions
+    });
+  });
+  return pool;
+}
+
+function interleave(pool){
+  let arr = shuffle(pool);
+  // repair consecutive same-root collisions
+  for(let i=1;i<arr.length;i++){
+    if(arr[i].rootId === arr[i-1].rootId){
+      let swapIdx = -1;
+      for(let j=i+1;j<arr.length;j++){
+        if(arr[j].rootId !== arr[i-1].rootId && arr[j].rootId !== (arr[i+1] ? arr[i+1].rootId : null)){
+          swapIdx = j; break;
+        }
+      }
+      if(swapIdx === -1){
+        for(let j=i+1;j<arr.length;j++){
+          if(arr[j].rootId !== arr[i-1].rootId){ swapIdx = j; break; }
+        }
+      }
+      if(swapIdx !== -1){
+        [arr[i], arr[swapIdx]] = [arr[swapIdx], arr[i]];
+      }
+    }
+  }
+  return arr;
+}
+
+function startQuiz(len, mode){
+  const subset = shuffle(ROOTS).slice(0, len);
+  let questions;
+  if(mode === 'mcq'){
+    questions = interleave(buildQuestionPool(subset)).slice(0, Math.max(len, Math.min(len*2, 20)));
+    // For a clean session, cap question count to len*2 or fewer for very long sessions is fine as-is
+  } else {
+    questions = shuffle(subset).map(r=>({ type:'flash', rootId:r.id, root:r }));
+  }
+  state.quiz = {
+    mode, length: len, questions, index:0, score:0, streak:0,
+    weak: (state.quiz && state.quiz.weak) ? state.quiz.weak : new Set(),
+    active: true
+  };
+  showQuizScreen('run');
+  renderQuestion();
+}
+
+function showQuizScreen(which){
+  document.getElementById('quizSetup').classList.toggle('hidden', which!=='setup');
+  document.getElementById('quizRun').classList.toggle('hidden', which!=='run');
+  document.getElementById('quizResult').classList.toggle('hidden', which!=='result');
+  updateResumeBanner();
+}
+
+/* ============ QUIZ RUN ============ */
+function updateProgressBar(){
+  const q = state.quiz;
+  document.getElementById('progressLabel').textContent = `سوال ${q.index+1} از ${q.questions.length}`;
+  document.getElementById('scoreLabel').textContent = `اسکور: ${q.score}`;
+  document.getElementById('progressFill').style.width = `${(q.index/q.questions.length)*100}%`;
+  updateResumeBanner();
+}
+
+function renderQuestion(){
+  const q = state.quiz;
+  updateProgressBar();
+  const item = q.questions[q.index];
+  document.getElementById('mcqBlock').classList.toggle('hidden', q.mode!=='mcq');
+  document.getElementById('flashBlock').classList.toggle('hidden', q.mode!=='flash');
+
+  if(q.mode === 'mcq'){
+    renderMcq(item);
+  } else {
+    renderFlash(item);
+  }
+}
+
+function renderMcq(item){
+  document.getElementById('mcqPromptLabel').textContent = item.promptLabel;
+  document.getElementById('mcqFocus').textContent = item.focus;
+  document.getElementById('factBox').classList.add('hidden');
+  document.getElementById('mcqNextBtn').classList.add('hidden');
+  const grid = document.getElementById('mcqOptions');
+  grid.innerHTML = '';
+  const longText = item.options.some(o => o.length > 15);
+  grid.classList.toggle('single-col', longText);
+  item.options.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className = 'mcq-btn';
+    b.textContent = opt;
+    b.addEventListener('click', ()=> handleMcqAnswer(opt, item, b));
+    grid.appendChild(b);
+  });
+}
+
+function handleMcqAnswer(chosen, item, btnEl){
+  const q = state.quiz;
+  const allBtns = document.querySelectorAll('#mcqOptions .mcq-btn');
+  allBtns.forEach(b=> b.style.pointerEvents = 'none');
+  const isCorrect = chosen === item.correct;
+  if(isCorrect){
+    btnEl.classList.add('correct');
+    q.score++; q.streak++;
+    playCorrect();
+  } else {
+    btnEl.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent === item.correct) b.classList.add('correct'); });
+    q.weak.add(item.rootId);
+    q.streak = 0;
+    playWrong();
+  }
+  const rootData = ROOTS.find(r => r.id === item.rootId);
+  if(rootData && rootData.rootFamilyFact){
+    document.getElementById('factBoxText').textContent = rootData.rootFamilyFact;
+    document.getElementById('factBox').classList.remove('hidden');
+  }
+  document.getElementById('mcqNextBtn').classList.remove('hidden');
+}
+document.getElementById('mcqNextBtn').addEventListener('click', ()=> advanceQuiz());
+
+function renderFlash(item){
+  document.getElementById('flashFront').textContent = item.root.root;
+  document.getElementById('flashHint').textContent = 'دبانے پر معنی دیکھیں';
+  document.getElementById('flashActions').classList.add('hidden');
+  const card = document.getElementById('flashCard');
+  card.onclick = ()=> revealFlash(item);
+}
+function revealFlash(item){
+  document.getElementById('flashFront').innerHTML =
+    `<div class="flash-back-meaning">${item.root.meaning}</div>
+     <div class="flash-derived-mini">${item.root.derived[0].word} — ${item.root.derived[0].meaning}</div>`;
+  document.getElementById('flashHint').textContent = '';
+  document.getElementById('flashActions').classList.remove('hidden');
+  document.getElementById('flashCard').onclick = null;
+}
+document.getElementById('knowBtn').addEventListener('click', ()=>{
+  state.quiz.score++;
+  playCorrect();
+  advanceQuiz();
+});
+document.getElementById('forgotBtn').addEventListener('click', ()=>{
+  const item = state.quiz.questions[state.quiz.index];
+  state.quiz.weak.add(item.rootId);
+  playWrong();
+  advanceQuiz();
+});
+
+function advanceQuiz(){
+  const q = state.quiz;
+  q.index++;
+  if(q.index >= q.questions.length){
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+function finishQuiz(){
+  const q = state.quiz;
+  q.active = false;
+  showQuizScreen('result');
+  document.getElementById('resultScore').textContent = `${q.score} / ${q.questions.length}`;
+  const pct = Math.round((q.score/q.questions.length)*100);
+  let msg = 'ماشاءاللہ! بہت خوب';
+  if(pct < 50) msg = 'مزید مشق کی ضرورت ہے';
+  else if(pct < 80) msg = 'اچھی کارکردگی، جاری رکھیں';
+  document.getElementById('resultSub').textContent = `${msg} — ${pct}% درست`;
+  renderRootList();
+  updateResumeBanner();
+}
+document.getElementById('backToSetupBtn').addEventListener('click', ()=>{
+  showQuizScreen('setup');
+});
+
+/* ============ INIT ============ */
+initThemePicker();
+renderRootList();
+showQuizScreen('setup');
+</script>
+</body>
+</html>
