@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>قرآنی الفاظ کا ذخیرہ</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#21875a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="قرآنی جڑیں">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+    --font-ar: 'Amiri', serif;
+    --font-ur: 'Noto Nastaliq Urdu', serif;
+    --font-ui: 'Inter', sans-serif;
+  }
+
+  /* ---------- THEMES ---------- */
+  [data-theme="light-mint"]{
+    --bg: #eef8f2;
+    --bg-grad: radial-gradient(circle at 20% -10%, #d9f2e4 0%, #eef8f2 55%);
+    --card-bg: #ffffff;
+    --card-bg-2: #f4fbf7;
+    --text: #17352a;
+    --text-secondary: #557066;
+    --primary: #21875a;
+    --primary-strong: #146843;
+    --accent: #e5f6ec;
+    --border: #cfe9db;
+    --shadow: 0 18px 40px -18px rgba(20, 104, 67, 0.28);
+    --danger: #c94c4c;
+    --danger-bg: #fbe9e9;
+    --success: #1f9d63;
+  }
+  [data-theme="light-blue"]{
+    --bg: #eef4fb;
+    --bg-grad: radial-gradient(circle at 80% -10%, #dbeafd 0%, #eef4fb 55%);
+    --card-bg: #ffffff;
+    --card-bg-2: #f3f8fd;
+    --text: #14293e;
+    --text-secondary: #4d6885;
+    --primary: #2367b8;
+    --primary-strong: #184e8e;
+    --accent: #e4f0fc;
+    --border: #cfe1f5;
+    --shadow: 0 18px 40px -18px rgba(24, 78, 142, 0.28);
+    --danger: #c94c4c;
+    --danger-bg: #fbe9e9;
+    --success: #1f9d63;
+  }
+  [data-theme="dark-charcoal"]{
+    --bg: #17181a;
+    --bg-grad: radial-gradient(circle at 15% -10%, #26282b 0%, #17181a 55%);
+    --card-bg: #201f22;
+    --card-bg-2: #262528;
+    --text: #f1efe9;
+    --text-secondary: #a8a49b;
+    --primary: #cf9f43;
+    --primary-strong: #e9b654;
+    --accent: #2c2a27;
+    --border: #38363a;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.55);
+    --danger: #e07070;
+    --danger-bg: #3a2323;
+    --success: #4bbf87;
+  }
+  [data-theme="dark-blue"]{
+    --bg: #0c1524;
+    --bg-grad: radial-gradient(circle at 85% -10%, #17253f 0%, #0c1524 55%);
+    --card-bg: #101b2e;
+    --card-bg-2: #16223a;
+    --text: #eaf1fb;
+    --text-secondary: #8ea3c2;
+    --primary: #4f95e6;
+    --primary-strong: #78b1f2;
+    --accent: #17233c;
+    --border: #223252;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.6);
+    --danger: #ef7a7a;
+    --danger-bg: #2c1a20;
+    --success: #4bbf9a;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    min-height:100vh;
+    background: var(--bg-grad);
+    background-color: var(--bg);
+    font-family: var(--font-ui);
+    color: var(--text);
+    display:flex;
+    justify-content:center;
+    padding: 18px 12px 40px;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .app-header{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding:16px 18px;
+    box-shadow: var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .app-header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .brand-ar{
+    font-family: var(--font-ar);
+    font-size:26px;
+    color: var(--primary-strong);
+    line-height:1.3;
+  }
+  .brand-ur{
+    font-family: var(--font-ur);
+    font-size:15px;
+    color: var(--text-secondary);
+  }
+  .back-btn{
+    border:none; background: var(--accent); color: var(--primary-strong);
+    font-family: var(--font-ui); font-weight:700; font-size:12.5px;
+    padding:8px 14px; border-radius:999px; cursor:pointer;
+  }
+
+  /* ---------- SURAH PICKER ---------- */
+  #surahPicker{
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .picker-header{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding:20px 18px;
+    box-shadow: var(--shadow);
+    text-align:center;
+  }
+  .picker-title-ar{
+    font-family: var(--font-ar); font-size:28px; color: var(--primary-strong); margin-bottom:4px;
+  }
+  .picker-title-ur{
+    font-family: var(--font-ur); font-size:15px; color: var(--text-secondary);
+  }
+  .surah-list{ display:flex; flex-direction:column; gap:10px; }
+  .surah-card{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:16px 18px;
+    box-shadow: var(--shadow);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    cursor:pointer; transition: transform .15s ease;
+  }
+  .surah-card:active{ transform: scale(0.98); }
+  .surah-card-ar{ font-family: var(--font-ar); font-size:24px; color: var(--text); }
+  .surah-card-ur{ font-family: var(--font-ur); font-size:13.5px; color: var(--text-secondary); margin-top:2px; }
+  .surah-card-desc{ font-family: var(--font-ui); font-size:11px; color: var(--text-secondary); margin-top:4px; }
+  .surah-card .chevron{ font-size:20px; }
+  .theme-picker{
+    display:flex;
+    gap:6px;
+  }
+  .theme-dot{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid transparent;
+    cursor:pointer;
+    padding:0;
+  }
+  .theme-dot[data-t="light-mint"]{ background:#21875a; }
+  .theme-dot[data-t="light-blue"]{ background:#2367b8; }
+  .theme-dot[data-t="dark-charcoal"]{ background:#cf9f43; }
+  .theme-dot[data-t="dark-blue"]{ background:#4f95e6; }
+  .theme-dot.active{ border-color: var(--text); }
+
+  .tabs{
+    display:flex;
+    background: var(--accent);
+    border-radius: 999px;
+    padding:4px;
+    gap:4px;
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-weight:600;
+    font-size:13.5px;
+    padding:10px 6px;
+    border-radius:999px;
+    cursor:pointer;
+    transition: all .25s ease;
+  }
+  .tab-btn.active{
+    background: var(--primary);
+    color:#fff;
+    box-shadow: 0 8px 18px -8px rgba(0,0,0,0.35);
+  }
+
+  /* ---------- RESUME BANNER ---------- */
+  .resume-banner{
+    background: var(--accent);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-size:13px;
+    color: var(--text);
+  }
+  .resume-banner button{
+    border:none;
+    background: var(--primary);
+    color:#fff;
+    font-family: var(--font-ui);
+    font-weight:700;
+    font-size:12.5px;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  /* ---------- LESSON LIST ---------- */
+  .weak-panel{
+    background: var(--card-bg);
+    border:1px solid var(--danger);
+    border-radius: var(--radius-md);
+    padding:12px 14px;
+    box-shadow: var(--shadow);
+  }
+  .weak-panel-title{
+    font-size:13px;
+    font-weight:700;
+    color: var(--danger);
+    margin-bottom:8px;
+    font-family: var(--font-ui);
+  }
+  .weak-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+  .weak-badge{
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-family: var(--font-ar);
+    font-size:15px;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--danger);
+  }
+
+  .root-card{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:14px 16px;
+    box-shadow: var(--shadow);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    cursor:pointer;
+    transition: transform .15s ease, border-color .2s ease;
+  }
+  .root-card:active{ transform: scale(0.98); }
+  .root-card.is-weak{ border-color: var(--danger); }
+  .root-left{ display:flex; align-items:center; gap:12px; }
+  .root-index{
+    font-family: var(--font-ui);
+    font-size:11px;
+    font-weight:700;
+    color: var(--text-secondary);
+    background: var(--accent);
+    min-width:26px; height:26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .root-word{
+    font-family: var(--font-ar);
+    font-size:24px;
+    color: var(--text);
+  }
+  .root-meaning{
+    font-family: var(--font-ur);
+    font-size:16px;
+    font-weight:600;
+    line-height:1.7;
+    color: var(--text-secondary);
+  }
+  .chevron{ color: var(--text-secondary); font-size:18px; }
+  .meaning-line{
+    display:flex; align-items:flex-start; gap:8px;
+    font-family: var(--font-ur); font-size:16px; font-weight:600; line-height:1.7; color: var(--text);
+    margin-bottom:8px;
+  }
+  .meaning-line:last-child{ margin-bottom:0; }
+  .meaning-num{
+    flex-shrink:0; width:20px; height:20px; border-radius:50%;
+    background: var(--accent); color: var(--primary-strong);
+    font-family: var(--font-ui); font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+
+  .list-wrap{ display:flex; flex-direction:column; gap:10px; }
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0;
+    background: rgba(10,14,20,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    z-index:50;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .25s ease;
+  }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  .modal-card{
+    width:100%; max-width:420px;
+    max-height:82vh;
+    overflow-y:auto;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding:20px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+    transform: scale(0.85);
+    opacity:0;
+    transition: transform .28s cubic-bezier(.2,.9,.3,1.3), opacity .22s ease;
+  }
+  .modal-backdrop.open .modal-card{ transform: scale(1); opacity:1; }
+  .modal-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .modal-root-ar{ font-family: var(--font-ar); font-size:32px; color: var(--primary-strong); }
+  .modal-root-ur{ font-family: var(--font-ur); font-size:18px; font-weight:600; line-height:1.7; color: var(--text-secondary); margin-top:2px; }
+  .modal-close{
+    border:none; background: var(--accent); color: var(--text);
+    width:32px; height:32px; border-radius:50%;
+    font-size:16px; cursor:pointer; flex-shrink:0;
+  }
+  .derived-title{
+    font-size:11.5px; font-weight:700; color: var(--text-secondary);
+    font-family: var(--font-ui); text-transform:uppercase; letter-spacing:.04em;
+    margin: 14px 0 8px;
+  }
+  .derived-card{
+    background: var(--card-bg-2);
+    border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .derived-word{ font-family: var(--font-ar); font-size:22px; color: var(--text); }
+  .derived-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .pos-badge{
+    font-family: var(--font-ui); font-size:10.5px; font-weight:700;
+    background: var(--accent); color: var(--primary-strong);
+    padding:3px 9px; border-radius:999px; white-space:nowrap;
+  }
+  .derived-meaning{ font-family: var(--font-ur); font-size:16px; font-weight:600; line-height:1.7; color: var(--text); margin-bottom:4px; }
+  .derived-ref{ font-family: var(--font-ui); font-size:11.5px; color: var(--text-secondary); }
+
+  /* ---------- QUIZ SETUP ---------- */
+  .panel{
+    background: var(--card-bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:16px;
+    box-shadow: var(--shadow);
+  }
+  .panel-title{
+    font-family: var(--font-ur); font-size:17px; margin:0 0 12px;
+  }
+  .option-grid{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;
+  }
+  .opt-btn{
+    font-family: var(--font-ui); font-size:13px; font-weight:600;
+    padding:10px 4px; border-radius: var(--radius-sm);
+    border:1.5px solid var(--border); background: var(--card-bg-2); color: var(--text);
+    cursor:pointer; transition: all .2s ease;
+  }
+  .opt-btn.selected{ border-color: var(--primary); background: var(--accent); color: var(--primary-strong); }
+  .mode-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:18px; }
+  .primary-btn{
+    width:100%; border:none; background: var(--primary); color:#fff;
+    font-family: var(--font-ui); font-weight:700; font-size:15px;
+    padding:14px; border-radius: var(--radius-md); cursor:pointer;
+  }
+  .primary-btn:active{ transform: scale(0.98); }
+
+  /* ---------- QUIZ RUN ---------- */
+  .quiz-progress{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--font-ui); font-size:12.5px; color: var(--text-secondary);
+    margin-bottom:10px;
+  }
+  .progress-track{
+    height:6px; background: var(--accent); border-radius:999px; overflow:hidden; margin-bottom:16px;
+  }
+  .progress-fill{ height:100%; background: var(--primary); transition: width .3s ease; }
+  .question-prompt{
+    font-family: var(--font-ui); font-size:12px; font-weight:700; color: var(--text-secondary);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;
+  }
+  .question-focus{
+    font-family: var(--font-ar); font-size:34px; text-align:center; color: var(--text);
+    background: var(--card-bg-2); border-radius: var(--radius-md); padding:22px 10px; margin-bottom:16px;
+    border:1px solid var(--border);
+  }
+  .mcq-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mcq-grid.single-col{ grid-template-columns:1fr; }
+  .fact-box{
+    margin-top:14px; padding:12px 14px; border-radius: var(--radius-sm);
+    background: var(--accent); border:1px solid var(--border);
+    font-family: var(--font-ur); font-size:14.5px; line-height:1.8; color: var(--text);
+  }
+  .fact-box-label{
+    font-family: var(--font-ui); font-size:10.5px; font-weight:700; color: var(--primary-strong);
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;
+  }
+  .mcq-btn{
+    font-family: var(--font-ur); font-size:15px; text-align:center;
+    padding:14px 8px; border-radius: var(--radius-sm);
+    border:1.5px solid var(--border); background: var(--card-bg-2); color: var(--text);
+    cursor:pointer; transition: all .15s ease;
+  }
+  .mcq-btn.correct{ background: var(--success); color:#fff; border-color: var(--success); animation: pulseGlow .5s ease; }
+  .mcq-btn.wrong{ background: var(--danger); color:#fff; border-color: var(--danger); animation: shakeBtn .4s ease; }
+
+  @keyframes pulseGlow{
+    0%{ box-shadow: 0 0 0 0 rgba(31,157,99,0.55); transform:scale(1); }
+    50%{ box-shadow: 0 0 0 10px rgba(31,157,99,0); transform:scale(1.04); }
+    100%{ box-shadow: 0 0 0 0 rgba(31,157,99,0); transform:scale(1); }
+  }
+  @keyframes shakeBtn{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-6px); }
+    40%{ transform: translateX(6px); }
+    60%{ transform: translateX(-4px); }
+    80%{ transform: translateX(4px); }
+  }
+
+  /* ---------- FLASHCARD ---------- */
+  .flash-card{
+    background: var(--card-bg-2); border:1px solid var(--border); border-radius: var(--radius-md);
+    padding:26px 14px; text-align:center; margin-bottom:14px; cursor:pointer; min-height:150px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  }
+  .flash-front{ font-family: var(--font-ar); font-size:38px; color: var(--text); }
+  .flash-hint{ font-family: var(--font-ui); font-size:11.5px; color: var(--text-secondary); }
+  .flash-back-meaning{ font-family: var(--font-ur); font-size:18px; color: var(--primary-strong); }
+  .flash-derived-mini{ font-family: var(--font-ar); font-size:16px; color: var(--text-secondary); }
+  .flash-actions{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .know-btn, .forgot-btn{
+    border:none; font-family: var(--font-ui); font-weight:700; font-size:14px;
+    padding:13px; border-radius: var(--radius-sm); cursor:pointer; color:#fff;
+  }
+  .know-btn{ background: var(--success); }
+  .forgot-btn{ background: var(--danger); }
+
+  /* ---------- RESULTS ---------- */
+  .result-score{
+    text-align:center; font-family: var(--font-ui); font-size:44px; font-weight:800;
+    color: var(--primary-strong); margin: 6px 0 2px;
+  }
+  .result-sub{ text-align:center; font-family: var(--font-ur); font-size:15px; color: var(--text-secondary); margin-bottom:16px; }
+
+  .hidden{ display:none !important; }
+  body.no-scroll{ overflow:hidden; }
+</style>
+</head>
+<body data-theme="light-mint">
+<div class="app">
+
+  <!-- SURAH PICKER -->
+  <div id="surahPicker">
+    <div class="picker-header">
+      <div class="picker-title-ar">قرآنی الفاظ کا ذخیرہ</div>
+      <div class="picker-title-ur">مطالعے کے لیے سورت منتخب کریں</div>
+    </div>
+    <div class="surah-list" id="surahList"></div>
+    <div style="font-family:var(--font-ui); font-size:10.5px; color:var(--text-secondary); text-align:center; padding:4px 10px;">
+      ✓ تمام آیات اور حوالہ جات براہِ راست قرآنی متن اور معارف القرآن سے تصدیق شدہ ہیں
+    </div>
+  </div>
+
+  <div id="mainApp" class="hidden">
+
+  <div class="app-header">
+    <div class="app-header-top">
+      <button class="back-btn" id="backToPickerBtn">‹ تمام سورتیں</button>
+      <div class="theme-picker" id="themePicker"></div>
+    </div>
+    <div class="brand" style="margin-bottom:8px;">
+      <div class="brand-ar" id="brandAr"></div>
+      <div class="brand-ur" id="brandUr"></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="lessons">اسباق کی فہرست</button>
+      <button class="tab-btn" data-tab="quiz">سوالات</button>
+    </div>
+  </div>
+
+  <div id="resumeBanner" class="resume-banner hidden">
+    <span id="resumeText"></span>
+    <button id="resumeBtn">واپس جائیں</button>
+  </div>
+
+  <!-- LESSONS TAB -->
+  <div id="lessonsTab">
+    <div id="weakPanel" class="weak-panel hidden">
+      <div class="weak-panel-title">کمزور جڑیں — دوبارہ مطالعہ کریں</div>
+      <div class="weak-badges" id="weakBadges"></div>
+    </div>
+    <div class="list-wrap" id="rootList"></div>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="quizTab" class="hidden">
+
+    <div id="quizSetup" class="panel">
+      <div class="panel-title">سوالات کی ترتیب</div>
+      <div style="font-family:var(--font-ui);font-size:12px;color:var(--text-secondary);margin-bottom:8px;">کتنے سوالات؟</div>
+      <div class="option-grid" id="lengthOptions">
+        <button class="opt-btn" data-len="5">5</button>
+        <button class="opt-btn" data-len="10">10</button>
+        <button class="opt-btn" data-len="20">تمام 20</button>
+      </div>
+      <div style="font-family:var(--font-ui);font-size:12px;color:var(--text-secondary);margin-bottom:8px;">طریقہ منتخب کریں</div>
+      <div class="mode-grid" id="modeOptions">
+        <button class="opt-btn" data-mode="mcq">MCQ</button>
+        <button class="opt-btn" data-mode="flash">فلیش کارڈز</button>
+      </div>
+      <button class="primary-btn" id="startQuizBtn">سوالات شروع کریں</button>
+    </div>
+
+    <div id="quizRun" class="panel hidden">
+      <div class="quiz-progress">
+        <span id="progressLabel">سوال 1 از 5</span>
+        <span id="scoreLabel">اسکور: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+      <!-- MCQ block -->
+      <div id="mcqBlock">
+        <div class="question-prompt" id="mcqPromptLabel"></div>
+        <div class="question-focus" id="mcqFocus"></div>
+        <div class="mcq-grid" id="mcqOptions"></div>
+        <div class="fact-box hidden" id="factBox">
+          <div class="fact-box-label">جڑ کا فرق</div>
+          <div id="factBoxText"></div>
+        </div>
+        <button class="primary-btn hidden" id="mcqNextBtn" style="margin-top:12px;">اگلا سوال ›</button>
+      </div>
+
+      <!-- Flashcard block -->
+      <div id="flashBlock" class="hidden">
+        <div class="flash-card" id="flashCard">
+          <div class="flash-front" id="flashFront"></div>
+          <div class="flash-hint" id="flashHint">دبانے پر معنی دیکھیں</div>
+        </div>
+        <div class="flash-actions hidden" id="flashActions">
+          <button class="know-btn" id="knowBtn">مجھے یاد تھا</button>
+          <button class="forgot-btn" id="forgotBtn">میں بھول گیا</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizResult" class="panel hidden">
+      <div class="panel-title" style="text-align:center;">نتیجہ</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <button class="primary-btn" id="backToSetupBtn">نئے سوالات</button>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const SURAHS = {
+  alaq: {
+    key:"alaq", titleAr:"سورۃ العلق", titleUr:"آیات ۱ تا ۱۹", cardDesc:"20 جڑیں — پہلی وحی",
+    roots: [
+{ id:1, verified:true, root:"ق ر أ", meaning:"پڑھنا، تلاوت کرنا", meanings:["پڑھنا، تلاوت کرنا (بنیادی و مشہور معنی)", "جمع کرنا (کیونکہ پڑھنے میں حروف و الفاظ جمع ہوتے ہیں)", "ایک شرعی اصطلاح میں 'قُرُوء' (جمع، مفرد: قَرء) عدت کی مدت کے لیے آتا ہے — البقرة 2:228 میں 'ثَلَاثَةَ قُرُوءٍ'؛ فقہ حنفی میں امام ابوحنیفہ کے نزدیک اس سے مراد 'حیض' ہے (جبکہ بعض دیگر ائمہ کے نزدیک 'طہر')"], distractorRoots:["ع ل م","ه د ي","ك ذ ب"], distractorMeanings:["پیدا کرنا","سرکشی کرنا","بھول جانا"],
+  derived:[
+    {word:"اقْرَأْ", pos:"فعل امر", meaning:"پڑھو / پڑھیے", ref:"العلق 96:1"},
+    {word:"يَقْرَءُونَ", pos:"فعل مضارع جمع", meaning:"وہ (کتاب) پڑھتے ہیں", ref:"البقرة 2:121"},
+    {word:"قُرْآنًا", pos:"اسم", meaning:"قرآن (پڑھی جانے والی کتاب)", ref:"الإسراء 17:106"}
+  ]},
+{ id:2, verified:true, root:"س م و", meaning:"نام رکھنا، بلند ہونا", meanings:["نام (اسم)", "بلندی، رفعت — بعض نحویوں کے نزدیک 'اسم' اسی سے ماخوذ ہے کیونکہ نام چیز کو ممتاز و بلند کرتا ہے", "نشان/علامت — بعض کے نزدیک 'اسم' دراصل 'وسم' سے ہے یعنی نشان لگانا"], distractorRoots:["ر ب ب","ص ل و","ن ه ي"], distractorMeanings:["لوٹنا","بے نیاز ہونا","روکنا"],
+  derived:[
+    {word:"بِاسْمِ", pos:"اسم مجرور", meaning:"کے نام کے ساتھ", ref:"العلق 96:1"},
+    {word:"اسْمُهُ", pos:"اسم مضاف", meaning:"اس کا نام (یحییٰ)", ref:"مريم 19:7"},
+    {word:"الْأَسْمَاءَ", pos:"اسم جمع", meaning:"سب نام (جمع)", ref:"البقرة 2:31"}
+  ]},
+{ id:3, verified:true, root:"ر ب ب", meaning:"رب، پالنے والا", meanings:["پالنے والا، پرورش کرنے والا (تربیت)", "مالک، آقا", "درست کرنے والا، اصلاح کرنے والا"], distractorRoots:["خ ل ق","ط غ ي","و ل ي"], distractorMeanings:["جھٹلانا","تعلیم دینا","سجدہ کرنا"],
+  derived:[
+    {word:"رَبِّكَ", pos:"اسم مضاف", meaning:"تیرا رب", ref:"العلق 96:1"},
+    {word:"رَبِّ الْعَالَمِينَ", pos:"اسم مرکب", meaning:"تمام جہانوں کا رب", ref:"الفاتحة 1:2"},
+    {word:"رَبَّيَانِي", pos:"فعل ماضی", meaning:"دونوں نے میری پرورش کی", ref:"الإسراء 17:24"}
+  ]},
+{ id:4, verified:true, root:"خ ل ق", meaning:"پیدا کرنا", meanings:["پیدا کرنا (عدم سے وجود میں لانا)", "اندازے اور مناسبت سے بنانا، تراشنا (بنیادی لغوی معنی)", "خُلق — عادت، طبیعت، کردار (اسی مادّے سے)"], distractorRoots:["ق ل م","ع ب د","غ ن ي"], distractorMeanings:["نماز پڑھنا","قلم سے لکھنا","بے نیاز ہونا"],
+  derived:[
+    {word:"خَلَقَ", pos:"فعل ماضی", meaning:"اس نے پیدا کیا", ref:"العلق 96:1"},
+    {word:"خَلَقْنَاكُمْ", pos:"فعل ماضی", meaning:"ہم نے تمہیں پیدا کیا", ref:"الأعراف 7:11"},
+    {word:"الْخَالِقُ", pos:"اسم فاعل", meaning:"پیدا کرنے والا", ref:"الحشر 59:24"}
+  ]},
+{ id:5, verified:true, root:"ا ن س", meaning:"انسان، بشر", meanings:["انسان، بشر", "مانوس ہونا، انسیت رکھنا (وحشت کی ضد)", "نظر آنا، دکھائی دینا (جیسے 'آنَستُ نَارًا' — طٰہٰ 20:10)"], distractorRoots:["ع ل ق","ك ر م","ه د ي"], distractorMeanings:["جمے ہوئے خون کا لوتھڑا","سب سے زیادہ عزت والا","ہدایت"],
+  derived:[
+    {word:"الْإِنسَانَ", pos:"اسم", meaning:"انسان کو", ref:"العلق 96:2"},
+    {word:"الْإِنسَانَ", pos:"اسم", meaning:"انسان (بیشک انسان خسارے میں ہے)", ref:"العصر 103:2"},
+    {word:"الْإِنسِ", pos:"اسم جمع", meaning:"انسانوں (جن کے مقابلے میں)", ref:"الأنعام 6:112"}
+  ]},
+{ id:6, verified:true, root:"ع ل ق", meaning:"جما ہوا خون، لٹکنے والی چیز", meanings:["جما ہوا خون کا لوتھڑا (علقہ)", "لٹکنا، چمٹنا، اٹک جانا (بنیادی لغوی معنی)", "محبت میں گرفتار ہونا، تعلق (لفظ 'علاقہ' اسی سے ہے)"], distractorRoots:["ن ص و","ز ب ن","د ع و"], distractorMeanings:["پیشانی کے بال","نگہبان فرشتے","پکارنا"],
+  derived:[
+    {word:"عَلَقٍ", pos:"اسم", meaning:"جمے ہوئے خون کے لوتھڑے سے", ref:"العلق 96:2"},
+    {word:"عَلَقَةً", pos:"اسم", meaning:"ایک لوتھڑا (جنین کی حالت)", ref:"المؤمنون 23:14"},
+    {word:"عَلَقَةٍ", pos:"اسم", meaning:"ایک لوتھڑا", ref:"الحج 22:5"}
+  ]},
+{ id:7, verified:true, root:"ك ر م", meaning:"عزت والا، سخی", meanings:["سخاوت، فیاضی", "عزت، بزرگی، شرف", "عمدگی، بلند مرتبہ ہونا (ہر عمدہ و بلند چیز کو 'کریم' کہا جاتا ہے)"], distractorRoots:["ط و ع","خ ط أ","ق ر ب"], distractorMeanings:["فرمانبرداری کرنا","خطاکار","قریب ہونا"],
+  derived:[
+    {word:"الْأَكْرَمُ", pos:"اسم تفضیل", meaning:"سب سے زیادہ عزت و کرم والا", ref:"العلق 96:3"},
+    {word:"كَرِيمٌ", pos:"اسم صفت", meaning:"بزرگ، معزز", ref:"النمل 27:40"},
+    {word:"أَكْرَمَنِ", pos:"فعل ماضی", meaning:"اس نے مجھے عزت دی", ref:"الفجر 89:15"}
+  ]},
+{ id:8, verified:true, root:"ع ل م", meaning:"جاننا، سکھانا", meanings:["جاننا، علم رکھنا", "سکھانا، تعلیم دینا (متعدی صورت)", "نشان، علامت ('عَلَم' یعنی جھنڈا/نشانی بھی اسی مادّے سے ہے)"], distractorRoots:["ق ر أ","ر ج ع","ك ذ ب"], distractorMeanings:["پڑھنا","لوٹنا","جھٹلانا"],
+  derived:[
+    {word:"عَلَّمَ", pos:"فعل ماضی", meaning:"اس نے سکھایا", ref:"العلق 96:4"},
+    {word:"عَلَّمَ آدَمَ", pos:"فعل ماضی مرکب", meaning:"آدم کو (سب نام) سکھائے", ref:"البقرة 2:31"},
+    {word:"يَعْلَمُ", pos:"فعل مضارع", meaning:"وہ جانتا ہے", ref:"الحديد 57:4"}
+  ]},
+{ id:9, verified:true, root:"ق ل م", meaning:"قلم، لکھنے کا آلہ", meanings:["قلم، لکھنے کا آلہ", "کاٹنا، تراشنا (بنیادی لغوی معنی؛ قلم دراصل تراشے ہوئے سرکنڈے کو کہتے ہیں)", "قرعہ اندازی کے تیر (مجازی استعمال، آل عمران 3:44)"], distractorRoots:["ه د ي","ص ل و","س ج د"], distractorMeanings:["ہدایت","نماز","سجدہ کرنا"],
+  derived:[
+    {word:"بِالْقَلَمِ", pos:"اسم مجرور", meaning:"قلم کے ذریعے", ref:"العلق 96:4"},
+    {word:"الْقَلَمِ", pos:"اسم", meaning:"قلم", ref:"القلم 68:1"},
+    {word:"أَقْلَامَهُمْ", pos:"اسم جمع", meaning:"ان کے قلم", ref:"آل عمران 3:44"}
+  ]},
+{ id:10, verified:true, root:"ط غ ي", meaning:"سرکشی کرنا، حد سے بڑھنا", meanings:["حد سے بڑھنا، سرکشی کرنا", "طغیانی، پانی کا زور سے چڑھنا (الحاقة 69:11)", "طاغوت — باطل معبود، ہر وہ چیز جو حد سے بڑھ کر اللہ کے سوا پوجی جائے"], distractorRoots:["غ ن ي","ن ه ي","و ل ي"], distractorMeanings:["بے نیاز ہونا","روکنا","منہ پھیرنا"],
+  derived:[
+    {word:"لَيَطْغَى", pos:"فعل مضارع", meaning:"وہ ضرور سرکشی کرتا ہے", ref:"العلق 96:6"},
+    {word:"طَغَوْا", pos:"فعل ماضی جمع", meaning:"انہوں نے سرکشی کی", ref:"الحاقة 69:11"},
+    {word:"الطَّاغُوتَ", pos:"اسم", meaning:"باطل معبود / سرکش قوت", ref:"البقرة 2:256"}
+  ]},
+{ id:11, verified:true, root:"غ ن ي", meaning:"بے نیاز ہونا، مالدار ہونا", meanings:["بے نیاز ہونا، محتاج نہ ہونا", "مالدار، دولت مند ہونا", "کسی جگہ رہنا، بسنا (جیسے 'كَأَن لَّمْ يَغْنَوْا فِيهَا' — الأعراف 7:92)"], distractorRoots:["ر أ ي","ط غ ي","ك ذ ب"], distractorMeanings:["دیکھنا","سرکشی کرنا","جھٹلانا"],
+  derived:[
+    {word:"اسْتَغْنَى", pos:"فعل ماضی", meaning:"اس نے اپنے آپ کو بے نیاز سمجھا", ref:"العلق 96:7"},
+    {word:"غَنِيٌّ", pos:"اسم صفت", meaning:"بے نیاز، غنی", ref:"البقرة 2:267"},
+    {word:"أَغْنَاهُمُ", pos:"فعل ماضی", meaning:"اللہ نے انہیں غنی کر دیا", ref:"التوبة 9:74"}
+  ]},
+{ id:12, verified:true, root:"ر أ ي", meaning:"دیکھنا", meanings:["آنکھ سے دیکھنا", "دل سے سمجھنا، رائے قائم کرنا ('رأی' — خیال، نظریہ)", "خواب دیکھنا (رؤیا)"], distractorRoots:["ن ه ي","ع ب د","ه د ي"], distractorMeanings:["روکنا","بندہ","ہدایت"],
+  derived:[
+    {word:"أَرَأَيْتَ", pos:"فعل ماضی استفہامی", meaning:"کیا تو نے دیکھا", ref:"العلق 96:9"},
+    {word:"يَرَى", pos:"فعل مضارع", meaning:"وہ دیکھتا ہے", ref:"العلق 96:14"},
+    {word:"رَأَى", pos:"فعل ماضی", meaning:"اس نے دیکھا", ref:"الأنعام 6:76"}
+  ]},
+{ id:13, verified:true, root:"ر ج ع", meaning:"لوٹنا، واپس جانا", meanings:["لوٹنا، واپس آنا", "پلٹانا، واپس کرنا (متعدی معنی)", "جواب، بازگشت (رجیع)"], distractorRoots:["س ج د","ق ر ب","د ع و"], distractorMeanings:["سجدہ کرنا","قریب ہونا","پکارنا"],
+  derived:[
+    {word:"الرُّجْعَى", pos:"اسم", meaning:"لوٹ کر جانا (اللہ کی طرف)", ref:"العلق 96:8"},
+    {word:"تُرْجَعُونَ", pos:"فعل مضارع مجہول جمع", meaning:"تم لوٹائے جاؤ گے", ref:"البقرة 2:28"},
+    {word:"ارْجِعِي", pos:"فعل امر", meaning:"تو لوٹ آ (اپنے رب کی طرف)", ref:"الفجر 89:28"}
+  ]},
+{ id:14, verified:true, root:"ن ه ي", meaning:"روکنا، منع کرنا", meanings:["روکنا، منع کرنا", "عقل، دانائی ('نُہیٰ' — چونکہ عقل انسان کو برائی سے روکتی ہے، طٰہٰ 20:54)", "انتہا، آخری حد (نہایت)"], distractorRoots:["ط و ع","ك ذ ب","غ ن ي"], distractorMeanings:["فرمانبرداری کرنا","جھٹلانا","بے نیاز ہونا"],
+  derived:[
+    {word:"يَنْهَى", pos:"فعل مضارع", meaning:"وہ روکتا ہے", ref:"العلق 96:9"},
+    {word:"يَنتَهِ", pos:"فعل مضارع مجزوم", meaning:"وہ باز آ جائے", ref:"العلق 96:15"},
+    {word:"نَهَى", pos:"فعل ماضی", meaning:"اس نے روکا", ref:"النازعات 79:40"}
+  ]},
+{ id:15, verified:true, root:"ع ب د", meaning:"بندہ، عبادت کرنا", meanings:["عبادت کرنا، بندگی کرنا", "غلام، بندہ ہونا", "راستے کو ہموار کرنا ('معبَّد' — کثرتِ چلنے سے ہموار راستہ؛ مجازی استعمال)"], distractorRoots:["ق ر ب","خ ط أ","ز ب ن"], distractorMeanings:["قریب ہونا","خطاکار","نگہبان فرشتے"],
+  derived:[
+    {word:"عَبْدًا", pos:"اسم", meaning:"ایک بندہ", ref:"العلق 96:10"},
+    {word:"اعْبُدُوا", pos:"فعل امر جمع", meaning:"عبادت کرو", ref:"البقرة 2:21"},
+    {word:"عِبَادِي", pos:"اسم مضاف", meaning:"میرے بندے", ref:"البقرة 2:186"}
+  ]},
+{ id:16, verified:true, root:"ص ل و", meaning:"نماز پڑھنا", meanings:["نماز پڑھنا، دعا کرنا", "رحمت بھیجنا (اللہ کی طرف سے) یا استغفار کرنا (فرشتوں کی طرف سے)", "آگ میں جھلسنا، داخل ہونا ('یَصْلیٰ' — ایک الگ مگر ہم شکل استعمال)"], distractorRoots:["ن د و","ط و ع","ك ذ ب"], distractorMeanings:["مجلس بلانا","فرمانبرداری کرنا","جھٹلانا"],
+  derived:[
+    {word:"صَلَّى", pos:"فعل ماضی", meaning:"اس نے نماز پڑھی", ref:"العلق 96:10"},
+    {word:"الصَّلَاةَ", pos:"اسم", meaning:"نماز", ref:"البقرة 2:3"},
+    {word:"صَلِّ", pos:"فعل امر", meaning:"نماز پڑھ", ref:"الكوثر 108:2"}
+  ]},
+{ id:17, verified:true, root:"ه د ي", meaning:"ہدایت دینا، راہ دکھانا", meanings:["راہ دکھانا، ہدایت دینا", "تحفہ دینا (ہدیہ)", "قربانی کا جانور ('ہَدْی' — حج میں پیش کیا جانے والا جانور)"], distractorRoots:["ر ج ع","ع ل م","ق ر أ"], distractorMeanings:["لوٹنا","سکھانا","پڑھنا"],
+  derived:[
+    {word:"الْهُدَى", pos:"اسم", meaning:"ہدایت", ref:"العلق 96:11"},
+    {word:"الْمُهْتَدُونَ", pos:"اسم فاعل جمع", meaning:"ہدایت یافتہ لوگ", ref:"البقرة 2:5"},
+    {word:"يَهْدِي", pos:"فعل مضارع", meaning:"وہ ہدایت دیتا ہے", ref:"يونس 10:35"}
+  ]},
+{ id:18, verified:true, root:"ك ذ ب", meaning:"جھٹلانا، جھوٹ بولنا", meanings:["جھوٹ بولنا", "جھٹلانا، انکار کرنا (تکذیب)", "چوکنا، غلطی کرنا (نادر استعمال، جیسے 'مَا كَذَبَ الْفُؤَادُ مَا رَأَىٰ' — النجم 53:11)"], distractorRoots:["و ل ي","غ ن ي","خ ل ق"], distractorMeanings:["منہ پھیرنا","بے نیاز ہونا","پیدا کرنا"],
+  derived:[
+    {word:"كَذَّبَ", pos:"فعل ماضی", meaning:"اس نے جھٹلایا", ref:"العلق 96:13"},
+    {word:"كَاذِبَةٍ", pos:"اسم صفت", meaning:"جھوٹی (پیشانی)", ref:"العلق 96:16"},
+    {word:"يُكَذِّبُونَ", pos:"فعل مضارع جمع", meaning:"وہ جھٹلاتے ہیں", ref:"الأنعام 6:33"}
+  ]},
+{ id:19, verified:true, root:"و ل ي", meaning:"منہ پھیرنا، دوست/کارساز ہونا", meanings:["قریب یا ملحق ہونا (بنیادی لغوی معنی)", "دوست، مددگار، سرپرست (ولی)", "پیٹھ پھیرنا، رخ بدل لینا ('تولّٰی' — رخ بدلنے میں اپنی قریبی جانب پھیر لی جاتی ہے)"], distractorRoots:["ن ه ي","ر أ ي","ط غ ي"], distractorMeanings:["روکنا","دیکھنا","سرکشی کرنا"],
+  derived:[
+    {word:"تَوَلَّى", pos:"فعل ماضی", meaning:"اس نے منہ پھیر لیا", ref:"العلق 96:13"},
+    {word:"الْوَلِيُّ", pos:"اسم", meaning:"کارساز، دوست", ref:"البقرة 2:257"},
+    {word:"تَوَلَّوْا", pos:"فعل ماضی جمع", meaning:"انہوں نے منہ موڑ لیا", ref:"آل عمران 3:82"}
+  ]},
+{ id:20, verified:true, root:"س ج د", meaning:"سجدہ کرنا", meanings:["سجدہ کرنا، پیشانی زمین پر رکھنا", "جھک کر تعظیم کرنا (وسیع تر معنی، جیسے درخت و ستاروں کا سجدہ — الرحمن 55:6)", "فرمانبردار، مطیع ہونا"], distractorRoots:["ص ل و","ع ب د","ق ر ب"], distractorMeanings:["نماز پڑھنا","بندہ ہونا","قریب ہونا"],
+  derived:[
+    {word:"وَاسْجُدْ", pos:"فعل امر", meaning:"اور سجدہ کر", ref:"العلق 96:19"},
+    {word:"اسْجُدُوا", pos:"فعل امر جمع", meaning:"سجدہ کرو", ref:"البقرة 2:34"},
+    {word:"سُجَّدًا", pos:"اسم حال جمع", meaning:"سجدہ کرنے والے", ref:"الأعراف 7:161"}
+  ]}
+]
+  },
+  qadr: {
+    key:"qadr", titleAr:"سورۃ القدر", titleUr:"آیات ۱ تا ۵", cardDesc:"15 جڑیں — شبِ قدر",
+    roots: [
+{ id:1, verified:true, root:"ن ز ل", meaning:"اترنا، نازل ہونا", meanings:["اوپر سے نیچے اترنا، نازل ہونا (بنیادی معنی)", "کسی جگہ ٹھہرنا، پڑاؤ کرنا (مسافر کا اترنا)", "منزلت، مرتبہ و درجہ (اسی مادّے سے 'منزل')"], distractorRoots:["ق د ر","خ ي ر","س ل م"], distractorMeanings:["اندازہ، تقدیر","بہتر، اچھائی","سلامتی، امن"],
+  derived:[
+    {word:"أَنزَلْنَاهُ", pos:"فعل ماضی", meaning:"ہم نے اسے اتارا", ref:"القدر 97:1"},
+    {word:"تَنَزَّلُ", pos:"فعل مضارع", meaning:"اترتی ہیں (فرشتے)", ref:"القدر 97:4"},
+    {word:"نَزَّلَ", pos:"فعل ماضی", meaning:"اس نے (کتاب) نازل کی", ref:"آل عمران 3:3"}
+  ]},
+{ id:2, verified:true, root:"ل ي ل", meaning:"رات", meanings:["رات (دن کی ضد)", "تاریکی چھا جانا", "مجازاً مصیبت و پریشانی کا وقت"], distractorRoots:["ش ه ر","أ م ر","ف ج ر"], distractorMeanings:["مہینہ","حکم، معاملہ","صبح صادق"],
+  derived:[
+    {word:"لَيْلَةِ", pos:"اسم مجرور", meaning:"رات میں", ref:"القدر 97:1"},
+    {word:"وَاللَّيْلِ", pos:"اسم قسم", meaning:"رات کی قسم", ref:"الليل 92:1"},
+    {word:"أَسْرَىٰ ... لَيْلًا", pos:"اسم ظرف", meaning:"رات کے وقت لے گیا (اسراء)", ref:"الإسراء 17:1"}
+  ]},
+{ id:3, verified:true, root:"ق د ر", meaning:"اندازہ، تقدیر، مرتبہ", meanings:["اندازہ مقرر کرنا، تقدیر بنانا", "مرتبہ، عزت، قدر و منزلت", "طاقت و قدرت رکھنا (اسی سے 'قادر')"], distractorRoots:["د ر ي","م ل ك","ر و ح"], distractorMeanings:["جاننا، خبر ہونا","فرشتہ، بادشاہت","روح، جان"],
+  derived:[
+    {word:"الْقَدْرِ", pos:"اسم", meaning:"قدر و شرف کی رات (تقدیر کی رات)", ref:"القدر 97:1"},
+    {word:"بِقَدَرٍ", pos:"اسم مجرور", meaning:"ایک اندازے سے", ref:"القمر 54:49"},
+    {word:"قَدْرِهِ", pos:"اسم مضاف", meaning:"اس کی قدر (جیسی قدر کرنی چاہیے)", ref:"الأنعام 6:91"}
+  ]},
+{ id:4, verified:true, root:"د ر ي", meaning:"جاننا، خبر ہونا", meanings:["جاننا، آگاہ ہونا", "خبردار کرنا، بتانا (متعدی صورت: أدریٰ)", "کسی چیز کی تہہ تک پہنچنا، تحقیق کرنا"], distractorRoots:["أ ذ ن","أ ل ف","ط ل ع"], distractorMeanings:["اجازت","ہزار","طلوع ہونا"],
+  derived:[
+    {word:"أَدْرَاكَ", pos:"فعل ماضی استفہامی", meaning:"تجھے کس نے بتایا/خبر دی", ref:"القدر 97:2"},
+    {word:"تَدْرِي", pos:"فعل مضارع", meaning:"وہ (جان) جانتی ہے", ref:"لقمان 31:34"},
+    {word:"مَا أَدْرَاكَ", pos:"فعل ماضی استفہامی مرکب", meaning:"تجھے کیا خبر (حاقہ کیا ہے)", ref:"الحاقة 69:3"}
+  ]},
+{ id:5, verified:true, root:"خ ي ر", meaning:"بہتر، اچھائی", meanings:["اچھائی، بھلائی", "بہتر، افضل (تفضیلی معنی)", "مال و دولت (بعض مقامات پر، جیسے البقرة 2:180)"], distractorRoots:["ل ي ل","ن ز ل","ر ب ب"], distractorMeanings:["رات","اترنا، نازل ہونا","رب، پالنے والا"],
+  derived:[
+    {word:"خَيْرٌ", pos:"اسم تفضیل", meaning:"بہتر ہے", ref:"القدر 97:3"},
+    {word:"خَيْرَ الزَّادِ", pos:"اسم مرکب", meaning:"سب سے بہتر زادِ راہ", ref:"البقرة 2:197"},
+    {word:"خَيْرًا كَثِيرًا", pos:"اسم", meaning:"بہت زیادہ بھلائی", ref:"البقرة 2:269"}
+  ]},
+{ id:6, verified:true, root:"أ ل ف", meaning:"ہزار", meanings:["عدد ہزار (1000)", "الفت، محبت اور میل جول پیدا کرنا ('ایلاف' اسی سے ہے)", "مانوس ہو جانا، ہم آہنگ ہونا"], distractorRoots:["ق د ر","س ل م","ش ه ر"], distractorMeanings:["اندازہ، تقدیر","سلامتی، امن","مہینہ"],
+  derived:[
+    {word:"أَلْفِ", pos:"اسم عدد", meaning:"ہزار", ref:"القدر 97:3"},
+    {word:"كَأَلْفِ سَنَةٍ", pos:"اسم مرکب", meaning:"ایک ہزار سال کی طرح", ref:"الحج 22:47"},
+    {word:"لِإِيلَافِ", pos:"مصدر", meaning:"مانوس ہونے/الفت کی خاطر", ref:"قريش 106:1"}
+  ]},
+{ id:7, verified:true, root:"ش ه ر", meaning:"مہینہ", meanings:["مہینہ (قمری مہینہ)", "شہرت، مشہور ہونا ('اشتہار' اسی مادّے سے)"], distractorRoots:["ف ج ر","أ م ر","د ر ي"], distractorMeanings:["صبح صادق","حکم، معاملہ","جاننا، خبر ہونا"],
+  derived:[
+    {word:"شَهْرٍ", pos:"اسم", meaning:"مہینہ", ref:"القدر 97:3"},
+    {word:"شَهْرُ رَمَضَانَ", pos:"اسم مرکب", meaning:"رمضان کا مہینہ", ref:"البقرة 2:185"},
+    {word:"اثْنَا عَشَرَ شَهْرًا", pos:"اسم مرکب", meaning:"بارہ مہینے", ref:"التوبة 9:36"}
+  ]},
+{ id:8, verified:true, root:"م ل ك", meaning:"فرشتہ (ملائکہ)، بادشاہت (مُلک)", meanings:["فرشتہ — بعض لغوی ماہرین کے نزدیک یہ دراصل مادّہ 'أَلَكَ' (پیغام پہنچانا) سے ہے، ہمزہ گر جانے پر 'مَلَک' بنا، کیونکہ فرشتے اللہ کا پیغام پہنچاتے ہیں", "بادشاہت، حکومت، مالک ہونا (عام رائے کے مطابق مادّہ 'م ل ك' سے)", "قابو پانا، اختیار رکھنا"], distractorRoots:["ر و ح","أ ذ ن","ر ب ب"], distractorMeanings:["روح، جان","اجازت","رب، پالنے والا"],
+  derived:[
+    {word:"الْمَلَائِكَةُ", pos:"اسم جمع", meaning:"فرشتے", ref:"القدر 97:4"},
+    {word:"مُلْكُ السَّمَاوَاتِ", pos:"اسم مرکب", meaning:"آسمانوں کی بادشاہت", ref:"البقرة 2:107"},
+    {word:"مَالِكِ يَوْمِ الدِّينِ", pos:"اسم مرکب", meaning:"روزِ جزا کا مالک", ref:"الفاتحة 1:4"}
+  ]},
+{ id:9, verified:true, root:"ر و ح", meaning:"روح، جان", meanings:["روح، جان (جس سے جسم میں زندگی ہے)", "جبرائیل امین کا لقب (روح الامین/روح القدس)", "راحت، سکون، ٹھنڈک (رَوح — اسی مادّے کا ایک اور معنی)"], distractorRoots:["م ل ك","خ ي ر","ط ل ع"], distractorMeanings:["فرشتہ، بادشاہت","بہتر، اچھائی","طلوع ہونا، نکلنا"],
+  derived:[
+    {word:"الرُّوحُ", pos:"اسم", meaning:"روح (جبرائیل امین)", ref:"القدر 97:4"},
+    {word:"بِرُوحِ الْقُدُسِ", pos:"اسم مجرور مرکب", meaning:"روح القدس کے ذریعے", ref:"البقرة 2:87"},
+    {word:"مِن رُّوحِي", pos:"اسم مضاف", meaning:"اپنی روح میں سے", ref:"الحجر 15:29"}
+  ]},
+{ id:10, verified:true, root:"أ ذ ن", meaning:"اجازت", meanings:["اجازت، حکم", "کان (سننے کا عضو — اُذُن)", "اعلان کرنا، پکارنا (اذان اسی سے)"], distractorRoots:["د ر ي","ل ي ل","ن ز ل"], distractorMeanings:["جاننا، خبر ہونا","رات","اترنا، نازل ہونا"],
+  derived:[
+    {word:"بِإِذْنِ", pos:"اسم مجرور", meaning:"اجازت سے", ref:"القدر 97:4"},
+    {word:"إِلَّا بِإِذْنِهِ", pos:"اسم مجرور مرکب", meaning:"اس کی اجازت کے بغیر نہیں", ref:"البقرة 2:255"},
+    {word:"أُذُنٌ", pos:"اسم", meaning:"کان (سننے والا)", ref:"التوبة 9:61"}
+  ]},
+{ id:11, verified:true, root:"ر ب ب", meaning:"رب، پالنے والا", meanings:["پالنے والا، پرورش کرنے والا", "مالک، آقا", "درست کرنے والا، اصلاح کرنے والا"], distractorRoots:["خ ي ر","م ل ك","ق د ر"], distractorMeanings:["بہتر، اچھائی","فرشتہ، بادشاہت","اندازہ، تقدیر"],
+  derived:[
+    {word:"رَبِّهِمْ", pos:"اسم مضاف الیہ", meaning:"ان کے رب کی (اجازت سے)", ref:"القدر 97:4"},
+    {word:"رَبِّ الْعَالَمِينَ", pos:"اسم مرکب", meaning:"تمام جہانوں کا رب", ref:"الفاتحة 1:2"},
+    {word:"رَبَّنَا آتِنَا", pos:"اسم و فعل امر مرکب", meaning:"اے ہمارے رب! ہمیں عطا کر", ref:"البقرة 2:201"}
+  ]},
+{ id:12, verified:true, root:"أ م ر", meaning:"حکم، معاملہ", meanings:["حکم دینا", "معاملہ، بات (اسمی صورت)", "کسی کام کی نگرانی و انتظام کرنا (امیر اسی سے)"], distractorRoots:["ش ه ر","ل ي ل","ف ج ر"], distractorMeanings:["مہینہ","رات","صبح صادق"],
+  derived:[
+    {word:"أَمْرٍ", pos:"اسم", meaning:"ہر معاملہ/حکم", ref:"القدر 97:4"},
+    {word:"وَأْمُرْ أَهْلَكَ", pos:"فعل امر مرکب", meaning:"اور اپنے گھر والوں کو حکم دے", ref:"طه 20:132"},
+    {word:"أُولِي الْأَمْرِ", pos:"اسم مرکب", meaning:"صاحبانِ امر (ذمہ دار لوگ)", ref:"النساء 4:59"}
+  ]},
+{ id:13, verified:true, root:"س ل م", meaning:"سلامتی، امن", meanings:["سلامتی، امن و عافیت", "اطاعت، فرمانبرداری، سپردگی (اسلام اسی سے)", "صحیح و سالم ہونا، بےعیب ہونا"], distractorRoots:["أ ل ف","أ م ر","د ر ي"], distractorMeanings:["ہزار","حکم، معاملہ","جاننا، خبر ہونا"],
+  derived:[
+    {word:"سَلَامٌ", pos:"اسم", meaning:"سلامتی ہی سلامتی ہے", ref:"القدر 97:5"},
+    {word:"السَّلَامُ", pos:"اسم (اللہ کی صفت)", meaning:"ہر عیب سے پاک، سلامتی والا", ref:"الحشر 59:23"},
+    {word:"فِي السِّلْمِ كَافَّةً", pos:"اسم مجرور", meaning:"مکمل طور پر اطاعت/اسلام میں", ref:"البقرة 2:208"}
+  ]},
+{ id:14, verified:true, root:"ط ل ع", meaning:"طلوع ہونا، نکلنا", meanings:["طلوع ہونا، اوپر آنا (سورج، چاند وغیرہ کا)", "جھانکنا، خبر لینا (اطّلاع اسی سے)", "نکلنے یا ظاہر ہونے کی جگہ یا وقت (مَطلَع)"], distractorRoots:["ف ج ر","ر و ح","أ ذ ن"], distractorMeanings:["صبح صادق","روح، جان","اجازت"],
+  derived:[
+    {word:"مَطْلَعِ", pos:"اسم ظرف", meaning:"طلوع ہونے تک (فجر کے)", ref:"القدر 97:5"},
+    {word:"مَطْلِعَ الشَّمْسِ", pos:"اسم مرکب", meaning:"سورج کے طلوع ہونے کی جگہ", ref:"الكهف 18:90"},
+    {word:"فَاطَّلَعَ", pos:"فعل ماضی", meaning:"پھر اس نے جھانک کر دیکھا", ref:"الصافات 37:55"}
+  ]},
+{ id:15, verified:true, root:"ف ج ر", meaning:"صبح صادق، فجر", meanings:["صبح صادق، طلوعِ سحر", "پھاڑنا، زور سے بہا نکالنا (تفجیر — پانی کا جاری ہونا)", "گناہوں میں کھلم کھلا ملوث ہونا (فجور)"], distractorRoots:["ط ل ع","ش ه ر","أ ل ف"], distractorMeanings:["طلوع ہونا، نکلنا","مہینہ","ہزار"],
+  derived:[
+    {word:"الْفَجْرِ", pos:"اسم", meaning:"فجر (صبح صادق)", ref:"القدر 97:5"},
+    {word:"وَالْفَجْرِ", pos:"اسم قسم", meaning:"فجر کی قسم", ref:"الفجر 89:1"},
+    {word:"فَجَّرْنَا الْأَرْضَ", pos:"فعل ماضی مرکب", meaning:"ہم نے زمین کو (چشموں کی صورت میں) پھاڑ دیا", ref:"القمر 54:12"}
+  ]}
+]
+  },
+  bayyinah: {
+    key:"bayyinah", titleAr:"سورۃ البینہ", titleUr:"آیات ۱ تا ۸", cardDesc:"10 جڑیں — واضح دلیل",
+    roots: [
+{ id:1, verified:true, root:"ب ی ن", meaning:"واضح ہونا، ظاہر ہونا", meanings:["واضح، روشن ہونا (بنیادی معنی)", "درمیان، فاصلہ — عربی کے اُن الفاظ میں سے ہے جو دو متضاد معانی کے لیے آتے ہیں: قربت/وضاحت اور دوری/جدائی (اسے علمِ لغت میں 'اضداد' کہتے ہیں)", "بیان کرنا، کھول کر سمجھانا"], distractorRoots:["ط ه ر","ف ر ق","ر ض و"], distractorMeanings:["پاک ہونا، صاف ہونا","الگ ہونا، جدا کرنا","راضی ہونا، پسند کرنا"],
+  derived:[
+    {word:"الْبَيِّنَةُ", pos:"اسم فاعل", meaning:"روشن دلیل، واضح حجت", ref:"البينة 98:1"},
+    {word:"تَبَيَّنَ", pos:"فعل ماضی", meaning:"واضح ہو چکا (ہدایت گمراہی سے)", ref:"البقرة 2:256"},
+    {word:"بَيْنَكُمْ", pos:"اسم ظرف", meaning:"تمہارے درمیان", ref:"البقرة 2:282"}
+  ]},
+{ id:2, verified:true, root:"ط ه ر", meaning:"پاک ہونا، صاف ہونا", meanings:["پاک، صاف ہونا (ظاہری و باطنی گندگی سے)", "حیض سے فارغ ہونا (طُہر — عورت کی پاکی کی حالت)", "بےعیب ہونا، اخلاقی آلودگی سے پاک ہونا (مجازی معنی)"], distractorRoots:["ق و م","خ ل ص","ع د ن"], distractorMeanings:["قائم ہونا، قوم","خالص ہونا، اخلاص رکھنا","ہمیشگی کی جگہ"],
+  derived:[
+    {word:"مُّطَهَّرَةً", pos:"اسم مفعول", meaning:"پاک کی ہوئی (صحیفے)", ref:"البينة 98:2"},
+    {word:"الْمُتَطَهِّرِينَ", pos:"اسم فاعل جمع", meaning:"پاک رہنے والوں کو (اللہ پسند فرماتا ہے)", ref:"البقرة 2:222"},
+    {word:"فَطَهِّرْ", pos:"فعل امر", meaning:"پس پاک رکھ", ref:"المدثر 74:4"}
+  ]},
+{ id:3, verified:true, root:"ق و م", meaning:"قائم ہونا، سیدھا ہونا؛ قوم", meanings:["کھڑا ہونا، قائم ہونا", "سیدھا، درست، مضبوط ہونا (قیّم/قیّمہ)", "قوم، جماعت (لوگوں کا گروہ)"], distractorRoots:["ب ر ا","ح ن ف","خ ش ي"], distractorMeanings:["مخلوق؛ بری ہونا","یکسو ہو کر باطل سے ہٹنا","خوف کھانا، ڈرنا"],
+  derived:[
+    {word:"قَيِّمَةٌ", pos:"اسم صفت مشبہ", meaning:"درست و مستقیم (کتابیں)", ref:"البينة 98:3"},
+    {word:"قِيَمًا", pos:"اسم", meaning:"سیدھا، درست (دین)", ref:"الأنعام 6:161"},
+    {word:"أَقِيمُوا الصَّلَاةَ", pos:"فعل امر مرکب", meaning:"نماز قائم کرو", ref:"البقرة 2:43"}
+  ]},
+{ id:4, verified:true, root:"ف ر ق", meaning:"الگ ہونا، جدا کرنا", meanings:["الگ ہونا، جدائی ڈالنا", "حق و باطل میں فرق کرنا (فرقان — وہ چیز جو حق کو باطل سے ممتاز کرے)", "خوف سے گھبرا جانا (ایک اور قدیم استعمال)"], distractorRoots:["ب ی ن","ر ض و","ط ه ر"], distractorMeanings:["واضح ہونا، ظاہر ہونا","راضی ہونا، پسند کرنا","پاک ہونا، صاف ہونا"],
+  derived:[
+    {word:"تَفَرَّقَ", pos:"فعل ماضی", meaning:"وہ متفرق ہوئے، الگ الگ ہو گئے", ref:"البينة 98:4"},
+    {word:"الْفُرْقَانَ", pos:"اسم", meaning:"حق و باطل میں فرق کرنے والی (کتاب)", ref:"البقرة 2:53"},
+    {word:"فَافْرُقْ بَيْنَنَا", pos:"فعل امر مرکب", meaning:"پس ہمارے اور نافرمان قوم کے درمیان جدائی ڈال دے", ref:"المائدة 5:25"}
+  ]},
+{ id:5, verified:true, root:"خ ل ص", meaning:"خالص ہونا، اخلاص رکھنا", meanings:["خالص کرنا، ملاوٹ سے پاک ہونا", "اخلاص کے ساتھ صرف اللہ کے لیے عبادت کرنا", "الگ ہو کر تنہائی میں چلے جانا (ایک اور معنی)"], distractorRoots:["ع د ن","ق و م","ب ر ا"], distractorMeanings:["ہمیشگی کی جگہ","قائم ہونا، قوم","مخلوق؛ بری ہونا"],
+  derived:[
+    {word:"مُخْلِصِينَ", pos:"اسم فاعل جمع", meaning:"خالص کرنے والے (اپنی عبادت کو اللہ کے لیے)", ref:"البينة 98:5"},
+    {word:"خَلَصُوا نَجِيًّا", pos:"فعل ماضی مرکب", meaning:"وہ الگ ہو کر سرگوشی کرنے لگے", ref:"يوسف 12:80"},
+    {word:"الدِّينُ الْخَالِصُ", pos:"اسم مرکب", meaning:"خالص دین (اللہ ہی کے لیے ہے)", ref:"الزمر 39:3"}
+  ]},
+{ id:6, verified:true, root:"ح ن ف", meaning:"یکسو ہو کر باطل سے ہٹنا", meanings:["ہر باطل مذہب سے ہٹ کر صرف توحید کی طرف مائل ہونا", "سیدھا و معتدل رخ اختیار کرنا (بنیادی لغوی معنی)", "ابراہیم علیہ السلام کے طریقے کی پیروی کرنا (ملّتِ ابراہیمی)"], distractorRoots:["خ ش ي","ف ر ق","ر ض و"], distractorMeanings:["خوف کھانا، ڈرنا","الگ ہونا، جدا کرنا","راضی ہونا، پسند کرنا"],
+  derived:[
+    {word:"حُنَفَاءَ", pos:"اسم جمع", meaning:"یکسو ہو کر، ہر باطل سے ہٹ کر", ref:"البينة 98:5"},
+    {word:"حَنِيفًا", pos:"اسم حال", meaning:"یکسو ہو کر (ابراہیمی دین کی طرف مائل)", ref:"الأنعام 6:161"},
+    {word:"حَنِيفًا مُّسْلِمًا", pos:"اسم حال مرکب", meaning:"یکسو مسلمان ہو کر", ref:"آل عمران 3:67"}
+  ]},
+{ id:7, verified:true, root:"ب ر ا", meaning:"مخلوق؛ بری، بےقصور ہونا", meanings:["مخلوق، تمام پیدا کی ہوئی چیزیں (البریّہ) — بعض لغوی ماہرین کے نزدیک یہ 'بَرَأَ' (پیدا کرنا) سے ہے، بعض کے نزدیک 'بری' (تراشنا) سے ماخوذ مانتے ہیں", "بےقصور، بیزار، کسی سے تعلق نہ رکھنا", "پیدا کرنا، بغیر کسی سابقہ نمونے کے وجود میں لانا (اللہ کا نام 'الباری')"], distractorRoots:["ط ه ر","خ ل ص","ب ی ن"], distractorMeanings:["پاک ہونا، صاف ہونا","خالص ہونا، اخلاص رکھنا","واضح ہونا، ظاہر ہونا"],
+  derived:[
+    {word:"الْبَرِيَّةِ", pos:"اسم", meaning:"مخلوق، تمام مخلوقات", ref:"البينة 98:6"},
+    {word:"بُرَآءُ مِنكُمْ", pos:"اسم جمع مرکب", meaning:"ہم تم سے بیزار ہیں", ref:"الممتحنة 60:4"},
+    {word:"الْبَارِئُ", pos:"اسم فاعل", meaning:"پیدا کرنے والا", ref:"الحشر 59:24"}
+  ]},
+{ id:8, verified:true, root:"ع د ن", meaning:"ہمیشہ رہنے کی جگہ (جنّاتِ عدن)", meanings:["ہمیشہ کے لیے کسی جگہ ٹھہرنا، مستقل رہائش اختیار کرنا (بنیادی معنی)", "جنّت کا ایک خاص و اعلیٰ حصہ (بعض مفسرین کے نزدیک)"], distractorRoots:["ح ن ف","ق و م","خ ش ي"], distractorMeanings:["یکسو ہو کر باطل سے ہٹنا","قائم ہونا، قوم","خوف کھانا، ڈرنا"],
+  derived:[
+    {word:"عَدْنٍ", pos:"اسم", meaning:"ہمیشگی کی جنت", ref:"البينة 98:8"},
+    {word:"جَنَّاتِ عَدْنٍ", pos:"اسم مرکب", meaning:"ہمیشہ رہنے کی جنتیں", ref:"التوبة 9:72"},
+    {word:"جَنَّاتِ عَدْنٍ الَّتِي وَعَدَ الرَّحْمَـٰنُ", pos:"اسم مرکب", meaning:"عدن کی جنتیں جن کا رحمٰن نے وعدہ کیا", ref:"مريم 19:61"}
+  ]},
+{ id:9, verified:true, root:"ر ض و", meaning:"راضی ہونا، پسند کرنا", meanings:["راضی ہونا، خوش ہونا", "کسی چیز کو پسندیدہ اور منظور کرنا", "رضا مندی، خوشنودی (اسمی صورت میں 'رضوان')"], distractorRoots:["ف ر ق","ب ر ا","ط ه ر"], distractorMeanings:["الگ ہونا، جدا کرنا","مخلوق؛ بری ہونا","پاک ہونا، صاف ہونا"],
+  derived:[
+    {word:"رَّضِيَ اللَّهُ عَنْهُمْ وَرَضُوا عَنْهُ", pos:"فعل ماضی مرکب", meaning:"اللہ ان سے راضی ہوا اور وہ اس سے راضی ہوئے", ref:"البينة 98:8"},
+    {word:"رَضِيتُ لَكُمُ الْإِسْلَامَ دِينًا", pos:"فعل ماضی مرکب", meaning:"میں نے تمہارے لیے اسلام کو بطور دین پسند کر لیا", ref:"المائدة 5:3"},
+    {word:"رِضْوَانٌ مِّنَ اللَّهِ أَكْبَرُ", pos:"اسم مرکب", meaning:"اللہ کی رضا سب سے بڑی ہے", ref:"التوبة 9:72"}
+  ]},
+{ id:10, verified:true, root:"خ ش ی", meaning:"خوف کھانا، ڈرنا", meanings:["اللہ سے خوف کھانا (وہ خوف جو علم و پہچان کے ساتھ ہو، عام خوف سے مختلف)", "کسی چیز کے واقع ہونے کا اندیشہ کرنا", "عاجزی و تعظیم کے ساتھ ڈرنا"], distractorRoots:["ع د ن","ح ن ف","ق و م"], distractorMeanings:["ہمیشگی کی جگہ","یکسو ہو کر باطل سے ہٹنا","قائم ہونا، قوم"],
+  derived:[
+    {word:"خَشِيَ رَبَّهُ", pos:"فعل ماضی مرکب", meaning:"جو اپنے رب سے ڈرا", ref:"البينة 98:8"},
+    {word:"يَخْشَى اللَّهَ ... الْعُلَمَاءُ", pos:"فعل مضارع مرکب", meaning:"اللہ کے بندوں میں سے صرف علماء ہی اس سے ڈرتے ہیں", ref:"فاطر 35:28"},
+    {word:"وَاخْشَوْنِ", pos:"فعل امر", meaning:"اور مجھ سے ڈرو", ref:"البقرة 2:150"}
+  ]}
+]
+  },
+  zalzalah: {
+    key:"zalzalah", titleAr:"سورۃ الزلزلة", titleUr:"آیات ۱ تا ۸", cardDesc:"9 جڑیں — قیامت کا زلزلہ",
+    roots: [
+{ id:1, verified:true, root:"ز ل ل", meaning:"لرزنا، زلزلہ آنا", meanings:["شدت سے لرزنا، کانپنا (بنیادی مادّہ 'زلّ' سے ہے، تکرار کے ساتھ 'زلزلہ' بنا)", "پھسل جانا، قدم اکھڑ جانا (زلّ کا اصل معنی)", "کسی سخت آزمائش یا خوف سے دل کا ہل جانا (مجازی استعمال)"], distractorRoots:["ث ق ل","ص د ر","ش ت ت"], distractorMeanings:["بھاری ہونا، بوجھ","نکلنا، واپس لوٹنا","بکھرا ہوا، الگ الگ"],
+  derived:[
+    {word:"زُلْزِلَتِ ... زِلْزَالَهَا", pos:"فعل ماضی مجہول مرکب", meaning:"زمین کو بری طرح جھنجھوڑ دیا گیا", ref:"الزلزلة 99:1"},
+    {word:"وَزُلْزِلُوا", pos:"فعل ماضی مجہول جمع", meaning:"اور وہ ہلا دیے گئے", ref:"البقرة 2:214"},
+    {word:"زَلْزَلَةَ السَّاعَةِ", pos:"اسم مرکب", meaning:"قیامت کا زلزلہ", ref:"الحج 22:1"}
+  ]},
+{ id:2, verified:true, root:"ث ق ل", meaning:"بھاری ہونا، بوجھ", meanings:["بھاری، وزنی ہونا", "بوجھ، بار (اسمی صورت میں)", "کسی معاملے میں سنجیدہ و باوقار ہونا (مجازی معنی)"], distractorRoots:["ح د ث","ذ ر ر","ر أ ي"], distractorMeanings:["بیان کرنا، بتانا","ذرہ، نہایت باریک چیز","دیکھنا"],
+  derived:[
+    {word:"أَثْقَالَهَا", pos:"اسم جمع", meaning:"اپنے بوجھ (مُردے، خزانے وغیرہ)", ref:"الزلزلة 99:2"},
+    {word:"مِثْقَالَ ذَرَّةٍ", pos:"اسم مرکب", meaning:"ذرہ برابر وزن", ref:"الزلزلة 99:7"},
+    {word:"أَثْقَالَكُمْ", pos:"اسم مضاف", meaning:"تمہارے بوجھ", ref:"النحل 16:7"}
+  ]},
+{ id:3, verified:true, root:"ح د ث", meaning:"بیان کرنا، بتانا", meanings:["بیان کرنا، خبر دینا", "نیا پیدا ہونا، وقوع پذیر ہونا (حادثہ، حدوث)", "بات چیت کرنا (تحدیث، حدیث)"], distractorRoots:["خ ب ر","و ح ی","ز ل ل"], distractorMeanings:["خبر، اطلاع","وحی کرنا، اشارہ کرنا","لرزنا، زلزلہ آنا"],
+  derived:[
+    {word:"تُحَدِّثُ", pos:"فعل مضارع", meaning:"وہ (زمین) بیان کرے گی", ref:"الزلزلة 99:4"},
+    {word:"فَحَدِّثْ", pos:"فعل امر", meaning:"پس بیان کر", ref:"الضحى 93:11"},
+    {word:"حَدِيثُ مُوسَىٰ", pos:"اسم مرکب", meaning:"موسیٰ کا قصہ/خبر", ref:"النازعات 79:15"}
+  ]},
+{ id:4, verified:true, root:"خ ب ر", meaning:"خبر، اطلاع", meanings:["خبر، اطلاع دینا", "کسی چیز کی حقیقت سے پوری طرح باخبر ہونا (خبیر — اللہ کا صفاتی نام)", "آزمانا، تجربہ کر کے جاننا (اختبار)"], distractorRoots:["ح د ث","ش ت ت","ث ق ل"], distractorMeanings:["بیان کرنا، بتانا","بکھرا ہوا، الگ الگ","بھاری ہونا، بوجھ"],
+  derived:[
+    {word:"أَخْبَارَهَا", pos:"اسم جمع", meaning:"اپنی خبریں", ref:"الزلزلة 99:4"},
+    {word:"اللَّطِيفُ الْخَبِيرُ", pos:"اسم صفت مرکب", meaning:"باریک بین اور پوری طرح باخبر", ref:"الملك 67:14"},
+    {word:"خَبِيرًا", pos:"اسم صفت", meaning:"پوری طرح باخبر (ذات)", ref:"الفرقان 25:59"}
+  ]},
+{ id:5, verified:true, root:"و ح ی", meaning:"وحی کرنا، اشارہ کرنا", meanings:["وحی کرنا، پیغام پہنچانا (انبیاء کی طرف)", "اشارہ کرنا، خفیہ طور پر کچھ بتانا (عام معنی)", "کسی کے دل میں کوئی بات ڈال دینا (الہام کے قریب معنی)"], distractorRoots:["ص د ر","ر أ ي","ذ ر ر"], distractorMeanings:["نکلنا، واپس لوٹنا","دیکھنا","ذرہ، نہایت باریک چیز"],
+  derived:[
+    {word:"أَوْحَىٰ لَهَا", pos:"فعل ماضی مرکب", meaning:"اس (رب) نے اسے حکم/اشارہ کیا", ref:"الزلزلة 99:5"},
+    {word:"أَوْحَيْنَا إِلَىٰ مُوسَىٰ", pos:"فعل ماضی مرکب", meaning:"ہم نے موسیٰ کی طرف وحی کی", ref:"طه 20:77"},
+    {word:"فَأَوْحَىٰ إِلَيْهِمْ", pos:"فعل ماضی مرکب", meaning:"پس اس نے انہیں اشارہ کیا", ref:"مريم 19:11"}
+  ]},
+{ id:6, verified:true, root:"ص د ر", meaning:"نکلنا، واپس لوٹنا", meanings:["کسی جگہ سے نکل کر واپس آنا/جانا (بنیادی معنی)", "سینہ، دل (صدر — اسی مادّے سے، جذبات کا مرکز)", "کسی بات کا سرچشمہ یا آغاز ہونا (مصدر — اسی سے)"], distractorRoots:["و ح ی","ز ل ل","خ ب ر"], distractorMeanings:["وحی کرنا، اشارہ کرنا","لرزنا، زلزلہ آنا","خبر، اطلاع"],
+  derived:[
+    {word:"يَصْدُرُ النَّاسُ", pos:"فعل مضارع مرکب", meaning:"لوگ نکلیں گے (الگ الگ گروہوں میں)", ref:"الزلزلة 99:6"},
+    {word:"يُصْدِرَ الرِّعَاءُ", pos:"فعل مضارع مرکب", meaning:"چرواہے (اپنے جانور) واپس لے جائیں", ref:"القصص 28:23"},
+    {word:"صُدُورَ قَوْمٍ مُّؤْمِنِينَ", pos:"اسم مرکب", meaning:"مومن لوگوں کے سینے", ref:"التوبة 9:14"}
+  ]},
+{ id:7, verified:true, root:"ش ت ت", meaning:"بکھرا ہوا، الگ الگ", meanings:["منتشر، بکھرا ہوا ہونا", "مختلف اور جدا جدا ہونا (تفرق کے قریب معنی)"], distractorRoots:["خ ب ر","ث ق ل","ح د ث"], distractorMeanings:["خبر، اطلاع","بھاری ہونا، بوجھ","بیان کرنا، بتانا"],
+  derived:[
+    {word:"أَشْتَاتًا", pos:"اسم حال جمع", meaning:"الگ الگ گروہوں کی صورت میں", ref:"الزلزلة 99:6"},
+    {word:"أَشْتَاتًا", pos:"اسم حال جمع", meaning:"الگ الگ (کھانا)", ref:"النور 24:61"},
+    {word:"لَشَتَّىٰ", pos:"اسم صفت", meaning:"یقیناً مختلف قسم کی", ref:"الليل 92:4"}
+  ]},
+{ id:8, verified:true, root:"ذ ر ر", meaning:"ذرہ، نہایت باریک چیز", meanings:["نہایت چھوٹا ذرہ (جیسے دھوپ میں نظر آنے والا باریک ذرہ)", "بکھیرنا، چھڑکنا (ذرّ کا بنیادی فعلی معنی)", "اولاد، نسل (ذُرِّیّہ — اسی مادّے سے)"], distractorRoots:["ر أ ي","ش ت ت","و ح ی"], distractorMeanings:["دیکھنا","بکھرا ہوا، الگ الگ","وحی کرنا، اشارہ کرنا"],
+  derived:[
+    {word:"مِثْقَالَ ذَرَّةٍ", pos:"اسم مضاف الیہ", meaning:"ذرہ برابر (وزن)", ref:"الزلزلة 99:7"},
+    {word:"ذُرِّيَّةً ضِعَافًا", pos:"اسم مرکب", meaning:"کمزور اولاد", ref:"النساء 4:9"},
+    {word:"ذُرِّيَّتَهُمْ", pos:"اسم مضاف", meaning:"ان کی اولاد و نسل", ref:"الأعراف 7:172"}
+  ]},
+{ id:9, verified:true, root:"ر أ ي", meaning:"دیکھنا", meanings:["آنکھ سے دیکھنا", "دل سے سمجھنا، رائے قائم کرنا", "خواب دیکھنا (رؤیا)"], distractorRoots:["ذ ر ر","ص د ر","ز ل ل"], distractorMeanings:["ذرہ، نہایت باریک چیز","نکلنا، واپس لوٹنا","لرزنا، زلزلہ آنا"],
+  derived:[
+    {word:"لِّيُرَوْا أَعْمَالَهُمْ", pos:"فعل مضارع مجہول مرکب", meaning:"تاکہ انہیں ان کے اعمال دکھائے جائیں", ref:"الزلزلة 99:6"},
+    {word:"يَرَهُ", pos:"فعل مضارع", meaning:"وہ اسے دیکھ لے گا", ref:"الزلزلة 99:7"},
+    {word:"أَرَأَيْتَ الَّذِي يُكَذِّبُ", pos:"فعل ماضی استفہامی مرکب", meaning:"کیا تو نے اس شخص کو دیکھا جو جھٹلاتا ہے", ref:"الماعون 107:1"}
+  ]}
+]
+  },
+  takathur: {
+    key:"takathur", titleAr:"سورۃ التکاثر", titleUr:"آیات ۱ تا ۸", cardDesc:"11 جڑیں — دنیاوی کثرت کی دوڑ",
+    roots: [
+{ id:1, verified:true, root:"ل ه و", meaning:"غافل کر دینا، مشغول کر دینا", meanings:["کسی اہم چیز سے غافل کر دینا، توجہ ہٹا دینا (المفردات کے مطابق بنیادی معنی)", "کھیل کود، دل بہلاوا (لہو و لعب)", "کسی چیز میں محو ہو کر باقی سب کچھ بھول جانا"], distractorRoots:["ك ث ر","ز و ر","ق ب ر"], distractorMeanings:["زیادہ ہونا، کثرت","ملاقات کے لیے جانا","قبر"],
+  derived:[
+    {word:"أَلْهَاكُمُ", pos:"فعل ماضی", meaning:"تمہیں غافل کر دیا", ref:"التكاثر 102:1"},
+    {word:"لَعِبٌ وَلَهْوٌ", pos:"اسم مرکب", meaning:"کھیل اور دل بہلاوا", ref:"الأنعام 6:32"},
+    {word:"لَاهِيَةً قُلُوبُهُمْ", pos:"اسم حال مرکب", meaning:"ان کے دل غافل ہیں", ref:"الأنبياء 21:3"}
+  ]},
+{ id:2, verified:true, root:"ك ث ر", meaning:"زیادہ ہونا، کثرت", meanings:["زیادہ، بہت ہونا", "ایک دوسرے پر تعداد و مال میں فخر کرنا (تکاثر)", "بہتات، افراط (اسمی صورت میں)"], distractorRoots:["ل ه و","ق ب ر","ع ل م"], distractorMeanings:["غافل کر دینا، مشغول کر دینا","قبر","جاننا"],
+  derived:[
+    {word:"التَّكَاثُرُ", pos:"مصدر", meaning:"ایک دوسرے پر مال و اولاد کی کثرت میں فخر کرنا", ref:"التكاثر 102:1"},
+    {word:"الْكَوْثَرَ", pos:"اسم", meaning:"خیرِ کثیر (بےشمار بھلائی)", ref:"الكوثر 108:1"},
+    {word:"وَاذْكُرُوا اللَّهَ كَثِيرًا", pos:"اسم مرکب", meaning:"اور اللہ کو بہت یاد کرو", ref:"الأحزاب 33:41"}
+  ]},
+{ id:3, verified:true, root:"ز و ر", meaning:"ملاقات کے لیے جانا", meanings:["کسی سے ملنے جانا، زیارت کرنا", "کسی چیز کو حقیقت سے ہٹا کر پیش کرنا (زور — جھوٹ، تحریف)"], distractorRoots:["ق ب ر","ی ق ن","س أ ل"], distractorMeanings:["قبر","یقین","پوچھنا، سوال کرنا"],
+  derived:[
+    {word:"زُرْتُمُ", pos:"فعل ماضی", meaning:"تم نے زیارت کی (قبروں کی)", ref:"التكاثر 102:2"},
+    {word:"قَوْلَ الزُّورِ", pos:"اسم مرکب", meaning:"جھوٹی بات", ref:"الحج 22:30"},
+    {word:"لَا يَشْهَدُونَ الزُّورَ", pos:"فعل مضارع مرکب", meaning:"وہ جھوٹی گواہی میں حاضر نہیں ہوتے", ref:"الفرقان 25:72"}
+  ]},
+{ id:4, verified:true, root:"ق ب ر", meaning:"قبر", meanings:["قبر، دفن کرنے کی جگہ", "دفن کرنا (فعل کی صورت میں)"], distractorRoots:["ل ه و","ج ح م","ن ع م"], distractorMeanings:["غافل کر دینا، مشغول کر دینا","بھڑکتی آگ، جہنم","نعمت، آرام و راحت"],
+  derived:[
+    {word:"الْمَقَابِرَ", pos:"اسم جمع", meaning:"قبریں", ref:"التكاثر 102:2"},
+    {word:"فَأَقْبَرَهُ", pos:"فعل ماضی", meaning:"پھر اسے دفن کرایا", ref:"عبس 80:21"},
+    {word:"فِي الْقُبُورِ", pos:"اسم مجرور جمع", meaning:"قبروں میں", ref:"فاطر 35:22"}
+  ]},
+{ id:5, verified:true, root:"ع ل م", meaning:"جاننا", meanings:["جاننا، علم رکھنا", "سکھانا، تعلیم دینا", "نشان، علامت (عَلَم)"], distractorRoots:["ی ق ن","ر أ ي","س أ ل"], distractorMeanings:["یقین","دیکھنا","پوچھنا، سوال کرنا"],
+  derived:[
+    {word:"سَوْفَ تَعْلَمُونَ", pos:"فعل مضارع مرکب", meaning:"عنقریب تم جان لو گے", ref:"التكاثر 102:3"},
+    {word:"وَعَلَّمَ آدَمَ", pos:"فعل ماضی مرکب", meaning:"اور آدم کو (سب نام) سکھائے", ref:"البقرة 2:31"},
+    {word:"يَعْلَمُ السِّرَّ وَأَخْفَى", pos:"فعل مضارع مرکب", meaning:"وہ راز اور اس سے بھی پوشیدہ بات جانتا ہے", ref:"طه 20:7"}
+  ]},
+{ id:6, verified:true, root:"ی ق ن", meaning:"یقین", meanings:["پکا اور شک سے پاک علم، یقین", "کسی بات کا حتمی طور پر ثابت ہو جانا"], distractorRoots:["ز و ر","ع ي ن","ن ع م"], distractorMeanings:["ملاقات کے لیے جانا","آنکھ؛ عین، چشمہ","نعمت، آرام و راحت"],
+  derived:[
+    {word:"عِلْمَ الْيَقِينِ", pos:"اسم مرکب", meaning:"یقینی علم", ref:"التكاثر 102:5"},
+    {word:"عَيْنَ الْيَقِينِ", pos:"اسم مرکب", meaning:"آنکھوں دیکھا یقین", ref:"التكاثر 102:7"},
+    {word:"حَقُّ الْيَقِينِ", pos:"اسم مرکب", meaning:"یقین کی حقیقت", ref:"الواقعة 56:95"}
+  ]},
+{ id:7, verified:true, root:"ر أ ي", meaning:"دیکھنا", meanings:["آنکھ سے دیکھنا", "دل سے سمجھنا، رائے قائم کرنا", "خواب دیکھنا (رؤیا)"], distractorRoots:["ع ل م","ج ح م","س أ ل"], distractorMeanings:["جاننا","بھڑکتی آگ، جہنم","پوچھنا، سوال کرنا"],
+  derived:[
+    {word:"لَتَرَوُنَّ الْجَحِيمَ", pos:"فعل مضارع تاکیدی مرکب", meaning:"تم ضرور جہنم کو دیکھو گے", ref:"التكاثر 102:6"},
+    {word:"لَتَرَوُنَّهَا", pos:"فعل مضارع تاکیدی", meaning:"تم ضرور اسے دیکھو گے", ref:"التكاثر 102:7"},
+    {word:"أَرَأَيْتَ الَّذِي يُكَذِّبُ", pos:"فعل ماضی استفہامی مرکب", meaning:"کیا تو نے اس شخص کو دیکھا جو جھٹلاتا ہے", ref:"الماعون 107:1"}
+  ]},
+{ id:8, verified:true, root:"ج ح م", meaning:"بھڑکتی آگ، جہنم", meanings:["شدت سے بھڑکنے والی آگ", "جہنم کا ایک نام (الجحیم)"], distractorRoots:["ق ب ر","ن ع م","ز و ر"], distractorMeanings:["قبر","نعمت، آرام و راحت","ملاقات کے لیے جانا"],
+  derived:[
+    {word:"الْجَحِيمَ", pos:"اسم", meaning:"بھڑکتی آگ (جہنم)", ref:"التكاثر 102:6"},
+    {word:"وَبُرِّزَتِ الْجَحِيمُ", pos:"فعل ماضی مجہول مرکب", meaning:"اور جہنم کھول کر سامنے لائی گئی", ref:"الشعراء 26:91"},
+    {word:"أَصْحَابُ الْجَحِيمِ", pos:"اسم مرکب", meaning:"جہنمی لوگ", ref:"البقرة 2:119"}
+  ]},
+{ id:9, verified:true, root:"ع ي ن", meaning:"آنکھ؛ عین (وہی چیز)، چشمہ", meanings:["آنکھ (دیکھنے کا عضو)", "چشمہ، پانی کا سرچشمہ", "وہی چیز، بعینہٖ (تاکیدی معنی، جیسے 'عین الیقین')"], distractorRoots:["ی ق ن","ل ه و","ك ث ر"], distractorMeanings:["یقین","غافل کر دینا، مشغول کر دینا","زیادہ ہونا، کثرت"],
+  derived:[
+    {word:"عَيْنَ الْيَقِينِ", pos:"اسم مرکب", meaning:"آنکھوں دیکھا یقین (بعینہٖ یقین)", ref:"التكاثر 102:7"},
+    {word:"عَيْنٌ جَارِيَةٌ", pos:"اسم مرکب", meaning:"بہتا ہوا چشمہ", ref:"الغاشية 88:12"},
+    {word:"بِأَعْيُنِنَا", pos:"اسم مجرور مضاف", meaning:"ہماری آنکھوں کے سامنے (نگرانی میں)", ref:"هود 11:37"}
+  ]},
+{ id:10, verified:true, root:"س أ ل", meaning:"پوچھنا، سوال کرنا", meanings:["پوچھنا، دریافت کرنا", "مانگنا، سوال کرنا (کسی سے کچھ طلب کرنا)", "جوابدہ ٹھہرانا (مسئولیت — اسی سے)"], distractorRoots:["ر أ ي","ز و ر","ك ث ر"], distractorMeanings:["دیکھنا","ملاقات کے لیے جانا","زیادہ ہونا، کثرت"],
+  derived:[
+    {word:"لَتُسْأَلُنَّ", pos:"فعل مضارع تاکیدی مجہول", meaning:"تم ضرور پوچھے جاؤ گے", ref:"التكاثر 102:8"},
+    {word:"وَاسْأَلُوا اللَّهَ مِن فَضْلِهِ", pos:"فعل امر مرکب", meaning:"اور اللہ سے اس کا فضل مانگو", ref:"النساء 4:32"},
+    {word:"وَإِذَا سَأَلَكَ عِبَادِي عَنِّي", pos:"فعل ماضی مرکب", meaning:"اور جب میرے بندے تجھ سے میرے بارے میں پوچھیں", ref:"البقرة 2:186"}
+  ]},
+{ id:11, verified:true, root:"ن ع م", meaning:"نعمت، آرام و راحت", meanings:["آرام و راحت میں ہونا، خوشحالی", "نعمت، انعام (اسمی صورت میں)", "ہاں کہنا (نَعَمْ — ایک اور مختلف مگر ہم شکل استعمال)"], distractorRoots:["ج ح م","ق ب ر","ل ه و"], distractorMeanings:["بھڑکتی آگ، جہنم","قبر","غافل کر دینا، مشغول کر دینا"],
+  derived:[
+    {word:"النَّعِيمِ", pos:"اسم", meaning:"نعمتوں (کے بارے میں)", ref:"التكاثر 102:8"},
+    {word:"وَأَسْبَغَ عَلَيْكُمْ نِعَمَهُ", pos:"فعل ماضی مرکب", meaning:"اور اس نے تم پر اپنی نعمتیں مکمل کر دیں", ref:"لقمان 31:20"},
+    {word:"جَنَّاتِ النَّعِيمِ", pos:"اسم مرکب", meaning:"نعمتوں والی جنتیں", ref:"الواقعة 56:12"}
+  ]}
+]
+  },
+  asr: {
+    key:"asr", titleAr:"سورۃ العصر", titleUr:"آیات ۱ تا ۳", cardDesc:"9 جڑیں — وقت کی قسم",
+    roots: [
+{ id:1, verified:true, root:"ع ص ر", meaning:"زمانہ، وقت", meanings:["زمانہ، وقت (خصوصاً دن کا آخری حصہ، عصر کی نماز کا وقت)", "نچوڑنا، دبانا (بنیادی فعلی معنی، جیسے پھل نچوڑنا)", "پناہ کی جگہ، سہارا"], distractorRoots:["ع س ر","ن ص ر","ق ص ر"], distractorMeanings:["مشکل، تنگی","مدد کرنا، غلبہ دینا","کم پڑ جانا، کوتاہی کرنا"], rootFamilyFact:"ع ص ر اور ع س ر صرف درمیانی حرف کے فرق سے مختلف ہیں: پہلا 'وقت/زمانہ' ہے، دوسرا 'مشکل و تنگی' ہے — جیسے سورۃ الشرح میں 'العسر' اور 'الیسر' کا ذکر۔",
+  derived:[
+    {word:"وَالْعَصْرِ", pos:"اسم قسم", meaning:"زمانے کی قسم", ref:"العصر 103:1"},
+    {word:"أَعْصِرُ خَمْرًا", pos:"فعل مضارع مرکب", meaning:"میں انگور نچوڑ رہا ہوں", ref:"يوسف 12:36"},
+    {word:"يَعْصِرُونَ", pos:"فعل مضارع جمع", meaning:"وہ (پھل) نچوڑیں گے", ref:"يوسف 12:49"}
+  ]},
+{ id:2, verified:true, root:"ا ن س", meaning:"انسان", meanings:["انسان، بشر", "مانوس ہونا، انسیت رکھنا (وحشت کی ضد)", "نظر آنا، دکھائی دینا"], distractorRoots:["ن س ي","ا س ي","ا ن ف"], distractorMeanings:["بھول جانا","غم کھانا، افسوس کرنا","ناک؛ تکبر کرنا"], rootFamilyFact:"ا ن س اور ن س ي کا گہرا لغوی تعلق ہے — بعض ماہرینِ لغت کے نزدیک 'انسان' دراصل 'نسیان' (بھول جانا) سے ماخوذ ہے، جبکہ دوسروں کے نزدیک 'انس' (مانوس ہونا) سے۔",
+  derived:[
+    {word:"الْإِنسَانَ", pos:"اسم", meaning:"انسان", ref:"العصر 103:2"},
+    {word:"الْإِنسَانُ", pos:"اسم", meaning:"انسان", ref:"البلد 90:4"},
+    {word:"آنَسَ ... نَارًا", pos:"فعل ماضی مرکب", meaning:"اس نے آگ دیکھی", ref:"القصص 28:29"}
+  ]},
+{ id:3, verified:true, root:"خ س ر", meaning:"نقصان، خسارہ", meanings:["نقصان، خسارہ اٹھانا", "کسی چیز کے سرمائے کا ضائع ہو جانا", "گمراہ ہونا، ہلاکت میں پڑنا (مجازی معنی)"], distractorRoots:["ح س ر","ك س ر","خ ي ر"], distractorMeanings:["حسرت کرنا، تھک جانا","توڑنا","بھلائی، بہتر"], rootFamilyFact:"خ س ر اور ح س ر ملتے جلتے حروف رکھتے ہیں (خ اور ح دونوں حلقی آوازیں ہیں) — پہلا 'نقصان' ہے، دوسرا 'حسرت/پچھتاوا' ہے۔",
+  derived:[
+    {word:"لَفِي خُسْرٍ", pos:"اسم مجرور", meaning:"یقیناً خسارے میں ہے", ref:"العصر 103:2"},
+    {word:"خَسِرَ الدُّنْيَا وَالْآخِرَةَ", pos:"فعل ماضی مرکب", meaning:"اس نے دنیا اور آخرت دونوں کا نقصان اٹھایا", ref:"الحج 22:11"},
+    {word:"خَسِرُوا أَنفُسَهُمْ", pos:"فعل ماضی مرکب", meaning:"انہوں نے اپنے آپ کو خسارے میں ڈالا", ref:"الأنعام 6:12"}
+  ]},
+{ id:4, verified:true, root:"أ م ن", meaning:"ایمان لانا، امن میں ہونا", meanings:["دل کی گہرائی سے تصدیق کرنا، ایمان لانا", "امن و سکون میں ہونا، خوف سے محفوظ ہونا", "امانت دار ہونا، بھروسہ کیا جانا"], distractorRoots:["أ م ر","أ ذ ن","أ م ل"], distractorMeanings:["حکم دینا، معاملہ","اجازت","امید رکھنا"], rootFamilyFact:"أ م ن اور أ م ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'ایمان لانا/امن' ہے، دوسرا 'حکم دینا/معاملہ' ہے۔",
+  derived:[
+    {word:"آمَنُوا", pos:"فعل ماضی جمع", meaning:"وہ ایمان لائے", ref:"العصر 103:3"},
+    {word:"وَآمَنَهُم مِّنْ خَوْفٍ", pos:"فعل ماضی مرکب", meaning:"اور انہیں خوف سے امن دیا", ref:"قريش 106:4"},
+    {word:"لِأَمَانَاتِهِمْ رَاعُونَ", pos:"اسم مرکب", meaning:"اپنی امانتوں کی حفاظت کرنے والے", ref:"المؤمنون 23:8"}
+  ]},
+{ id:5, verified:true, root:"ع م ل", meaning:"عمل کرنا، کام کرنا", meanings:["کام کرنا، عمل کرنا", "کسی کام کو مہارت سے انجام دینا (عامل)", "اثر و نتیجہ ڈالنا"], distractorRoots:["ع ل م","ع م د","ع م ر"], distractorMeanings:["جاننا","ارادہ کرنا، ستون","عمر، آباد کرنا"], rootFamilyFact:"ع م ل اور ع ل م بالکل وہی تین حروف رکھتے ہیں مگر ترتیب مختلف ہے — پہلا 'عمل کرنا' ہے، دوسرا 'جاننا' ہے۔ یہ عربی میں حروف کی ترتیب کی اہمیت کی بہترین مثال ہے۔",
+  derived:[
+    {word:"وَعَمِلُوا الصَّالِحَاتِ", pos:"فعل ماضی مرکب", meaning:"اور نیک عمل کیے", ref:"العصر 103:3"},
+    {word:"يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا", pos:"فعل مضارع مرکب", meaning:"ذرہ برابر نیکی کرے", ref:"الزلزلة 99:7"},
+    {word:"اعْمَلُوا مَا شِئْتُمْ", pos:"فعل امر مرکب", meaning:"جو چاہو کرو", ref:"فصلت 41:40"}
+  ]},
+{ id:6, verified:true, root:"ص ل ح", meaning:"نیک ہونا، درست ہونا", meanings:["نیک، اچھا ہونا", "بگڑی ہوئی چیز کو درست کرنا (اصلاح)", "کسی سے صلح کرنا، جھگڑا ختم کرنا (مصالحت)"], distractorRoots:["ص ل و","ص ل ب","ف ل ح"], distractorMeanings:["نماز پڑھنا","سخت ہونا، سولی دینا","کامیاب ہونا، کھیتی کرنا"], rootFamilyFact:"ص ل ح اور ص ل و پہلے دو حروف میں ایک جیسے ہیں — پہلا 'نیکی/اصلاح' ہے، دوسرا 'نماز' ہے۔",
+  derived:[
+    {word:"الصَّالِحَاتِ", pos:"اسم جمع", meaning:"نیک اعمال", ref:"العصر 103:3"},
+    {word:"يُصْلِحَا بَيْنَهُمَا صُلْحًا", pos:"فعل مضارع مرکب", meaning:"دونوں آپس میں صلح کر لیں", ref:"النساء 4:128"},
+    {word:"وَأَصْلِحْ لِي فِي ذُرِّيَّتِي", pos:"فعل امر مرکب", meaning:"اور میری اولاد میں میرے لیے اصلاح فرما", ref:"الأحقاف 46:15"}
+  ]},
+{ id:7, verified:true, root:"و ص ي", meaning:"نصیحت کرنا، وصیت کرنا", meanings:["ایک دوسرے کو نصیحت کرنا، تاکید کرنا", "مرنے سے پہلے وصیت کرنا", "حکم دینا، ہدایت کرنا (اللہ کی طرف سے)"], distractorRoots:["و ص ل","و ص ف","ح ص ي"], distractorMeanings:["جڑنا، پہنچنا","بیان کرنا، صفت بتانا","گننا، شمار کرنا"], rootFamilyFact:"و ص ي اور و ص ل پہلے دو حروف میں ایک جیسے ہیں — پہلا 'نصیحت کرنا/وصیت' ہے، دوسرا 'جوڑنا/پہنچنا' ہے۔",
+  derived:[
+    {word:"وَتَوَاصَوْا بِالْحَقِّ", pos:"فعل ماضی مرکب", meaning:"اور ایک دوسرے کو حق کی نصیحت کی", ref:"العصر 103:3"},
+    {word:"وَتَوَاصَوْا بِالصَّبْرِ", pos:"فعل ماضی مرکب", meaning:"اور ایک دوسرے کو صبر کی نصیحت کی", ref:"العصر 103:3"},
+    {word:"يُوصِيكُمُ اللَّهُ فِي أَوْلَادِكُمْ", pos:"فعل مضارع مرکب", meaning:"اللہ تمہیں تمہاری اولاد کے بارے میں ہدایت دیتا ہے", ref:"النساء 4:11"}
+  ]},
+{ id:8, verified:true, root:"ح ق ق", meaning:"حق، سچائی", meanings:["سچائی، حقیقت", "کسی چیز کا واجب و ثابت ہونا", "پکا کرنا، ثابت کر دینا (تحقیق)"], distractorRoots:["ح ق ن","ح ق ب","ح ق د"], distractorMeanings:["روک لینا، محفوظ رکھنا","لمبی مدت، زمانہ","کینہ رکھنا"], rootFamilyFact:"ح ق ق، ح ق ب اور ح ق د تینوں پہلے دو حروف میں ایک جیسے ہیں — 'حق' سچائی ہے، 'حُقب' ایک لمبی مدت ہے، اور 'حقد' دل میں کینہ رکھنا ہے۔",
+  derived:[
+    {word:"بِالْحَقِّ", pos:"اسم مجرور", meaning:"حق کے ساتھ", ref:"العصر 103:3"},
+    {word:"جَاءَ الْحَقُّ وَزَهَقَ الْبَاطِلُ", pos:"اسم مرکب", meaning:"حق آ گیا اور باطل مٹ گیا", ref:"الإسراء 17:81"},
+    {word:"حَقَّتْ كَلِمَتُ رَبِّكَ", pos:"فعل ماضی مرکب", meaning:"تیرے رب کی بات ثابت ہو گئی", ref:"يونس 10:33"}
+  ]},
+{ id:9, verified:true, root:"ص ب ر", meaning:"صبر کرنا", meanings:["مشکل پر ثابت قدم رہنا، صبر کرنا", "کسی چیز کو روک رکھنا (نفس کو خواہشات سے روکنا)", "سخت پتھر، پہاڑ کی چوٹی (ایک اور اسمی استعمال)"], distractorRoots:["ص د ر","ص غ ر","ك ب ر"], distractorMeanings:["نکلنا، سینہ","چھوٹا ہونا","بڑا ہونا"], rootFamilyFact:"ص ب ر اور ص د ر پہلے اور آخری حرف میں ایک جیسے ہیں — پہلا 'صبر کرنا' ہے، دوسرا 'نکلنا/سینہ' ہے۔",
+  derived:[
+    {word:"وَتَوَاصَوْا بِالصَّبْرِ", pos:"فعل ماضی مرکب", meaning:"اور ایک دوسرے کو صبر کی نصیحت کی", ref:"العصر 103:3"},
+    {word:"وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", pos:"فعل امر مرکب", meaning:"صبر اور نماز کے ذریعے مدد مانگو", ref:"البقرة 2:45"},
+    {word:"يُوَفَّى الصَّابِرُونَ أَجْرَهُم", pos:"فعل مضارع مرکب", meaning:"صبر کرنے والوں کو ان کا اجر پورا دیا جائے گا", ref:"الزمر 39:10"}
+  ]}
+]
+  },
+  fil: {
+    key:"fil", titleAr:"سورۃ الفیل", titleUr:"آیات ۱ تا ۵", cardDesc:"13 جڑیں — ہاتھی والوں کا انجام",
+    roots: [
+{ id:1, verified:true, root:"ر أ ي", meaning:"دیکھنا", meanings:["آنکھ سے دیکھنا", "دل سے سمجھنا، رائے قائم کرنا", "خواب دیکھنا (رؤیا)"], distractorRoots:["ر أ س","ر أ ف","ر و ي"], distractorMeanings:["سر، سردار ہونا","نرم دلی، رحم کرنا","بیان کرنا، روایت کرنا"], rootFamilyFact:"ر أ ي اور ر أ س پہلے دو حروف میں ایک جیسے ہیں — پہلا 'دیکھنا' ہے، دوسرا 'سر/سردار' ہے۔",
+  derived:[
+    {word:"تَرَ", pos:"فعل مضارع مجزوم", meaning:"کیا تو نے دیکھا", ref:"الفيل 105:1"},
+    {word:"أَرَأَيْتَ", pos:"فعل ماضی استفہامی", meaning:"کیا تو نے دیکھا", ref:"الماعون 107:1"},
+    {word:"رَأَىٰ", pos:"فعل ماضی", meaning:"اس نے دیکھا", ref:"الأنعام 6:76"}
+  ]},
+{ id:2, verified:true, root:"ف ع ل", meaning:"کرنا، کام کرنا", meanings:["کرنا، انجام دینا", "کسی چیز کا مسلسل و مکمل طور پر کرنے والا ہونا (فعّال)", "اثر ڈالنا، نتیجہ پیدا کرنا"], distractorRoots:["ف ع م","ج ع ل","ف ص ل"], distractorMeanings:["بھرپور، لبریز ہونا","بنانا، ٹھہرانا","الگ کرنا، فیصلہ کرنا"], rootFamilyFact:"ف ع ل اور ج ع ل صرف پہلے حرف میں مختلف ہیں — پہلا 'کرنا' ہے، دوسرا 'بنانا/ٹھہرانا' ہے، اور دونوں اسی سورت میں موجود ہیں۔",
+  derived:[
+    {word:"فَعَلَ", pos:"فعل ماضی", meaning:"اس نے کیا", ref:"الفيل 105:1"},
+    {word:"فَعَّالٌ", pos:"اسم مبالغہ", meaning:"جو چاہے کرنے والا", ref:"البروج 85:16"},
+    {word:"يَفْعَلُونَ", pos:"فعل مضارع جمع", meaning:"وہ کرتے ہیں", ref:"المائدة 5:79"}
+  ]},
+{ id:3, verified:true, root:"ص ح ب", meaning:"ساتھی، والا", meanings:["ساتھ رہنا، رفاقت اختیار کرنا", "کسی چیز کا مالک یا حامل ہونا ('صاحب' — کسی چیز والا)", "دوستی و تعلق میں رہنا"], distractorRoots:["ص ح ف","ص ح و","ص ح ح"], distractorMeanings:["ورق، صحیفہ","صاف موسم، ہوش میں ہونا","درست، صحیح ہونا"], rootFamilyFact:"ص ح ب اور ص ح ف پہلے دو حروف میں ایک جیسے ہیں — پہلا 'ساتھی' ہے، دوسرا 'ورق/صحیفہ' ہے۔",
+  derived:[
+    {word:"بِأَصْحَابِ", pos:"اسم مجرور", meaning:"والوں کے ساتھ", ref:"الفيل 105:1"},
+    {word:"أَصْحَابُ", pos:"اسم جمع", meaning:"جنت والے", ref:"الأعراف 7:42"},
+    {word:"صَاحِبُكُمْ", pos:"اسم مضاف", meaning:"تمہارا ساتھی", ref:"التكوير 81:22"}
+  ]},
+{ id:4, verified:true, root:"ف ي ل", meaning:"ہاتھی", meanings:["ہاتھی — ایک خاص جانور کا نام", "یہ لفظ پورے قرآن میں صرف اسی ایک سورت میں آیا ہے (قرآن میں غیر مکرر لفظ)"], distractorRoots:["و ي ل","ن ي ل","ك ي ل"], distractorMeanings:["ہلاکت، افسوس کا مقام","حاصل کرنا، پہنچنا","ناپنا، پیمانہ"], rootFamilyFact:"ف ي ل اور و ي ل آخری دو حروف میں ایک جیسے ہیں — پہلا 'ہاتھی' ہے، دوسرا 'ہلاکت/افسوس' ہے۔ نوٹ: 'فیل' پورے قرآن میں صرف اسی سورت میں آیا ہے۔",
+  derived:[
+    {word:"الْفِيلِ", pos:"اسم", meaning:"ہاتھی", ref:"الفيل 105:1"},
+    {word:"فِيَلَة", pos:"اسم جمع", meaning:"ہاتھی (جمع) — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"أَفْيَال", pos:"اسم جمع", meaning:"ہاتھی (ایک اور جمع) — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:5, verified:true, root:"ج ع ل", meaning:"بنانا، ٹھہرانا", meanings:["کسی چیز کو کچھ بنا دینا یا ٹھہرا دینا", "پیدا کرنا، مقرر کرنا", "کسی حالت سے دوسری حالت میں بدل دینا"], distractorRoots:["ف ع ل","ج ع ر","ج ب ل"], distractorMeanings:["کرنا، کام کرنا","(نایاب مادّہ)","پیدا کرنا، پہاڑ"], rootFamilyFact:"ج ع ل اور ف ع ل صرف پہلے حرف میں مختلف ہیں — پہلا 'بنانا/ٹھہرانا' ہے، دوسرا 'کرنا' ہے۔",
+  derived:[
+    {word:"يَجْعَلْ", pos:"فعل مضارع مجزوم", meaning:"کیا اس نے بنا نہیں دیا", ref:"الفيل 105:2"},
+    {word:"جَعَلَهُمْ", pos:"فعل ماضی مرکب", meaning:"اس نے انہیں بنا دیا", ref:"الفيل 105:5"},
+    {word:"جَعَلْنَا", pos:"فعل ماضی", meaning:"ہم نے بنایا", ref:"الأنبياء 21:30"}
+  ]},
+{ id:6, verified:true, root:"ك ي د", meaning:"چال، تدبیر", meanings:["چال چلنا، خفیہ تدبیر کرنا", "زور آزمائی کرنا، سختی سے کوشش کرنا"], distractorRoots:["ك ي س","ص ي د","ب ي د"], distractorMeanings:["ہوشیار، عقلمند ہونا","شکار کرنا","تاہم، مگر (نادر استعمال)"], rootFamilyFact:"ك ي د اور ك ي س پہلے دو حروف میں ایک جیسے ہیں — پہلا 'چال/تدبیر' ہے، دوسرا 'ہوشیاری' ہے۔",
+  derived:[
+    {word:"كَيْدَهُمْ", pos:"اسم مضاف", meaning:"ان کی چال", ref:"الفيل 105:2"},
+    {word:"كَيْدَكُنَّ", pos:"اسم مضاف", meaning:"تم عورتوں کی چال", ref:"يوسف 12:28"},
+    {word:"يَكِيدُونَ", pos:"فعل مضارع جمع", meaning:"وہ چال چلتے ہیں", ref:"الطارق 86:15"}
+  ]},
+{ id:7, verified:true, root:"ض ل ل", meaning:"گمراہی، ناکامی", meanings:["راستے سے بھٹک جانا، گمراہ ہونا", "کسی کوشش کا ضائع و بےکار ہو جانا (تضلیل)", "کھو جانا، نظروں سے اوجھل ہونا"], distractorRoots:["ذ ل ل","ظ ل ل","د ل ل"], distractorMeanings:["ذلیل ہونا، نرم ہونا","سایہ، ٹھہرے رہنا","رہنمائی کرنا، دلیل"], rootFamilyFact:"ض ل ل، ذ ل ل اور ظ ل ل تینوں آخری دو حروف میں ایک جیسے ہیں (ل-ل) — صرف پہلا حرف بدلتا ہے، اور ض، ذ، ظ تینوں آوازیں غیر عربی بولنے والوں کے لیے ایک جیسی لگتی ہیں۔ ض ل ل 'گمراہی' ہے، ذ ل ل 'ذلت' ہے، اور ظ ل ل 'سایہ' ہے۔",
+  derived:[
+    {word:"تَضْلِيلٍ", pos:"اسم", meaning:"ناکامی و بربادی میں", ref:"الفيل 105:2"},
+    {word:"الضَّالِّينَ", pos:"اسم فاعل جمع", meaning:"گمراہ لوگ", ref:"الفاتحة 1:7"},
+    {word:"أَضَلَّهُ", pos:"فعل ماضی", meaning:"اس نے اسے گمراہ کیا", ref:"الجاثية 45:23"}
+  ]},
+{ id:8, verified:true, root:"ر س ل", meaning:"بھیجنا", meanings:["کسی کو کسی کام کے لیے بھیجنا", "پیغام پہنچانے والا ہونا (رسول)", "آہستگی و نرمی سے کچھ چھوڑ دینا (ایک اور نادر معنی)"], distractorRoots:["ر س و","ر س م","ر س خ"], distractorMeanings:["لنگر انداز ہونا، ٹھہرنا","نقش بنانا، حکم لکھنا","مضبوطی سے جما ہونا"], rootFamilyFact:"ر س ل، ر س و اور ر س م تینوں پہلے دو حروف میں ایک جیسے ہیں — پہلا 'بھیجنا' ہے، دوسرا 'لنگر انداز ہونا' ہے، تیسرا 'نقش بنانا' ہے۔",
+  derived:[
+    {word:"أَرْسَلَ", pos:"فعل ماضی", meaning:"اس نے بھیجا", ref:"الفيل 105:3"},
+    {word:"أَرْسَلْنَا", pos:"فعل ماضی", meaning:"ہم نے بھیجا", ref:"نوح 71:1"},
+    {word:"الرَّسُولُ", pos:"اسم", meaning:"رسول", ref:"البقرة 2:285"}
+  ]},
+{ id:9, verified:true, root:"ط ي ر", meaning:"پرندہ", meanings:["پرندہ، اڑنے والا جانور", "اڑنا (فعل کی صورت میں)", "بدشگونی، بدفالی (تطیّر — ایک مجازی استعمال)"], distractorRoots:["ط و ر","ط ه ر","ط م ر"], distractorMeanings:["پہاڑ، مرحلہ","پاک ہونا، صاف ہونا","چھپانا، دفن کرنا"], rootFamilyFact:"ط ي ر، ط و ر اور ط ه ر تینوں پہلے اور آخری حرف میں ایک جیسے ہیں (ط___ر) — درمیانی حرف مختلف ہے۔ 'طیر' پرندہ ہے، 'طور' پہاڑ ہے، 'طہر' پاکی ہے۔",
+  derived:[
+    {word:"طَيْرًا", pos:"اسم", meaning:"پرندے", ref:"الفيل 105:3"},
+    {word:"الطَّيْرِ", pos:"اسم", meaning:"پرندوں کی (بولی)", ref:"النمل 27:16"},
+    {word:"طَيْرًا", pos:"اسم", meaning:"ایک پرندہ (اللہ کے حکم سے)", ref:"آل عمران 3:49"}
+  ]},
+{ id:10, verified:true, root:"ر م ي", meaning:"پھینکنا، پتھراؤ کرنا", meanings:["کسی چیز کو زور سے پھینکنا", "تہمت لگانا، الزام دینا (مجازی معنی)"], distractorRoots:["ر م ز","ر م د","ر أ ي"], distractorMeanings:["اشارہ کرنا، علامت","راکھ کے رنگ کا ہونا","دیکھنا"], rootFamilyFact:"ر م ي اور ر أ ي پہلے اور آخری حرف میں ایک جیسے ہیں — پہلا 'پھینکنا' ہے، دوسرا 'دیکھنا' ہے۔",
+  derived:[
+    {word:"تَرْمِيهِم", pos:"فعل مضارع مرکب", meaning:"وہ انہیں مارتی تھیں", ref:"الفيل 105:4"},
+    {word:"يَرْمُونَ", pos:"فعل مضارع جمع", meaning:"وہ تہمت لگاتے ہیں", ref:"النور 24:4"},
+    {word:"رَمَىٰ", pos:"فعل ماضی", meaning:"اس نے پھینکا", ref:"الأنفال 8:17"}
+  ]},
+{ id:11, verified:true, root:"ح ج ر", meaning:"پتھر", meanings:["پتھر، سنگ", "منع کرنا، روک دینا (حجر — قانونی/عقلی پابندی)", "گود (حِجر — بچے کو گود میں لینا)"], distractorRoots:["ه ج ر","ح ج ب","ح ج ج"], distractorMeanings:["ہجرت کرنا، چھوڑ دینا","پردہ کرنا، چھپانا","حج کرنا، دلیل دینا"], rootFamilyFact:"ح ج ر اور ه ج ر آخری دو حروف میں ایک جیسے ہیں — پہلا 'پتھر' ہے، دوسرا 'ہجرت کرنا/چھوڑ دینا' ہے۔",
+  derived:[
+    {word:"بِحِجَارَةٍ", pos:"اسم مجرور", meaning:"پتھروں کے ساتھ", ref:"الفيل 105:4"},
+    {word:"حِجْرًا", pos:"اسم", meaning:"سختی سے منع", ref:"الفرقان 25:22"},
+    {word:"الْحِجْرِ", pos:"اسم", meaning:"حجر (ثمود کی بستی)", ref:"الحجر 15:80"}
+  ]},
+{ id:12, verified:true, root:"ع ص ف", meaning:"چھلکا، تیز آندھی", meanings:["کھیتی کا سوکھا چھلکا/بھوسا", "تیز و تند آندھی (عاصف)", "زور سے اکھاڑ پھینکنا"], distractorRoots:["ع ص ر","ق ص ف","ن ص ف"], distractorMeanings:["زمانہ، نچوڑنا","توڑنا، بمباری کرنا","آدھا حصہ"], rootFamilyFact:"ع ص ف اور ع ص ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'بھوسا/آندھی' ہے، دوسرا 'زمانہ/نچوڑنا' ہے۔",
+  derived:[
+    {word:"كَعَصْفٍ", pos:"اسم مجرور", meaning:"بھوسے کی طرح", ref:"الفيل 105:5"},
+    {word:"عَاصِفٍ", pos:"اسم فاعل", meaning:"تیز آندھی والا (دن)", ref:"إبراهيم 14:18"},
+    {word:"عَصْفًا", pos:"اسم", meaning:"شدت سے اکھاڑنا", ref:"المرسلات 77:2"}
+  ]},
+{ id:13, verified:true, root:"أ ك ل", meaning:"کھانا", meanings:["کھانا، کھا جانا", "پھل، ثمر (اُکُل — جو کھایا جائے)", "کسی کا مال ناحق کھا جانا (مجازی استعمال)"], distractorRoots:["أ ج ل","أ م ل","أ ه ل"], distractorMeanings:["مدت، مہلت","امید رکھنا","گھر والے، اہل ہونا"], rootFamilyFact:"أ ك ل، أ ج ل اور أ م ل تینوں پہلے اور آخری حرف میں ایک جیسے ہیں (أ___ل) — 'اکل' کھانا ہے، 'اجل' مدت ہے، 'امل' امید ہے۔",
+  derived:[
+    {word:"مَّأْكُولٍ", pos:"اسم مفعول", meaning:"کھایا ہوا", ref:"الفيل 105:5"},
+    {word:"كُلُوا", pos:"فعل امر جمع", meaning:"کھاؤ", ref:"البقرة 2:172"},
+    {word:"أُكُلَهَا", pos:"اسم مضاف", meaning:"اس کا پھل", ref:"إبراهيم 14:25"}
+  ]}
+]
+  },
+  quraysh: {
+    key:"quraysh", titleAr:"سورۃ قریش", titleUr:"آیات ۱ تا ۴", cardDesc:"11 جڑیں — قریش کے سفر",
+    roots: [
+{ id:1, verified:true, root:"أ ل ف", meaning:"مانوس ہونا، الفت", meanings:["کسی چیز سے مانوس ہو کر اس کی عادت اپنا لینا، الفت و لگاؤ رکھنا", "عدد ہزار (1000) — ایک بالکل مختلف استعمال", "ملانا، جوڑنا (تالیف — کتاب مرتب کرنا)"], distractorRoots:["أ ل م","أ ل ه","أ ك ل"], distractorMeanings:["درد ہونا","معبود ہونا","کھانا"], rootFamilyFact:"أ ل ف اور أ ل م پہلے دو حروف میں ایک جیسے ہیں — پہلا 'مانوس ہونا' ہے، دوسرا 'درد ہونا' ہے۔",
+  derived:[
+    {word:"لِإِيلَافِ", pos:"مصدر مجرور", meaning:"مانوس کرنے کی خاطر", ref:"قريش 106:1"},
+    {word:"إِيلَافِهِمْ", pos:"مصدر مضاف", meaning:"ان کے مانوس ہونے (کی وجہ سے)", ref:"قريش 106:2"},
+    {word:"فَأَلَّفَ", pos:"فعل ماضی", meaning:"پس اس نے جوڑ دیا (دلوں کو)", ref:"آل عمران 3:103"}
+  ]},
+{ id:2, verified:true, root:"ر ح ل", meaning:"سفر کرنا، کوچ کرنا", meanings:["سفر پر روانہ ہونا، کوچ کرنا", "سامانِ سفر، پالان (رحل — اونٹ کا کجاوہ)"], distractorRoots:["ر ح م","ر ح ب","ز ح ل"], distractorMeanings:["مہربانی، رحم کرنا","کشادہ ہونا، خوش آمدید","دور ہٹنا"], rootFamilyFact:"ر ح ل اور ر ح م پہلے دو حروف میں ایک جیسے ہیں — پہلا 'سفر کرنا' ہے، دوسرا 'رحم کرنا' ہے۔",
+  derived:[
+    {word:"رِحْلَةَ", pos:"اسم", meaning:"سفر", ref:"قريش 106:2"},
+    {word:"رَحْلِ", pos:"اسم مضاف", meaning:"سامانِ سفر (بھائی کے)", ref:"يوسف 12:70"},
+    {word:"رِحَالٌ", pos:"اسم جمع", meaning:"سامانِ سفر (جمع) — عمومی عربی زبان، قرآن میں اس صورت میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:3, verified:true, root:"ش ت و", meaning:"سردی، جاڑا", meanings:["سردی کا موسم، جاڑا", "سردیوں میں قیام کرنا (فعل کی صورت میں)", "یہ لفظ پورے قرآن میں صرف اسی سورت میں ایک بار آیا ہے"], distractorRoots:["ش ت ت","ش ت م","ف ت و"], distractorMeanings:["بکھرا ہوا، منتشر","گالی دینا، برا بھلا کہنا","جوان، فتویٰ"], rootFamilyFact:"ش ت و اور ش ت ت پہلے دو حروف میں ایک جیسے ہیں — پہلا 'سردی/جاڑا' ہے، دوسرا 'بکھرا ہوا' ہے۔ نوٹ: 'شتاء' پورے قرآن میں صرف اسی سورت میں آیا ہے۔",
+  derived:[
+    {word:"الشِّتَاءِ", pos:"اسم", meaning:"سردی (کا موسم)", ref:"قريش 106:2"},
+    {word:"شَاتِيَة", pos:"اسم صفت", meaning:"سردیوں کی — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"مَشْتَى", pos:"اسم ظرف", meaning:"سردیاں گزارنے کی جگہ — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:4, verified:true, root:"ص ي ف", meaning:"گرمی کا موسم", meanings:["گرمی کا موسم", "گرمیوں میں قیام کرنا (فعل کی صورت میں)", "یہ لفظ بھی پورے قرآن میں صرف اسی سورت میں ایک بار آیا ہے — اور یہ واحد جگہ ہے جہاں 'سردی' اور 'گرمی' دونوں ایک ساتھ ذکر ہوئے"], distractorRoots:["ص ي د","ص ي ر","ض ي ف"], distractorMeanings:["شکار کرنا","بن جانا، ہو جانا","مہمان"], rootFamilyFact:"ص ي ف اور ض ي ف آخری دو حروف میں ایک جیسے ہیں (ی-ف) — صرف پہلا حرف بدلتا ہے (ص/ض)۔ پہلا 'گرمی کا موسم' ہے، دوسرا 'مہمان' ہے۔ نوٹ: 'صیف' بھی پورے قرآن میں صرف اسی سورت میں آیا ہے۔",
+  derived:[
+    {word:"الصَّيْفِ", pos:"اسم", meaning:"گرمی (کا موسم)", ref:"قريش 106:2"},
+    {word:"صَائِفَة", pos:"اسم صفت", meaning:"گرمیوں کی — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"مَصِيف", pos:"اسم ظرف", meaning:"گرمیاں گزارنے کی جگہ — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:5, verified:true, root:"ع ب د", meaning:"بندگی، عبادت کرنا", meanings:["عبادت کرنا، بندگی کرنا", "غلام، بندہ ہونا", "راستے کو ہموار کرنا (معبَّد)"], distractorRoots:["ع ب ر","ع ب ث","ع ن د"], distractorMeanings:["گزرنا، عبرت حاصل کرنا","بےکار کام کرنا، عبث","ہٹ دھرمی کرنا"], rootFamilyFact:"ع ب د اور ع ب ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'عبادت کرنا' ہے، دوسرا 'گزرنا/عبرت لینا' ہے۔",
+  derived:[
+    {word:"فَلْيَعْبُدُوا", pos:"فعل امر مرکب", meaning:"پس انہیں چاہیے کہ عبادت کریں", ref:"قريش 106:3"},
+    {word:"اعْبُدُوا", pos:"فعل امر جمع", meaning:"عبادت کرو", ref:"البقرة 2:21"},
+    {word:"لِّيَعْبُدُونِ", pos:"فعل مضارع مرکب", meaning:"تاکہ وہ میری عبادت کریں", ref:"الذاريات 51:56"}
+  ]},
+{ id:6, verified:true, root:"ر ب ب", meaning:"رب، پالنے والا", meanings:["پالنے والا، پرورش کرنے والا", "مالک، آقا", "درست کرنے والا، اصلاح کرنے والا"], distractorRoots:["ر ب ح","ر ب ط","ر ت ب"], distractorMeanings:["نفع کمانا","باندھنا، رشتہ جوڑنا","ترتیب دینا، درجہ"], rootFamilyFact:"ر ب ب اور ر ب ح پہلے دو حروف میں ایک جیسے ہیں — پہلا 'رب' ہے، دوسرا 'نفع کمانا' ہے۔",
+  derived:[
+    {word:"رَبَّ", pos:"اسم مفعول به", meaning:"رب کی", ref:"قريش 106:3"},
+    {word:"رَبِّ الْعَالَمِينَ", pos:"اسم مرکب", meaning:"تمام جہانوں کا رب", ref:"الفاتحة 1:2"},
+    {word:"رَبُّكُمُ", pos:"اسم مضاف", meaning:"تمہارا رب", ref:"البقرة 2:21"}
+  ]},
+{ id:7, verified:true, root:"ب ي ت", meaning:"گھر", meanings:["گھر، رہائش گاہ (اصل مادہ 'بیتوتہ' سے، یعنی رات گزارنے کی جگہ)", "رات گزارنا (فعل کی صورت میں — بات یبیت)", "کسی بات کا مضبوطی سے رات کو ارادہ کر لینا (تبییت)"], distractorRoots:["ب ي ن","ب ي ع","ز ي ت"], distractorMeanings:["واضح ہونا، درمیان","بیچنا، بیعت کرنا","زیتون کا تیل"], rootFamilyFact:"ب ي ت اور ب ي ع پہلے دو حروف میں ایک جیسے ہیں — پہلا 'گھر' ہے، دوسرا 'بیچنا/بیعت' ہے۔",
+  derived:[
+    {word:"الْبَيْتِ", pos:"اسم", meaning:"گھر (کعبہ)", ref:"قريش 106:3"},
+    {word:"الْبَيْتَ", pos:"اسم", meaning:"گھر (کعبہ)", ref:"البقرة 2:125"},
+    {word:"بُيُوتًا", pos:"اسم جمع", meaning:"گھر (جمع)", ref:"النور 24:27"}
+  ]},
+{ id:8, verified:true, root:"ط ع م", meaning:"کھانا کھلانا، خوراک", meanings:["کھانا کھلانا، خوراک دینا", "ذائقہ، مزہ (طعم — کسی چیز کا ذائقہ)", "کھانا (اسم کی صورت میں طعام)"], distractorRoots:["ط ع ن","ط م ع","ن ع م"], distractorMeanings:["طعنہ دینا، نیزہ مارنا","لالچ کرنا","نعمت، آرام"], rootFamilyFact:"ط ع م اور ط م ع بالکل وہی تین حروف رکھتے ہیں مگر ترتیب مختلف ہے — پہلا 'کھانا کھلانا' ہے، دوسرا 'لالچ کرنا' ہے۔",
+  derived:[
+    {word:"أَطْعَمَهُم", pos:"فعل ماضی مرکب", meaning:"اس نے انہیں کھلایا", ref:"قريش 106:4"},
+    {word:"وَأَطْعِمُوا", pos:"فعل امر مرکب", meaning:"اور کھلاؤ", ref:"الحج 22:36"},
+    {word:"طَعَامُ", pos:"اسم", meaning:"کھانا", ref:"البقرة 2:184"}
+  ]},
+{ id:9, verified:true, root:"ج و ع", meaning:"بھوک", meanings:["بھوک، فاقہ", "بھوکا ہونا (فعل کی صورت میں)"], distractorRoots:["ج و ز","ج و د","ر و ع"], distractorMeanings:["جائز ہونا، گزرنا","سخاوت کرنا","دہشت، خوف"], rootFamilyFact:"ج و ع اور ج و د پہلے دو حروف میں ایک جیسے ہیں — پہلا 'بھوک' ہے، دوسرا 'سخاوت' ہے۔",
+  derived:[
+    {word:"جُوعٍ", pos:"اسم", meaning:"بھوک سے", ref:"قريش 106:4"},
+    {word:"الْجُوعِ", pos:"اسم", meaning:"بھوک", ref:"البقرة 2:155"},
+    {word:"مَجَاعَةٍ", pos:"اسم", meaning:"قحط، فاقہ — عمومی عربی زبان", ref:"عربی لغت"}
+  ]},
+{ id:10, verified:true, root:"أ م ن", meaning:"امن، ایمان لانا", meanings:["دل کی گہرائی سے تصدیق کرنا، ایمان لانا", "امن و سکون میں ہونا، خوف سے محفوظ ہونا", "امانت دار ہونا، بھروسہ کیا جانا"], distractorRoots:["أ م ر","أ م ل","أ م م"], distractorMeanings:["حکم دینا، معاملہ","امید رکھنا","ماں، امت"], rootFamilyFact:"أ م ن اور أ م م پہلے دو حروف میں ایک جیسے ہیں — پہلا 'امن/ایمان' ہے، دوسرا 'ماں/امت' ہے۔",
+  derived:[
+    {word:"وَآمَنَهُم", pos:"فعل ماضی مرکب", meaning:"اور اس نے انہیں امن دیا", ref:"قريش 106:4"},
+    {word:"آمَنُوا", pos:"فعل ماضی جمع", meaning:"وہ ایمان لائے", ref:"البقرة 2:25"},
+    {word:"أَمِينٌ", pos:"اسم صفت", meaning:"امانت دار", ref:"الشعراء 26:107"}
+  ]},
+{ id:11, verified:true, root:"خ و ف", meaning:"خوف، ڈر", meanings:["ڈرنا، خوف کھانا", "کسی نقصان کا اندیشہ کرنا"], distractorRoots:["خ و ض","خ و ل","ج و ف"], distractorMeanings:["غوطہ لگانا، الجھنا","اختیار دینا، ماموں ہونا","اندرونی خالی حصہ"], rootFamilyFact:"خ و ف اور ج و ف آخری دو حروف میں ایک جیسے ہیں — پہلا 'ڈر' ہے، دوسرا 'اندرونی خالی حصہ' ہے۔",
+  derived:[
+    {word:"خَوْفٍ", pos:"اسم", meaning:"خوف سے", ref:"قريش 106:4"},
+    {word:"الْخَوْفِ", pos:"اسم", meaning:"خوف", ref:"البقرة 2:155"},
+    {word:"خَوْفٌ", pos:"اسم", meaning:"کوئی خوف (نہیں)", ref:"البقرة 2:38"}
+  ]}
+]
+  },
+  maun: {
+    key:"maun", titleAr:"سورۃ الماعون", titleUr:"آیات ۱ تا ۷", cardDesc:"12 جڑیں — یتیم و مسکین کا حق",
+    roots: [
+{ id:1, verified:true, root:"ر أ ي", meaning:"دیکھنا؛ دکھاوا کرنا", meanings:["آنکھ سے دیکھنا (بنیادی معنی)", "دکھاوے کے لیے کام کرنا، ریاکاری (بابِ مفاعلہ میں 'یُراؤون')", "دل سے سمجھنا، رائے قائم کرنا"], distractorRoots:["ر أ س","ر أ ف","ر و ي"], distractorMeanings:["سر، سردار ہونا","نرم دلی، رحم کرنا","بیان کرنا، روایت کرنا"], rootFamilyFact:"دلچسپ بات: یہ جڑ اسی سورت میں دو مختلف معنوں میں آئی ہے — آیت 1 میں 'أَرَأَيْتَ' یعنی 'دیکھنا'، اور آیت 6 میں 'يُرَاءُونَ' یعنی 'دکھاوا کرنا/ریاکاری'۔",
+  derived:[
+    {word:"أَرَأَيْتَ", pos:"فعل ماضی استفہامی", meaning:"کیا تو نے دیکھا", ref:"الماعون 107:1"},
+    {word:"يُرَاءُونَ", pos:"فعل مضارع جمع", meaning:"وہ ریاکاری کرتے ہیں", ref:"الماعون 107:6"},
+    {word:"يَرَى", pos:"فعل مضارع", meaning:"وہ دیکھتا ہے", ref:"العلق 96:14"}
+  ]},
+{ id:2, verified:true, root:"ك ذ ب", meaning:"جھٹلانا، جھوٹ بولنا", meanings:["جھوٹ بولنا", "جھٹلانا، انکار کرنا (تکذیب)", "چوکنا، غلطی کرنا (نادر استعمال)"], distractorRoots:["ك س ب","ك ت ب","ك ر ب"], distractorMeanings:["کمانا، حاصل کرنا","لکھنا","تکلیف، مصیبت"], rootFamilyFact:"ك ذ ب، ك س ب اور ك ت ب تینوں پہلے اور آخری حرف میں ایک جیسے ہیں (ك___ب) — 'کذب' جھوٹ ہے، 'کسب' کمانا ہے، 'کتب' لکھنا ہے۔",
+  derived:[
+    {word:"يُكَذِّبُ", pos:"فعل مضارع", meaning:"وہ جھٹلاتا ہے", ref:"الماعون 107:1"},
+    {word:"كَذَّبَ", pos:"فعل ماضی", meaning:"اس نے جھٹلایا", ref:"العلق 96:13"},
+    {word:"يُكَذِّبُونَ", pos:"فعل مضارع جمع", meaning:"وہ جھٹلاتے ہیں", ref:"الأنعام 6:33"}
+  ]},
+{ id:3, verified:true, root:"د ي ن", meaning:"دین، جزا و سزا", meanings:["دین، مذہب", "روزِ جزا، حساب کتاب کا دن (یومِ دین)", "قرض (دَین — ایک اور مختلف لیکن ہم شکل استعمال)"], distractorRoots:["د ي ر","ز ي ن","د ف ن"], distractorMeanings:["خانقاہ، گرجا گھر","زینت، سجاوٹ","دفن کرنا"], rootFamilyFact:"د ي ن اور د ي ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'دین/جزا' ہے، دوسرا 'خانقاہ/گرجا گھر' ہے۔",
+  derived:[
+    {word:"بِالدِّينِ", pos:"اسم مجرور", meaning:"جزا و سزا کو", ref:"الماعون 107:1"},
+    {word:"يَوْمِ الدِّينِ", pos:"اسم مرکب", meaning:"جزا کا دن", ref:"الفاتحة 1:4"},
+    {word:"دِينُكُمْ", pos:"اسم مضاف", meaning:"تمہارا دین", ref:"الكافرون 109:6"}
+  ]},
+{ id:4, verified:true, root:"د ع ع", meaning:"دھکیلنا، سختی سے دھکا دینا", meanings:["سختی اور بےرحمی سے دھکیلنا", "زور سے کسی کو پیچھے ہٹانا"], distractorRoots:["د ف ع","د ع و","و د ع"], distractorMeanings:["دھکیلنا، دفع کرنا (قریبی معنی، مختلف مادہ)","پکارنا، بلانا","الوداع کہنا، چھوڑنا"], rootFamilyFact:"د ع ع اور د ف ع معنی میں بہت قریب اور پہلے و آخری حرف میں ایک جیسے ہیں (د___ع) — دونوں کا مطلب ہی 'دھکیلنا' ہے، مگر یہ دو الگ الگ مادّے ہیں۔",
+  derived:[
+    {word:"يَدُعُّ", pos:"فعل مضارع", meaning:"وہ سختی سے دھکیلتا ہے", ref:"الماعون 107:2"},
+    {word:"يُدَعُّونَ", pos:"فعل مضارع مجہول جمع", meaning:"وہ دھکیلے جائیں گے", ref:"الطور 52:13"},
+    {word:"دَعًّا", pos:"مصدر", meaning:"سختی سے دھکیلنا (مصدری تاکید)", ref:"الطور 52:13"}
+  ]},
+{ id:5, verified:true, root:"ي ت م", meaning:"یتیم", meanings:["یتیم، وہ بچہ جس کا باپ فوت ہو گیا ہو", "اکیلا، بےنظیر ہونا (مجازی معنی، جیسے 'درِّ یتیم' — انوکھا موتی)"], distractorRoots:["خ ت م","ح ت م","ي ق ظ"], distractorMeanings:["مہر لگانا، ختم کرنا","لازمی، یقینی ہونا","جاگنا، بیدار ہونا"], rootFamilyFact:"ي ت م، خ ت م اور ح ت م تینوں آخری دو حروف میں ایک جیسے ہیں (ت-م) — 'یتیم' یتیم ہے، 'ختم' مہر لگانا ہے، 'حتم' یقینی ہونا ہے۔",
+  derived:[
+    {word:"الْيَتِيمَ", pos:"اسم", meaning:"یتیم کو", ref:"الماعون 107:2"},
+    {word:"يَتِيمًا", pos:"اسم حال", meaning:"یتیم (تجھے پایا)", ref:"الضحى 93:6"},
+    {word:"الْيَتَامَىٰ", pos:"اسم جمع", meaning:"یتیم بچے", ref:"النساء 4:2"}
+  ]},
+{ id:6, verified:true, root:"ح ض ض", meaning:"ترغیب دینا، ابھارنا", meanings:["کسی نیک کام کی طرف ابھارنا، ترغیب دینا", "زور دینا، اکسانا"], distractorRoots:["ح ض ر","ح ض ن","غ ض ض"], distractorMeanings:["حاضر ہونا، موجود ہونا","گود میں لینا، پالنا","نگاہ نیچی رکھنا"], rootFamilyFact:"ح ض ض اور ح ض ر پہلے دو حروف میں ایک جیسے ہیں — پہلا 'ترغیب دینا' ہے، دوسرا 'حاضر ہونا' ہے۔",
+  derived:[
+    {word:"يَحُضُّ", pos:"فعل مضارع", meaning:"وہ ترغیب دیتا ہے", ref:"الماعون 107:3"},
+    {word:"تَحَاضُّونَ", pos:"فعل مضارع جمع", meaning:"تم ایک دوسرے کو ترغیب دیتے ہو", ref:"الفجر 89:18"},
+    {word:"حَضٌّ", pos:"مصدر", meaning:"ترغیب دینا — عمومی عربی زبان", ref:"عربی لغت"}
+  ]},
+{ id:7, verified:true, root:"ط ع م", meaning:"کھانا کھلانا، خوراک", meanings:["کھانا کھلانا، خوراک دینا", "ذائقہ، مزہ (طعم — کسی چیز کا ذائقہ)", "کھانا (اسم کی صورت میں طعام)"], distractorRoots:["ط ع ن","ط م ع","ن ع م"], distractorMeanings:["طعنہ دینا، نیزہ مارنا","لالچ کرنا","نعمت، آرام"], rootFamilyFact:"ط ع م اور ط م ع بالکل وہی تین حروف رکھتے ہیں مگر ترتیب مختلف ہے — پہلا 'کھانا کھلانا' ہے، دوسرا 'لالچ کرنا' ہے۔",
+  derived:[
+    {word:"طَعَامِ", pos:"اسم مجرور", meaning:"کھانے (کی ترغیب نہیں دیتا)", ref:"الماعون 107:3"},
+    {word:"أَطْعَمَهُم", pos:"فعل ماضی مرکب", meaning:"اس نے انہیں کھلایا", ref:"قريش 106:4"},
+    {word:"طَعَامُ", pos:"اسم", meaning:"کھانا", ref:"البقرة 2:184"}
+  ]},
+{ id:8, verified:true, root:"س ك ن", meaning:"ٹھہرنا، سکون؛ محتاج (مسکین)", meanings:["ٹھہرنا، ساکن ہونا، سکون میں ہونا", "محتاج، غریب شخص (مسکین — گویا محتاجی نے اسے بےحرکت کر دیا ہو)", "رہائش گاہ (مسکن — رہنے کی جگہ)"], distractorRoots:["س ك ت","س ك ب","س ك ر"], distractorMeanings:["خاموش ہونا","انڈیلنا، بہانا","نشہ کرنا"], rootFamilyFact:"س ك ن، س ك ت اور س ك ب تینوں پہلے دو حروف میں ایک جیسے ہیں — 'سکن' ٹھہرنا ہے، 'سکت' خاموشی ہے، 'سکب' بہانا ہے۔",
+  derived:[
+    {word:"الْمِسْكِينِ", pos:"اسم", meaning:"مسکین کے", ref:"الماعون 107:3"},
+    {word:"وَالْمَسَاكِينِ", pos:"اسم جمع", meaning:"اور مسکینوں کے", ref:"التوبة 9:60"},
+    {word:"لِّيَسْكُنَ", pos:"فعل مضارع مجزوم", meaning:"تاکہ وہ سکون پائے", ref:"الأعراف 7:189"}
+  ]},
+{ id:9, verified:true, root:"ص ل و", meaning:"نماز پڑھنا", meanings:["نماز پڑھنا، دعا کرنا", "رحمت بھیجنا (اللہ کی طرف سے) یا استغفار کرنا (فرشتوں کی طرف سے)", "آگ میں جھلسنا، داخل ہونا (ایک الگ مگر ہم شکل استعمال)"], distractorRoots:["ص ل ب","ص ل ح","ص ل د"], distractorMeanings:["سخت ہونا، سولی دینا","نیک ہونا، درست ہونا","سخت و بنجر ہونا"], rootFamilyFact:"ص ل و، ص ل ب اور ص ل ح تینوں پہلے دو حروف میں ایک جیسے ہیں — 'صلو' نماز ہے، 'صلب' سختی ہے، 'صلح' نیکی ہے۔",
+  derived:[
+    {word:"لِّلْمُصَلِّينَ", pos:"اسم فاعل جمع", meaning:"نماز پڑھنے والوں کے لیے", ref:"الماعون 107:4"},
+    {word:"صَلَاتِهِمْ", pos:"اسم مضاف", meaning:"ان کی نماز", ref:"الماعون 107:5"},
+    {word:"صَلِّ", pos:"فعل امر", meaning:"نماز پڑھ", ref:"الكوثر 108:2"}
+  ]},
+{ id:10, verified:true, root:"س ه و", meaning:"غفلت کرنا، بھول جانا", meanings:["نماز یا کسی کام میں غافل و بےدھیان ہونا", "بھول جانا (نسیان کے قریب معنی)"], distractorRoots:["س ه ل","س ه م","ل ه و"], distractorMeanings:["آسان ہونا","تیر، حصہ","دل بہلاوا، کھیل"], rootFamilyFact:"س ه و اور س ه ل پہلے دو حروف میں ایک جیسے ہیں — پہلا 'غفلت کرنا' ہے، دوسرا 'آسان ہونا' ہے۔",
+  derived:[
+    {word:"سَاهُونَ", pos:"اسم فاعل جمع", meaning:"غافل و بےدھیان ہیں", ref:"الماعون 107:5"},
+    {word:"سَهْوٌ", pos:"مصدر", meaning:"غفلت — عمومی عربی زبان", ref:"عربی لغت"},
+    {word:"سَاهٍ", pos:"اسم فاعل", meaning:"غافل — عمومی عربی زبان", ref:"عربی لغت"}
+  ]},
+{ id:11, verified:true, root:"م ن ع", meaning:"روکنا، منع کرنا", meanings:["کسی چیز کو دینے سے روک لینا، منع کرنا", "بچانا، حفاظت کرنا (مانع — روکنے والا/بچانے والا)"], distractorRoots:["م ن ح","م ن ن","ص ن ع"], distractorMeanings:["عطا کرنا، بخشنا (قریب کی ضد)","احسان جتانا، عنایت کرنا","بنانا، تیار کرنا"], rootFamilyFact:"م ن ع اور م ن ح پہلے دو حروف میں ایک جیسے ہیں مگر معنی تقریباً الٹ ہیں — 'منع' روکنا ہے، جبکہ 'منح' عطا کرنا ہے۔",
+  derived:[
+    {word:"وَيَمْنَعُونَ", pos:"فعل مضارع جمع", meaning:"اور وہ روک لیتے ہیں", ref:"الماعون 107:7"},
+    {word:"يَمْنَعُكُم", pos:"فعل مضارع مرکب", meaning:"تمہیں بچائے گا", ref:"الأحزاب 33:17"},
+    {word:"مَّنَّاعٍ", pos:"اسم مبالغہ", meaning:"بہت روکنے والا", ref:"ق 50:25"}
+  ]},
+{ id:12, verified:true, root:"ع و ن", meaning:"مدد، امداد (ماعون)", meanings:["مدد کرنا، اعانت کرنا", "چھوٹے برتن یا روزمرہ استعمال کی اشیاء جو پڑوسی ایک دوسرے کو مستعار دیتے تھے (ماعون کی ایک تفسیر)", "زکوٰۃ (ماعون کی ایک اور مشہور تفسیر — مفسرین کے درمیان اس لفظ کی بارہ سے زیادہ تشریحات ملتی ہیں)"], distractorRoots:["ع و ذ","ع و د","ع ي ن"], distractorMeanings:["پناہ مانگنا","لوٹنا، واپس آنا","آنکھ؛ چشمہ"], rootFamilyFact:"ع و ن، ع و ذ اور ع و د تینوں پہلے دو حروف میں ایک جیسے ہیں — 'عون' مدد ہے، 'عوذ' پناہ مانگنا ہے، 'عود' لوٹنا ہے۔",
+  derived:[
+    {word:"الْمَاعُونَ", pos:"اسم", meaning:"روزمرہ کی امدادی اشیاء/زکوٰۃ", ref:"الماعون 107:7"},
+    {word:"تَعَاوَنُوا", pos:"فعل امر جمع", meaning:"ایک دوسرے کی مدد کرو", ref:"المائدة 5:2"},
+    {word:"نَسْتَعِينُ", pos:"فعل مضارع", meaning:"ہم مدد مانگتے ہیں", ref:"الفاتحة 1:5"}
+  ]}
+]
+  },
+  kawthar: {
+    key:"kawthar", titleAr:"سورۃ الکوثر", titleUr:"آیات ۱ تا ۳", cardDesc:"7 جڑیں — مختصر ترین سورت",
+    roots: [
+{ id:1, verified:true, root:"ع ط و", meaning:"دینا، عطا کرنا", meanings:["دینا، عطا کرنا", "کسی چیز کی طرف ہاتھ بڑھانا (بنیادی لغوی معنی)"], distractorRoots:["ع ط ل","ع ط ش","ع ط ف"], distractorMeanings:["بیکار، معطل ہونا","پیاس لگنا","مہربانی کرنا، جھکنا"], rootFamilyFact:"ع ط و، ع ط ل اور ع ط ش تینوں پہلے دو حروف میں ایک جیسے ہیں — 'عطو' دینا ہے، 'عطل' بیکار ہونا ہے، 'عطش' پیاس ہے۔",
+  derived:[
+    {word:"أَعْطَيْنَاكَ", pos:"فعل ماضی مرکب", meaning:"ہم نے تجھے عطا کیا", ref:"الكوثر 108:1"},
+    {word:"يُعْطِيكَ", pos:"فعل مضارع مرکب", meaning:"تیرا رب تجھے عطا کرے گا", ref:"الضحى 93:5"},
+    {word:"أَعْطَىٰ", pos:"فعل ماضی", meaning:"اس نے عطا کیا", ref:"طه 20:50"}
+  ]},
+{ id:2, verified:true, root:"ك ث ر", meaning:"زیادہ ہونا، کثرت", meanings:["زیادہ، بہت ہونا", "ایک دوسرے پر تعداد و مال میں فخر کرنا (تکاثر)", "بہتات، افراط (اسمی صورت میں)"], distractorRoots:["ك ث ب","ك ث ف","ك ب ر"], distractorMeanings:["ٹیلہ، ڈھیر","گاڑھا، گھنا ہونا","بڑا ہونا"], rootFamilyFact:"ك ث ر، ك ث ب اور ك ث ف تینوں پہلے دو حروف میں ایک جیسے ہیں — 'کثر' زیادہ ہونا ہے، 'کثب' ٹیلہ ہے، 'کثف' گاڑھا ہونا ہے۔",
+  derived:[
+    {word:"الْكَوْثَرَ", pos:"اسم", meaning:"خیرِ کثیر (بےشمار بھلائی)", ref:"الكوثر 108:1"},
+    {word:"التَّكَاثُرُ", pos:"مصدر", meaning:"ایک دوسرے پر کثرت میں فخر کرنا", ref:"التكاثر 102:1"},
+    {word:"كَثِيرًا", pos:"اسم", meaning:"بہت زیادہ", ref:"الأحزاب 33:41"}
+  ]},
+{ id:3, verified:true, root:"ص ل و", meaning:"نماز پڑھنا", meanings:["نماز پڑھنا، دعا کرنا", "رحمت بھیجنا (اللہ کی طرف سے) یا استغفار کرنا (فرشتوں کی طرف سے)", "آگ میں جھلسنا، داخل ہونا (ایک الگ مگر ہم شکل استعمال)"], distractorRoots:["ص ل ب","ص ل ح","ص ل د"], distractorMeanings:["سخت ہونا، سولی دینا","نیک ہونا، درست ہونا","سخت و بنجر ہونا"], rootFamilyFact:"ص ل و، ص ل ب اور ص ل ح تینوں پہلے دو حروف میں ایک جیسے ہیں — 'صلو' نماز ہے، 'صلب' سختی ہے، 'صلح' نیکی ہے۔",
+  derived:[
+    {word:"فَصَلِّ", pos:"فعل امر", meaning:"پس نماز پڑھ", ref:"الكوثر 108:2"},
+    {word:"الصَّلَاةَ", pos:"اسم", meaning:"نماز", ref:"البقرة 2:3"},
+    {word:"لِّلْمُصَلِّينَ", pos:"اسم فاعل جمع", meaning:"نماز پڑھنے والوں کے لیے", ref:"الماعون 107:4"}
+  ]},
+{ id:4, verified:true, root:"ر ب ب", meaning:"رب، پالنے والا", meanings:["پالنے والا، پرورش کرنے والا", "مالک، آقا", "درست کرنے والا، اصلاح کرنے والا"], distractorRoots:["ر ب ح","ر ب ط","ر ت ب"], distractorMeanings:["نفع کمانا","باندھنا، رشتہ جوڑنا","ترتیب دینا، درجہ"], rootFamilyFact:"ر ب ب اور ر ب ح پہلے دو حروف میں ایک جیسے ہیں — پہلا 'رب' ہے، دوسرا 'نفع کمانا' ہے۔",
+  derived:[
+    {word:"لِرَبِّكَ", pos:"اسم مجرور", meaning:"اپنے رب کے لیے", ref:"الكوثر 108:2"},
+    {word:"رَبِّ الْعَالَمِينَ", pos:"اسم مرکب", meaning:"تمام جہانوں کا رب", ref:"الفاتحة 1:2"},
+    {word:"رَبَّنَا", pos:"اسم منادی", meaning:"اے ہمارے رب", ref:"البقرة 2:201"}
+  ]},
+{ id:5, verified:true, root:"ن ح ر", meaning:"قربانی کرنا، ذبح کرنا", meanings:["اونٹ یا جانور کو گلے سے ذبح کرنا (قربانی)", "سینہ، گردن کا اگلا حصہ (نحر — جسم کا وہ حصہ)", "یہ فعلی صورت پورے قرآن میں صرف اسی سورت میں آئی ہے"], distractorRoots:["ن ح ت","ن ح س","ن ذ ر"], distractorMeanings:["تراشنا، کھودنا","منحوس، بدشگون","نذر ماننا، ڈرانا"], rootFamilyFact:"ن ح ر اور ن ح ت پہلے دو حروف میں ایک جیسے ہیں — پہلا 'قربانی کرنا' ہے، دوسرا 'تراشنا/کھودنا' ہے۔ نوٹ: 'وَانْحَرْ' کی یہ صورت پورے قرآن میں صرف اسی سورت میں آئی ہے۔",
+  derived:[
+    {word:"وَانْحَرْ", pos:"فعل امر", meaning:"اور قربانی کر", ref:"الكوثر 108:2"},
+    {word:"نَاحِرٌ", pos:"اسم فاعل", meaning:"ذبح کرنے والا — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"مَنْحَرٌ", pos:"اسم ظرف", meaning:"ذبح کرنے کی جگہ — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]},
+{ id:6, verified:true, root:"ش ن أ", meaning:"دشمنی رکھنا، نفرت کرنا", meanings:["سخت نفرت و دشمنی رکھنا", "کسی سے بغض رکھنا"], distractorRoots:["ش ن ع","ن ش أ","ه ن أ"], distractorMeanings:["برا، شرمناک ہونا","اٹھنا، پروان چڑھنا","خوشگوار ہونا، مبارک باد دینا"], rootFamilyFact:"ش ن أ اور ن ش أ ایک ہی تین حروف رکھتے ہیں مگر ترتیب مختلف ہے (پہلے دو حروف بدلے ہوئے ہیں) — پہلا 'دشمنی' ہے، دوسرا 'اٹھنا/پروان چڑھنا' ہے۔",
+  derived:[
+    {word:"شَانِئَكَ", pos:"اسم فاعل", meaning:"تیرا دشمن", ref:"الكوثر 108:3"},
+    {word:"شَنَآنُ", pos:"اسم", meaning:"دشمنی", ref:"المائدة 5:8"},
+    {word:"شَانِئٌ", pos:"اسم فاعل", meaning:"دشمن — عمومی عربی زبان", ref:"عربی لغت"}
+  ]},
+{ id:7, verified:true, root:"ب ت ر", meaning:"کاٹنا، منقطع ہونا", meanings:["کاٹنا، جڑ سے ختم کرنا", "نسل یا سلسلہ کا منقطع ہو جانا (ابتر — وہ جس کی نسل یا نیکی ختم ہو گئی ہو)", "یہ لفظ پورے قرآن میں صرف اسی سورت میں آیا ہے"], distractorRoots:["ب ت ل","ب ت ك","ب ذ ر"], distractorMeanings:["مکمل طور پر یکسو ہونا (تبتل)","کاٹنا، چیرنا (قریبی مگر الگ مادہ)","بیج بونا، فضول خرچی کرنا"], rootFamilyFact:"ب ت ر اور ب ت ل پہلے دو حروف میں ایک جیسے ہیں — پہلا 'کٹا ہوا، منقطع' ہے، دوسرا 'مکمل یکسوئی' ہے۔ نوٹ: 'الأبتر' پورے قرآن میں صرف اسی سورت میں آیا ہے۔",
+  derived:[
+    {word:"الْأَبْتَرُ", pos:"اسم تفضیل", meaning:"جس کی نسل/نیکی منقطع ہو گئی", ref:"الكوثر 108:3"},
+    {word:"بَاتِرٌ", pos:"اسم فاعل", meaning:"کاٹنے والا — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"},
+    {word:"بَتْرَاء", pos:"اسم صفت", meaning:"دم کٹی — عمومی عربی زبان، قرآن میں نہیں", ref:"عربی لغت"}
+  ]}
+]
+  }
+};
+function currentRoots(){ return SURAHS[state.currentSurah].roots; }
+
+/* ============ SHARED ICONS ============ */
+const checkSvg = '<svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10.5L8 14.5L16 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ============ STATE ============ */
+const state = {
+  theme: "light-mint",
+  activeTab: "lessons",
+  currentSurah: null,
+  quiz: null // {mode, length, questions, index, score, streak, weak:Set, order:[]}
+};
+
+/* ============ THEME ============ */
+const THEMES = ["light-mint","light-blue","dark-charcoal","dark-blue"];
+function initThemePicker(){
+  const wrap = document.getElementById('themePicker');
+  THEMES.forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'theme-dot' + (t===state.theme ? ' active' : '');
+    b.dataset.t = t;
+    b.addEventListener('click', ()=> setTheme(t));
+    wrap.appendChild(b);
+  });
+}
+function setTheme(t){
+  state.theme = t;
+  document.body.setAttribute('data-theme', t);
+  document.querySelectorAll('.theme-dot').forEach(d=> d.classList.toggle('active', d.dataset.t===t));
+}
+
+/* ============ AUDIO ============ */
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+  return audioCtx;
+}
+function playCorrect(){
+  try{
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    [523.25, 659.25].forEach((freq, i)=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, now + i*0.12);
+      gain.gain.linearRampToValueAtTime(0.22, now + i*0.12 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i*0.12 + 0.22);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i*0.12);
+      osc.stop(now + i*0.12 + 0.25);
+    });
+  }catch(e){}
+}
+function playWrong(){
+  try{
+    const ctx = getCtx();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(90, now+0.28);
+    gain.gain.setValueAtTime(0.16, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+0.3);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now+0.32);
+  }catch(e){}
+}
+
+/* ============ TABS ============ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+});
+function switchTab(tab){
+  state.activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+  document.getElementById('lessonsTab').classList.toggle('hidden', tab!=='lessons');
+  document.getElementById('quizTab').classList.toggle('hidden', tab!=='quiz');
+  updateResumeBanner();
+}
+function updateResumeBanner(){
+  const banner = document.getElementById('resumeBanner');
+  const q = state.quiz;
+  const showBanner = q && q.active && state.activeTab === 'lessons';
+  banner.classList.toggle('hidden', !showBanner);
+  if(showBanner){
+    document.getElementById('resumeText').textContent =
+      `آپ کے سوالات جاری ہیں: سوال ${q.index+1} از ${q.questions.length} — اسکور ${q.score}`;
+  }
+}
+document.getElementById('resumeBtn').addEventListener('click', ()=>{
+  switchTab('quiz');
+  showQuizScreen('run');
+});
+
+/* ============ LESSON LIST ============ */
+function renderRootList(){
+  const wrap = document.getElementById('rootList');
+  wrap.innerHTML = '';
+  currentRoots().forEach((r, i)=>{
+    const card = document.createElement('div');
+    const isWeak = state.quiz && state.quiz.weak && state.quiz.weak.has(r.id);
+    card.className = 'root-card' + (isWeak ? ' is-weak' : '');
+    card.innerHTML = `
+      <div class="root-left">
+        <div class="root-index">${i+1}</div>
+        <div>
+          <div class="root-word">${r.root}</div>
+          <div class="root-meaning">${r.meaning}</div>
+        </div>
+      </div>
+      <div class="chevron">›</div>`;
+    card.addEventListener('click', ()=> openModal(r));
+    wrap.appendChild(card);
+  });
+  renderWeakPanel();
+}
+function renderWeakPanel(){
+  const panel = document.getElementById('weakPanel');
+  const badgeWrap = document.getElementById('weakBadges');
+  const weak = state.quiz && state.quiz.weak ? state.quiz.weak : null;
+  if(!weak || weak.size===0){ panel.classList.add('hidden'); return; }
+  panel.classList.remove('hidden');
+  badgeWrap.innerHTML = '';
+  [...weak].forEach(id=>{
+    const r = currentRoots().find(x=>x.id===id);
+    if(!r) return;
+    const b = document.createElement('span');
+    b.className = 'weak-badge';
+    b.textContent = r.root;
+    badgeWrap.appendChild(b);
+  });
+}
+
+/* ============ MODAL ============ */
+function openModal(r){
+  const modal = document.getElementById('modalBackdrop');
+  const card = document.getElementById('modalCard');
+  card.innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div class="modal-root-ar">${r.root}</div>
+        <div class="modal-root-ur">${r.meaning}</div>
+      </div>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+    <div class="derived-title">لغوی معنی (تفصیل)</div>
+    <div class="derived-card">
+      ${r.meanings.map((m,i)=>`<div class="meaning-line"><span class="meaning-num">${i+1}</span><span>${m}</span></div>`).join('')}
+    </div>
+    <div class="derived-title">قرآن میں مشتق الفاظ</div>
+    ${r.derived.map(d=>`
+      <div class="derived-card">
+        <div class="derived-row">
+          <span class="derived-word">${d.word}</span>
+          <span class="pos-badge">${d.pos}</span>
+        </div>
+        <div class="derived-meaning">${d.meaning}</div>
+        <div class="derived-ref">${d.ref}</div>
+      </div>`).join('')}
+  `;
+  modal.classList.add('open');
+  document.body.classList.add('no-scroll');
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+}
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+document.getElementById('modalBackdrop').addEventListener('click', (e)=>{
+  if(e.target.id === 'modalBackdrop') closeModal();
+});
+
+/* ============ QUIZ SETUP ============ */
+let selectedLen = null;
+let selectedMode = null;
+document.querySelectorAll('#lengthOptions .opt-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#lengthOptions .opt-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    selectedLen = b.dataset.len === '20' ? 20 : parseInt(b.dataset.len);
+  });
+});
+document.querySelectorAll('#modeOptions .opt-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#modeOptions .opt-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    selectedMode = b.dataset.mode;
+  });
+});
+document.getElementById('startQuizBtn').addEventListener('click', ()=>{
+  if(!selectedLen) selectedLen = 5;
+  if(!selectedMode) selectedMode = 'mcq';
+  startQuiz(selectedLen, selectedMode);
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuestionPool(rootsSubset){
+  const pool = [];
+  rootsSubset.forEach(r=>{
+    // Root -> Basic meaning
+    const meaningOptions = shuffle([r.meaning, ...r.distractorMeanings]);
+    pool.push({
+      type:'root-to-meaning',
+      rootId: r.id,
+      focus: r.root,
+      promptLabel: 'اس جڑ کا بنیادی معنی منتخب کریں',
+      correct: r.meaning,
+      options: meaningOptions
+    });
+    // Derived word -> Root
+    const derivedPick = r.derived[Math.floor(Math.random()*r.derived.length)];
+    const rootOptions = shuffle([r.root, ...r.distractorRoots]);
+    pool.push({
+      type:'derived-to-root',
+      rootId: r.id,
+      focus: derivedPick.word,
+      promptLabel: 'اس لفظ کی اصل جڑ منتخب کریں',
+      correct: r.root,
+      options: rootOptions
+    });
+  });
+  return pool;
+}
+
+function interleave(pool){
+  let arr = shuffle(pool);
+  // repair consecutive same-root collisions
+  for(let i=1;i<arr.length;i++){
+    if(arr[i].rootId === arr[i-1].rootId){
+      let swapIdx = -1;
+      for(let j=i+1;j<arr.length;j++){
+        if(arr[j].rootId !== arr[i-1].rootId && arr[j].rootId !== (arr[i+1] ? arr[i+1].rootId : null)){
+          swapIdx = j; break;
+        }
+      }
+      if(swapIdx === -1){
+        for(let j=i+1;j<arr.length;j++){
+          if(arr[j].rootId !== arr[i-1].rootId){ swapIdx = j; break; }
+        }
+      }
+      if(swapIdx !== -1){
+        [arr[i], arr[swapIdx]] = [arr[swapIdx], arr[i]];
+      }
+    }
+  }
+  return arr;
+}
+
+function startQuiz(len, mode){
+  const subset = shuffle(currentRoots()).slice(0, len);
+  let questions;
+  if(mode === 'mcq'){
+    questions = interleave(buildQuestionPool(subset)).slice(0, Math.max(len, Math.min(len*2, 20)));
+    // For a clean session, cap question count to len*2 or fewer for very long sessions is fine as-is
+  } else {
+    questions = shuffle(subset).map(r=>({ type:'flash', rootId:r.id, root:r }));
+  }
+  state.quiz = {
+    mode, length: len, questions, index:0, score:0, streak:0,
+    weak: (state.quiz && state.quiz.weak) ? state.quiz.weak : new Set(),
+    active: true
+  };
+  showQuizScreen('run');
+  renderQuestion();
+}
+
+function showQuizScreen(which){
+  document.getElementById('quizSetup').classList.toggle('hidden', which!=='setup');
+  document.getElementById('quizRun').classList.toggle('hidden', which!=='run');
+  document.getElementById('quizResult').classList.toggle('hidden', which!=='result');
+  updateResumeBanner();
+}
+
+/* ============ QUIZ RUN ============ */
+function updateProgressBar(){
+  const q = state.quiz;
+  document.getElementById('progressLabel').textContent = `سوال ${q.index+1} از ${q.questions.length}`;
+  document.getElementById('scoreLabel').textContent = `اسکور: ${q.score}`;
+  document.getElementById('progressFill').style.width = `${(q.index/q.questions.length)*100}%`;
+  updateResumeBanner();
+}
+
+function renderQuestion(){
+  const q = state.quiz;
+  updateProgressBar();
+  const item = q.questions[q.index];
+  document.getElementById('mcqBlock').classList.toggle('hidden', q.mode!=='mcq');
+  document.getElementById('flashBlock').classList.toggle('hidden', q.mode!=='flash');
+
+  if(q.mode === 'mcq'){
+    renderMcq(item);
+  } else {
+    renderFlash(item);
+  }
+}
+
+function renderMcq(item){
+  document.getElementById('mcqPromptLabel').textContent = item.promptLabel;
+  document.getElementById('mcqFocus').textContent = item.focus;
+  document.getElementById('factBox').classList.add('hidden');
+  document.getElementById('mcqNextBtn').classList.add('hidden');
+  const grid = document.getElementById('mcqOptions');
+  grid.innerHTML = '';
+  const longText = item.options.some(o => o.length > 15);
+  grid.classList.toggle('single-col', longText);
+  item.options.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className = 'mcq-btn';
+    b.textContent = opt;
+    b.addEventListener('click', ()=> handleMcqAnswer(opt, item, b));
+    grid.appendChild(b);
+  });
+}
+
+function handleMcqAnswer(chosen, item, btnEl){
+  const q = state.quiz;
+  const allBtns = document.querySelectorAll('#mcqOptions .mcq-btn');
+  allBtns.forEach(b=> b.style.pointerEvents = 'none');
+  const isCorrect = chosen === item.correct;
+  if(isCorrect){
+    btnEl.classList.add('correct');
+    q.score++; q.streak++;
+    playCorrect();
+  } else {
+    btnEl.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent === item.correct) b.classList.add('correct'); });
+    q.weak.add(item.rootId);
+    q.streak = 0;
+    playWrong();
+  }
+  const rootData = currentRoots().find(r => r.id === item.rootId);
+  if(rootData && rootData.rootFamilyFact){
+    document.getElementById('factBoxText').textContent = rootData.rootFamilyFact;
+    document.getElementById('factBox').classList.remove('hidden');
+  }
+  document.getElementById('mcqNextBtn').classList.remove('hidden');
+}
+document.getElementById('mcqNextBtn').addEventListener('click', ()=> advanceQuiz());
+
+function renderFlash(item){
+  document.getElementById('flashFront').textContent = item.root.root;
+  document.getElementById('flashHint').textContent = 'دبانے پر معنی دیکھیں';
+  document.getElementById('flashActions').classList.add('hidden');
+  const card = document.getElementById('flashCard');
+  card.onclick = ()=> revealFlash(item);
+}
+function revealFlash(item){
+  document.getElementById('flashFront').innerHTML =
+    `<div class="flash-back-meaning">${item.root.meaning}</div>
+     <div class="flash-derived-mini">${item.root.derived[0].word} — ${item.root.derived[0].meaning}</div>`;
+  document.getElementById('flashHint').textContent = '';
+  document.getElementById('flashActions').classList.remove('hidden');
+  document.getElementById('flashCard').onclick = null;
+}
+document.getElementById('knowBtn').addEventListener('click', ()=>{
+  state.quiz.score++;
+  playCorrect();
+  advanceQuiz();
+});
+document.getElementById('forgotBtn').addEventListener('click', ()=>{
+  const item = state.quiz.questions[state.quiz.index];
+  state.quiz.weak.add(item.rootId);
+  playWrong();
+  advanceQuiz();
+});
+
+function advanceQuiz(){
+  const q = state.quiz;
+  q.index++;
+  if(q.index >= q.questions.length){
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+function finishQuiz(){
+  const q = state.quiz;
+  q.active = false;
+  showQuizScreen('result');
+  document.getElementById('resultScore').textContent = `${q.score} / ${q.questions.length}`;
+  const pct = Math.round((q.score/q.questions.length)*100);
+  let msg = 'ماشاءاللہ! بہت خوب';
+  if(pct < 50) msg = 'مزید مشق کی ضرورت ہے';
+  else if(pct < 80) msg = 'اچھی کارکردگی، جاری رکھیں';
+  document.getElementById('resultSub').textContent = `${msg} — ${pct}% درست`;
+  renderRootList();
+  updateResumeBanner();
+}
+document.getElementById('backToSetupBtn').addEventListener('click', ()=>{
+  showQuizScreen('setup');
+});
+
+/* ============ SURAH PICKER / NAVIGATION ============ */
+function renderSurahPicker(){
+  const wrap = document.getElementById('surahList');
+  wrap.innerHTML = '';
+  Object.values(SURAHS).forEach(s=>{
+    const card = document.createElement('div');
+    card.className = 'surah-card';
+    card.innerHTML = `
+      <div>
+        <div class="surah-card-ar">${s.titleAr}</div>
+        <div class="surah-card-ur">${s.titleUr}</div>
+        <div class="surah-card-desc">${s.cardDesc}</div>
+      </div>
+      <div class="chevron">›</div>`;
+    card.addEventListener('click', ()=> openSurah(s.key));
+    wrap.appendChild(card);
+  });
+}
+function openSurah(key){
+  state.currentSurah = key;
+  state.quiz = null;
+  document.getElementById('brandAr').textContent = SURAHS[key].titleAr;
+  document.getElementById('brandUr').textContent = SURAHS[key].titleUr;
+  document.getElementById('surahPicker').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  switchTab('lessons');
+  renderRootList();
+  showQuizScreen('setup');
+  selectedLen = null; selectedMode = null;
+  document.querySelectorAll('#lengthOptions .opt-btn, #modeOptions .opt-btn').forEach(b=>b.classList.remove('selected'));
+}
+document.getElementById('backToPickerBtn').addEventListener('click', ()=>{
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('surahPicker').classList.remove('hidden');
+});
+
+/* ============ INIT ============ */
+initThemePicker();
+renderSurahPicker();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
