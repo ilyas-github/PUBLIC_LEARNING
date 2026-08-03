@@ -1,0 +1,217 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Amiri:wght@400;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; padding: 16px 14px 36px; max-width: 600px; margin: 0 auto; }
+  .hero { text-align: center; padding: 22px 12px 18px; }
+  .hero-title { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.6; }
+  .hero-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
+  .card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; position: relative; overflow: hidden; }
+  .step-num { font-family: 'Amiri', serif; font-size: 52px; font-weight: 700; position: absolute; top: 4px; left: 10px; line-height: 1; opacity: 0.09; color: var(--text-primary); }
+  .card-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .card-body { font-size: 13px; color: var(--text-secondary); line-height: 2; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+  .tag { font-family: 'Amiri', serif; font-size: 15px; padding: 4px 12px; border-radius: 20px; font-weight: 700; }
+  .tag-blue { background: #E6F1FB; color: #0C447C; }
+  .tag-amber { background: #FAEEDA; color: #633806; }
+  @media (prefers-color-scheme: dark) {
+    .tag-blue { background: #0C447C; color: #B5D4F4; }
+    .tag-amber { background: #633806; color: #FAC775; }
+  }
+  .mnemonic-box { background: var(--surface-1); border: 0.5px solid var(--border-accent); border-radius: 10px; padding: 12px 16px; text-align: center; margin-top: 10px; }
+  .mnemonic-arabic { font-family: 'Amiri', serif; font-size: 28px; color: var(--text-accent); font-weight: 700; letter-spacing: 4px; }
+  .mnemonic-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .table-mini { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  .table-mini th { color: var(--text-muted); font-weight: 500; font-size: 11px; padding: 4px 6px; border-bottom: 0.5px solid var(--border); text-align: center; }
+  .table-mini td { padding: 7px 6px; text-align: center; border-bottom: 0.5px solid var(--border); color: var(--text-secondary); }
+  .table-mini td:first-child { font-family: 'Amiri', serif; font-size: 18px; color: var(--text-primary); }
+  .table-mini tr:last-child td { border-bottom: none; }
+  .highlight { color: var(--text-accent); font-weight: 700; }
+  .trick-row { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .trick-item { display: flex; align-items: flex-start; gap: 10px; }
+  .trick-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; font-weight: 700; }
+  .trick-text { font-size: 13px; color: var(--text-secondary); line-height: 1.8; flex: 1; }
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 14px 0; }
+  .summary-steps { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .step-item { display: flex; align-items: flex-start; gap: 12px; }
+  .step-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; font-family: 'Amiri', serif; }
+  .step-text { font-size: 13px; color: var(--text-secondary); line-height: 1.9; padding-top: 4px; flex: 1; }
+</style>
+
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-title">عربی جذر نکالنے کے اصول</div>
+    <div class="hero-sub">Arabic Root Extraction — مکمل رہنما</div>
+  </div>
+
+  <!-- Card 1 -->
+  <div class="card" style="border-top: 3px solid #3987e5;">
+    <div class="step-num">١</div>
+    <div class="card-title">جذر کیا ہے؟</div>
+    <div class="card-body">
+      عربی کے ہر لفظ میں <span class="highlight">٣ بنیادی حروف</span> چھپے ہوتے ہیں — یہی جذر ہے۔ باقی حروف گرامر کے لیے ہوتے ہیں۔
+    </div>
+    <div class="tag-row">
+      <span class="tag tag-blue">ثلاثی ← 3 حروف</span>
+      <span class="tag tag-amber">رباعی ← 4 حروف</span>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="card" style="border-top: 3px solid #1baf7a;">
+    <div class="step-num">٢</div>
+    <div class="card-title">حروفِ زیادہ یاد کریں</div>
+    <div class="card-body">یہ ١٠ حروف لفظ میں زائد ہو سکتے ہیں:</div>
+    <div class="mnemonic-box">
+      <div class="mnemonic-arabic">سَأَلْتُمُونِيهَا</div>
+      <div class="mnemonic-label">یہ جملہ یاد رکھیں — ١٠ زائد حروف اسی میں ہیں</div>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="card" style="border-top: 3px solid #eb6834;">
+    <div class="step-num">٣</div>
+    <div class="card-title">زائد حروف ہٹانے کی مثالیں</div>
+    <table class="table-mini">
+      <thead><tr>
+        <th>لفظ</th><th>ہٹایا</th><th>جذر</th><th>اصول</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>مَكْتَبَة</td><td>م + ة</td><td>ك ت ب</td><td>م شروع، ة آخر</td></tr>
+        <tr><td>مَدْرَسَة</td><td>م + ة</td><td>د ر س</td><td>م شروع، ة آخر</td></tr>
+        <tr><td>اِسْتَغْفَرَ</td><td>ا + س + ت</td><td>غ ف ر</td><td>استفعل کا وزن</td></tr>
+        <tr><td>اِنْكَسَرَ</td><td>ا + ن</td><td>ك س ر</td><td>انفعل کا وزن</td></tr>
+        <tr><td>أَكْرَمَ</td><td>أ</td><td>ك ر م</td><td>أفعل کا وزن</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="card" style="border-top: 3px solid #4a3aa7;">
+    <div class="step-num">٤</div>
+    <div class="card-title">حروفِ علت (کمزور حروف)</div>
+    <div class="card-body">
+      <span style="font-family:Amiri,serif;font-size:20px;">و ، ا ، ی</span> — یہ اکثر بدل جاتے یا چھپ جاتے ہیں:
+    </div>
+    <table class="table-mini">
+      <thead><tr><th>قسم</th><th>لفظ</th><th>جذر</th></tr></thead>
+      <tbody>
+        <tr><td>مثال</td><td style="font-family:Amiri,serif;font-size:18px">وَعَدَ</td><td>و ع د</td></tr>
+        <tr><td>اجوف</td><td style="font-family:Amiri,serif;font-size:18px">قَالَ</td><td>ق و ل</td></tr>
+        <tr><td>اجوف</td><td style="font-family:Amiri,serif;font-size:18px">بَاعَ</td><td>ب ي ع</td></tr>
+        <tr><td>ناقص</td><td style="font-family:Amiri,serif;font-size:18px">دَعَا</td><td>د ع و</td></tr>
+        <tr><td>ناقص</td><td style="font-family:Amiri,serif;font-size:18px">رَمَى</td><td>ر م ي</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="card" style="border-top: 3px solid #e87ba4;">
+    <div class="step-num">٥</div>
+    <div class="card-title">تشدید = دو حروف</div>
+    <div class="card-body">جب کسی حرف پر <span class="highlight">تشدید (ّ)</span> ہو تو وہ جذر میں دو بار ہے:</div>
+    <table class="table-mini">
+      <thead><tr><th>لفظ</th><th>جذر</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:Amiri,serif;font-size:22px">مَدَّ</td><td>م د د</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:22px">حَلَّ</td><td>ح ل ل</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:22px">رَدَّ</td><td>ر د د</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:22px">أَحَبَّ</td><td>ح ب ب</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card 6 -->
+  <div class="card" style="border-top: 3px solid #1baf7a;">
+    <div class="step-num">٦</div>
+    <div class="card-title">اوزان سے موازنہ — ف ع ل کی بنیاد پر</div>
+    <div class="card-body" style="margin-bottom: 6px;">جو حروف ف، ع، ل کی جگہ آئیں وہ جذر ہیں — باقی زائد:</div>
+    <table class="table-mini">
+      <thead><tr><th>وزن</th><th>مثال</th><th>جذر</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">فَعَلَ</td><td>كَتَبَ</td><td>ك ت ب</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">فَعَّلَ</td><td>دَرَّسَ</td><td>د ر س</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">أَفْعَلَ</td><td>أَكْرَمَ</td><td>ك ر م</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">اِسْتَفْعَلَ</td><td>اِسْتَغْفَرَ</td><td>غ ف ر</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">مَفْعَلَة</td><td>مَدْرَسَة</td><td>د ر س</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">فَاعِل</td><td>كَاتِب</td><td>ك ت ب</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:18px">مَفْعُول</td><td>مَكْتُوب</td><td>ك ت ب</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card 7 - Tricks -->
+  <div class="card" style="border-top: 3px solid #EF9F27;">
+    <div class="card-title">✦ اہم ٹرکس اور ٹپس</div>
+    <div class="trick-row">
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#FAEEDA;color:#633806;">م</div>
+        <div class="trick-text"><span class="highlight">م سے شروع ہو</span> — تقریباً ہمیشہ م زائد ہے: مَكْتَبَة، مَدْرَسَة، مَسْجِد</div>
+      </div>
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#EEEDFE;color:#26215C;">ة</div>
+        <div class="trick-text"><span class="highlight">آخر میں ة ہو</span> — فوری ہٹا دیں، ہمیشہ زائد ہے</div>
+      </div>
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#E1F5EE;color:#085041; font-size:9px;">است</div>
+        <div class="trick-text"><span class="highlight">اِسْتَ سے شروع ہو</span> — یہ تینوں زائد ہیں: اِسْتَغْفَرَ ← غ ف ر</div>
+      </div>
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#FAECE7;color:#4A1B0C;">ّ</div>
+        <div class="trick-text"><span class="highlight">تشدید نظر آئے</span> — وہ حرف دو بار لکھو: مَدَّ ← م د د</div>
+      </div>
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#E6F1FB;color:#0C447C;">ا</div>
+        <div class="trick-text"><span class="highlight">آخر میں ا یا ى ہو</span> — جذر کا آخری حرف و یا ی ہے: رَمَى ← ر م ي</div>
+      </div>
+      <div class="trick-item">
+        <div class="trick-icon" style="background:#EAF3DE;color:#173404;">٣</div>
+        <div class="trick-text"><span class="highlight">تین حروف کا اصول</span> — جذر ہمیشہ ٣ حروف؛ زیادہ بچیں تو کوئی زائد رہ گیا</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 8 - Summary -->
+  <div class="card" style="border-top: 3px solid #3987e5;">
+    <div class="card-title">خلاصہ — آسان ترتیب</div>
+    <div class="summary-steps">
+      <div class="step-item">
+        <div class="step-circle" style="background:#E6F1FB;color:#0C447C;">١</div>
+        <div class="step-text">آخر سے <span class="highlight">ة، ون، ین، ات</span> ہٹائیں</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:#FAEEDA;color:#633806;">٢</div>
+        <div class="step-text">شروع سے <span class="highlight">م، ت، أ، است، ان</span> ہٹائیں</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:#EEEDFE;color:#26215C;">٣</div>
+        <div class="step-text">تشدید ہو تو <span class="highlight">وہ حرف دہرا لکھیں</span></div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:#E1F5EE;color:#085041;">٤</div>
+        <div class="step-text">کمزور حروف <span class="highlight">و، ا، ی</span> واپس لائیں</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle" style="background:#FAECE7;color:#4A1B0C;">٥</div>
+        <div class="step-text">تین حروف بچیں — <span class="highlight">یہی جذر ہے ✓</span></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="card-title" style="margin-bottom: 8px;">مشق — جذر پہچانیں</div>
+    <table class="table-mini">
+      <thead><tr><th>لفظ</th><th>جذر</th><th>اصول</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:Amiri,serif;font-size:20px">مُسْلِم</td><td>س ل م</td><td>م زائد</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:20px">مُعَلِّمَة</td><td>ع ل م</td><td>م + ة زائد، تشدید = دہرا</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:20px">مَكْتُوب</td><td>ك ت ب</td><td>م زائد، و وزن میں</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:20px">اِجْتِمَاع</td><td>ج م ع</td><td>ا + ت زائد، ا اجوف</td></tr>
+        <tr><td style="font-family:Amiri,serif;font-size:20px">يَقُولُ</td><td>ق و ل</td><td>ی زائد (مضارع)، اجوف</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
