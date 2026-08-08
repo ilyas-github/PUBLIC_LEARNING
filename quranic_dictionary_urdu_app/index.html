@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قرآنی الفاظ کا لغت (Quranic Root Dictionary)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #10b981; --primary-dark: #059669; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Nastaliq Urdu', 'Inter', serif; background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 2.2; text-align: right; }
+        .container { max-width: 850px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: var(--primary-dark); font-size: 2.2rem; margin-bottom: 8px; font-weight: 700; }
+        header p { color: var(--text-muted); font-size: 1.1rem; }
+        .search-box { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 25px; display: flex; gap: 12px; }
+        .search-box input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; outline: none; font-size: 1.1rem; font-family: 'Noto Nastaliq Urdu', sans-serif; text-align: right; }
+        .search-box input:focus { border-color: var(--primary); }
+        .results-container { display: flex; flex-direction: column; gap: 20px; }
+        .root-card { background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); padding: 24px; border-right: 5px solid var(--primary); }
+        .arabic-root { font-family: 'Amiri', serif; font-size: 2.8rem; color: var(--primary-dark); }
+        .root-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
+        .root-badge { background: #ecfdf5; color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; }
+        .section-title { font-size: 0.9rem; color: var(--text-muted); margin-top: 14px; margin-bottom: 4px; font-weight: 700; }
+        .meaning-urdu { font-size: 1.3rem; font-weight: 700; color: #0f172a; }
+        .meaning-en { font-size: 0.95rem; font-family: 'Inter', sans-serif; color: var(--text-muted); direction: ltr; text-align: left; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 4px; }
+        .details-text, .verse-text { color: #334155; font-size: 1.1rem; background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); margin-top: 6px; }
+        .no-results { text-align: center; padding: 40px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow); font-size: 1.2rem; }
+        
+        /* Language Toggle styling */
+        .lang-switch { text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>قرآنی مادّوں کی لغت</h1>
+            <p>Quranic Root Words Dictionary in Urdu</p>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="مادّہ کے حروف یا معنی تلاش کریں (مثلاً: كتب، علم، رحم)..." onkeyup="handleSearch()">
+        </div>
+
+        <div id="results" class="results-container"></div>
+    </div>
+
+    <script>
+        let dictionaryData = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => { 
+                    dictionaryData = data; 
+                    displayResults(dictionaryData); 
+                })
+                .catch(error => {
+                    console.error("Error loading data:", error);
+                    document.getElementById('results').innerHTML = `<div class="no-results">data.json فائل لوڈ نہیں ہو سکی۔</div>`;
+                });
+        });
+
+        function displayResults(data) {
+            const container = document.getElementById('results');
+            if (data.length === 0) {
+                container.innerHTML = `<div class="no-results">کوئی مطابقت رکھنے والا لفظ نہیں ملا۔</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
+                <div class="root-card">
+                    <div class="root-header">
+                        <span class="arabic-root">${item.root}</span>
+                        <span class="root-badge">${item.type}</span>
+                    </div>
+                    
+                    <div class="section-title">بنیادی معنی (اردو)</div>
+                    <div class="meaning-urdu">${item.meaningUrdu}</div>
+                    ${item.meaningEn ? `<div class="meaning-en">English: ${item.meaningEn}</div>` : ''}
+                    
+                    <div class="section-title">تفصیلی وضاحت</div>
+                    <div class="details-text">${item.detailsUrdu}</div>
+                    
+                    <div class="section-title">قرآنی حوالہ</div>
+                    <div class="verse-text">${item.verseUrdu}</div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filtered = dictionaryData.filter(i => 
+                i.root.includes(query) || 
+                (i.meaningUrdu && i.meaningUrdu.includes(query)) ||
+                (i.detailsUrdu && i.detailsUrdu.includes(query)) ||
+                (i.meaningEn && i.meaningEn.toLowerCase().includes(query))
+            );
+            displayResults(filtered);
+        }
+    </script>
+</body>
+</html>
