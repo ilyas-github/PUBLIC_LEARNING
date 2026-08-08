@@ -1,0 +1,30 @@
+[
+    {
+        "root": "ك ت ب",
+        "type": "3-Letter Root",
+        "meaning": "To write, record, prescribe, or decree.",
+        "details": "Occurs in the Quran 319 times. Used in various forms including kataba (he wrote), kitab (book/script), and katib (writer).",
+        "verse": "Surah Al-Baqarah (2:282) - 'O you who have believed, when you contract a debt for a specified term, write it down.'"
+    },
+    {
+        "root": "ع ل م",
+        "type": "3-Letter Root",
+        "meaning": "To know, perceive, be acquainted with, or have knowledge.",
+        "details": "Occurs in the Quran 854 times. Forms include 'alim (knower), 'ilm (knowledge), and ma'lum (known).",
+        "verse": "Surah Al-Alaq (96:5) - 'Taught man that which he knew not.'"
+    },
+    {
+        "root": "ر ح م",
+        "type": "3-Letter Root",
+        "meaning": "To show mercy, compassion, or loving-kindness.",
+        "details": "Occurs in the Quran 339 times. Forms include Rahman (Most Merciful), Rahim (Especially Merciful), and rahmah (mercy).",
+        "verse": "Surah Al-Fatihah (1:1) - 'In the name of Allah, the Entirely Merciful, the Especially Merciful.'"
+    },
+    {
+        "root": "ه د ي",
+        "type": "3-Letter Root",
+        "meaning": "To guide, show the way, or lead to safety and truth.",
+        "details": "Occurs in the Quran 316 times. Forms include hudan (guidance), yahtadu (they are guided), and hadi (guide).",
+        "verse": "Surah Al-Baqarah (2:2) - 'This is the Book about which there is no doubt, a guidance for those conscious of Allah.'"
+    }
+]
