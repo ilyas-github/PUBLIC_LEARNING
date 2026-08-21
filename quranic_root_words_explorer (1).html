@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قرآنی الفاظ و جذور مستکشف | Quranic Root Words Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #26334d;
+      --accent: #38bdf8;
+      --arabic-gold: #fbbf24;
+      --urdu-green: #34d399;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --highlight: #f59e0b;
+      --font-arabic: 'Amiri', 'Traditional Arabic', serif;
+      --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-urdu), 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    h1 {
+      color: var(--arabic-gold);
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      font-family: var(--font-arabic);
+    }
+
+    .sub-heading {
+      color: var(--muted);
+      font-size: 1.05rem;
+      direction: ltr;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 750px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-bar {
+      flex: 1;
+      min-width: 280px;
+      padding: 0.9rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 1.05rem;
+      text-align: right;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .search-bar:focus {
+      outline: 2px solid var(--accent);
+      border-color: transparent;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-toggle {
+      padding: 0.9rem 1.4rem;
+      background: var(--border);
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      font-family: var(--font-urdu), 'Segoe UI', sans-serif;
+    }
+
+    .btn-toggle:hover {
+      background: var(--accent);
+      color: #0f172a;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .stats-bar {
+      width: 100%;
+      max-width: 1250px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      padding: 0 0.5rem;
+    }
+
+    .badge-count {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: bold;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .placeholder-state {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 14px;
+      border: 1px dashed var(--border);
+      max-width: 650px;
+      line-height: 2;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1250px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      background-color: var(--card-hover);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .root-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.6rem;
+    }
+
+    .root-arabic {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--arabic-gold);
+      letter-spacing: 2px;
+      font-family: var(--font-arabic);
+    }
+
+    .translit {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      direction: ltr;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .meanings-box {
+      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .meaning-en {
+      font-size: 0.95rem;
+      color: var(--text);
+      text-align: left;
+      direction: ltr;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .meaning-ur {
+      font-size: 1.15rem;
+      color: var(--urdu-green);
+      text-align: right;
+      direction: rtl;
+      font-family: var(--font-urdu);
+      line-height: 2;
+    }
+
+    .toggle-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed var(--border);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: var(--font-urdu);
+    }
+
+    .toggle-icon {
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .card.active .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .examples-container {
+      display: none;
+      margin-top: 1rem;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .card.active .examples-container {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .verse-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .verse-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .verse-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+
+    .ar-word {
+      font-size: 1.35rem;
+      font-weight: bold;
+      color: var(--arabic-gold);
+      font-family: var(--font-arabic);
+    }
+
+    .citation {
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      direction: ltr;
+      font-weight: 600;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .arabic-context {
+      font-size: 1.4rem;
+      color: #e2e8f0;
+      margin: 0.4rem 0;
+      line-height: 2.1;
+      text-align: right;
+      font-family: var(--font-arabic);
+    }
+
+    .def-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-top: 0.4rem;
+    }
+
+    .en-def {
+      font-size: 0.85rem;
+      color: var(--muted);
+      direction: ltr;
+      text-align: left;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .ur-def {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      direction: rtl;
+      text-align: right;
+      font-family: var(--font-urdu);
+      line-height: 2;
+    }
+
+    mark {
+      background-color: var(--highlight);
+      color: #0f172a;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>قرآنی الفاظ و جذور مستکشف</h1>
+    <div class="sub-heading">Quranic Root Words Explorer (75 Roots & 300 Verses)</div>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-bar" placeholder="جذر، لفظ، اردو معنیٰ، سورہ یا English Search... (e.g. ك ت ب, Knowledge, 2:255)">
+    <button id="toggleBtn" class="btn-toggle">تمام جذور دیکھیں / Show All Roots</button>
+  </div>
+
+  <div id="statsBar" class="stats-bar" style="display: none;">
+    <span id="resultsCount" class="badge-count">0 جذور / Roots</span>
+    <span id="searchHint">کسی کارڈ پر کلک کر کے اس کی قرآنی مثالیں دیکھیں</span>
+  </div>
+
+  <div id="placeholderState" class="placeholder-state">
+    <p>🔍 <strong>تلاش شروع کریں / Start Searching:</strong><br>
+    کوئی بھی جذر، لفظ، ترجمہ یا آیت نمبر ٹائپ کریں<br>
+    (مثلاً: <strong>"ک ت ب"</strong>, <strong>"علم"</strong>, <strong>"پڑھنا"</strong>, <strong>"Peace"</strong>, <strong>"2:255"</strong>)<br><br>
+    یا تمام ۷۵ جذور ایک ساتھ دیکھنے کے لیے <strong>Show All Roots</strong> بٹن کا انتخاب کریں۔</p>
+  </div>
+
+  <div class="grid" id="rootGrid"></div>
+
+  <script>
+    function removeDiacritics(text) {
+      if (!text) return "";
+      return text
+        .toLowerCase()
+        .replace(/[\u064B-\u0652\u0670\u0656\u0657\u0658\u06DC-\u06E8\u06EA-\u06ED]/g, "")
+        .replace(/[أإآٱ]/g, "ا")
+        .replace(/[ةہھ]/g, "ه")
+        .replace(/[ىیئ]/g, "ي")
+        .replace(/[کڪ]/g, "ك")
+        .replace(/[\s\-]/g, "");
+    }
+
+    function highlightMatch(text, query) {
+      if (!text || !query || query.trim() === "") return text;
+      const cleanQ = query.trim();
+      const escaped = cleanQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escaped})`, 'gi');
+      return text.replace(regex, '<mark>$1</mark>');
+    }
+
+    const quranicRoots = [
+      {
+        root: "ك-ت-ب",
+        translit: "K-T-B",
+        meaning: "Writing / Decree / Book",
+        urdu_meaning: "لکھنا / حکم دینا / کتاب",
+        examples: [
+          { word: "كُتِبَ", surah: "2:183", context: "كُتِبَ عَلَيْكُمُ الصِّيَامُ", def: "Fasting has been prescribed for you", urdu_def: "تم پر روزے فرض کیے گئے ہیں" },
+          { word: "الْكِتَابَ", surah: "2:2", context: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ", def: "This is the Book about which there is no doubt", urdu_def: "یہ وہ کتاب ہے جس میں کوئی شک نہیں" },
+          { word: "يَكْتُبُونَ", surah: "2:79", context: "فَوَيْلٌ لِّلَّذِينَ يَكْتُبُونَ الْكِتَابَ بِأَيْدِيهِمْ", def: "So woe to those who write the book with their hands", urdu_def: "پس ہلاکت ہے ان کے لیے جو اپنے ہاتھوں سے کتاب لکھتے ہیں" },
+          { word: "كَاتِبٌ", surah: "2:282", context: "وَلْيَكْتُب بَّيْنَكُمْ كَاتِبٌ بِالْعَدْلِ", def: "And let a scribe write between you in justice", urdu_def: "اور چاہیے کہ تمہارے درمیان کوئی لکھنے والا انصاف سے لکھے" }
+        ]
+      },
+      {
+        root: "ع-ل-م",
+        translit: "‘-L-M",
+        meaning: "Knowledge / To Know",
+        urdu_meaning: "علم / جاننا / آگاہی",
+        examples: [
+          { word: "عَلَّمَ", surah: "96:4", context: "الَّذِي عَلَّمَ بِالْقَلَمِ", def: "Who taught by the pen", urdu_def: "جس نے قلم کے ذریعے سکھایا" },
+          { word: "يَعْلَمُ", surah: "2:255", context: "يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ", def: "He knows what is before them and what will be after them", urdu_def: "وہ جانتا ہے جو ان کے سامنے ہے اور جو ان کے پیچھے ہے" },
+          { word: "الْعَالَمِينَ", surah: "1:2", context: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", def: "All praise is due to Allah, Lord of the worlds", urdu_def: "تمام تعریفیں اللہ کے لیے ہیں جو تمام جہانوں کا رب ہے" },
+          { word: "عِلْمٌ", surah: "17:85", context: "وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا", def: "And you have been given of knowledge except a little", urdu_def: "اور تمہیں علم میں سے نہیں دیا گیا مگر بہت تھوڑا" }
+        ]
+      },
+      {
+        root: "ق-ر-أ",
+        translit: "Q-R-A",
+        meaning: "Recitation / Reading",
+        urdu_meaning: "پڑھنا / تلاوت / قرآن",
+        examples: [
+          { word: "اقْرَأْ", surah: "96:1", context: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ", def: "Read in the name of your Lord who created", urdu_def: "پڑھیے اپنے رب کے نام سے جس نے پیدا کیا" },
+          { word: "الْقُرْآنُ", surah: "17:88", context: "عَلَىٰ أَن يَأْتُوا بِمِثْلِ هَٰذَا الْقُرْآنِ", def: "To produce the like of this Quran", urdu_def: "کہ اس قرآن کی مثل لے آئیں" },
+          { word: "قُرِئَ", surah: "7:204", context: "وَإِذَا قُرِئَ الْقُرْآنُ فَاسْتَمِعُوا لَهُ", def: "So when the Quran is recited, listen to it", urdu_def: "اور جب قرآن پڑھا جائے تو اسے غور سے سنو" },
+          { word: "قُرْآنًا", surah: "20:113", context: "وَكَذَٰلِكَ أَنزَلْنَاهُ قُرْآنًا عَرَبِيًّا", def: "And thus We have sent it down as an Arabic Quran", urdu_def: "اور اسی طرح ہم نے اسے عربی قرآن بنا کر نازل کیا" }
+        ]
+      },
+      {
+        root: "س-ل-م",
+        translit: "S-L-M",
+        meaning: "Peace / Safety / Soundness",
+        urdu_meaning: "سلامتی / امن / اسلام",
+        examples: [
+          { word: "سَلَامٌ", surah: "97:5", context: "سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ", def: "Peace it is until the emergence of dawn", urdu_def: "یہ سلامتی ہے طلوعِ فجر تک" },
+          { word: "سَلِيمٍ", surah: "26:89", context: "إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ", def: "Except one who comes to Allah with a sound heart", urdu_def: "سوائے اس کے جو اللہ کے پاس سلامت دل کے ساتھ آیا" },
+          { word: "الإِسْلَامَ", surah: "3:19", context: "إِنَّ الدِّينَ عِندَ اللَّهِ الْإِسْلَامُ", def: "Indeed, the religion in the sight of Allah is Islam", urdu_def: "بلاشبہ اللہ کے نزدیک مقبول دین صرف اسلام ہے" },
+          { word: "مُسْلِمِينَ", surah: "3:64", context: "فَقُولُوا اشْهَدُوا بِأَنَّا مُسْلِمُونَ", def: "Say, 'Bear witness that we are Muslims'", urdu_def: "تو کہہ دو کہ گواہ رہو ہم مسلمان ہیں" }
+        ]
+      },
+      {
+        root: "ن-و-ر",
+        translit: "N-W-R",
+        meaning: "Light / Illumination",
+        urdu_meaning: "نور / روشنی / اجالا",
+        examples: [
+          { word: "نُورُ", surah: "24:35", context: "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ", def: "Allah is the Light of the heavens and the earth", urdu_def: "اللہ آسمانوں اور زمین کا نور ہے" },
+          { word: "نُورًا", surah: "4:174", context: "وَأَنزَلْنَا إِلَيْكُمْ نُورًا مُّبِينًا", def: "And We have sent down to you a clear light", urdu_def: "اور ہم نے تمہاری طرف واضح نور نازل کیا" },
+          { word: "مُنِيرًا", surah: "33:46", context: "وَدَاعِيًا إِلَى اللَّهِ بِإِذْنِهِ وَسِرَاجًا مُّنِيرًا", def: "And a caller to Allah by His permission and an illuminating lamp", urdu_def: "اور اللہ کے حکم سے اس کی طرف بلانے والا اور روشن چراغ" },
+          { word: "النُّورِ", surah: "2:257", context: "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ", def: "He brings them out from darknesses into the light", urdu_def: "وہ انہیں اندھیروں سے نکال کر نور کی طرف لاتا ہے" }
+        ]
+      },
+      {
+        root: "ح-م-د",
+        translit: "Ḥ-M-D",
+        meaning: "Praise / Gratitude",
+        urdu_meaning: "تعریف / حمد / شکرگزاری",
+        examples: [
+          { word: "الْحَمْدُ", surah: "1:2", context: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", def: "All praise is due to Allah, Lord of the worlds", urdu_def: "تمام تعریفیں اللہ ہی کے لیے ہیں جو سب جہانوں کا پالنے والا ہے" },
+          { word: "مَّحْمُودًا", surah: "17:79", context: "أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا", def: "That your Lord may raise you to a praised station", urdu_def: "امید ہے کہ آپ کا رب آپ کو مقامِ محمود پر فائز کرے" },
+          { word: "حَمِيدٌ", surah: "14:1", context: "إِلَىٰ صِرَاطِ الْعَزِيزِ الْحَمِيدِ", def: "To the path of the Exalted in Might, the Praiseworthy", urdu_def: "زبردست اور قابلِ تعریف ذات کے راستے کی طرف" },
+          { word: "أَحْمَدُ", surah: "61:6", context: "وَمُبَشِّرًا بِرَسُولٍ يَأْتِي مِن بَعْدِي اسْمُهُ أَحْمَدُ", def: "And bringing good tidings of a messenger to come after me, whose name is Ahmad", urdu_def: "اور ایک رسول کی بشارت دینے والا جو میرے بعد آئے گا جس کا نام احمد ہے" }
+        ]
+      },
+      {
+        root: "ر-ح-م",
+        translit: "R-Ḥ-M",
+        meaning: "Mercy / Compassion",
+        urdu_meaning: "رحمت / مہربانی / شفقت",
+        examples: [
+          { word: "الرَّحْمَٰنُ", surah: "55:1", context: "الرَّحْمَٰنُ", def: "The Most Compassionate / Entirely Merciful", urdu_def: "سب سے زیادہ رحم فرمانے والا" },
+          { word: "رَحْمَتِي", surah: "7:156", context: "وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ", def: "My mercy encompasses all things", urdu_def: "اور میری رحمت ہر چیز کا احاطہ کیے ہوئے ہے" },
+          { word: "الرَّحِيمُ", surah: "2:163", context: "لَّا إِلَٰهَ إِلَّا هُوَ الرَّحْمَٰنُ الرَّحِيمُ", def: "There is no deity except Him, the Entirely Merciful, the Especially Merciful", urdu_def: "اس کے سوا کوئی معبود نہیں، وہ نہایت مہربان اور رحم کرنے والا ہے" },
+          { word: "أَرْحَمُ", surah: "12:64", context: "فَاللَّهُ خَيْرٌ حَافِظًا ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ", def: "Allah is the best guardian, and He is the most merciful of the merciful", urdu_def: "پس اللہ ہی بہترین حفاظت کرنے والا ہے اور وہ سب رحم کرنے والوں سے بڑا رحم کرنے والا ہے" }
+        ]
+      },
+      {
+        root: "ه-د-ي",
+        translit: "H-D-Y",
+        meaning: "Guidance / Right path",
+        urdu_meaning: "ہدایت / سیدھا راستہ",
+        examples: [
+          { word: "اهْدِنَا", surah: "1:6", context: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", def: "Guide us to the straight path", urdu_def: "ہمیں سیدھے راستے پر چلا" },
+          { word: "هُدًى", surah: "2:2", context: "هُدًى لِّلْمُتَّقِينَ", def: "A guidance for those conscious of Allah", urdu_def: "تقویٰ والوں کے لیے ہدایت ہے" },
+          { word: "يَهْدِي", surah: "10:35", context: "قُلِ اللَّهُ يَهْدِي لِلْحَقِّ", def: "Say, 'Allah guides to the truth'", urdu_def: "کہہ دیجیے کہ اللہ ہی حق کی طرف ہدایت دیتا ہے" },
+          { word: "مُهْتَدُونَ", surah: "6:82", context: "أُولَٰئِكَ لَهُمُ الْأَمْنُ وَهُم مُّهْتَدُونَ", def: "They will have security, and they are rightly guided", urdu_def: "انہی کے لیے امن ہے اور وہی ہدایت پانے والے ہیں" }
+        ]
+      },
+      {
+        root: "ع-ب-د",
+        translit: "‘-B-D",
+        meaning: "Worship / Servitude",
+        urdu_meaning: "عبادت / بندگی / بندہ",
+        examples: [
+          { word: "نَعْبُدُ", surah: "1:5", context: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", def: "You alone we worship and You alone we ask for help", urdu_def: "ہم تیری ہی عبادت کرتے ہیں اور تجھ ہی سے مدد مانگتے ہیں" },
+          { word: "عِبَادِي", surah: "2:186", context: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ", def: "And when My servants ask you concerning Me, indeed I am near", urdu_def: "اور جب میرے بندے آپ سے میرے بارے میں پوچھیں تو میں قریب ہوں" },
+          { word: "عَابِدُونَ", surah: "109:4", context: "وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ", def: "Nor will I be a worshipper of what you worship", urdu_def: "اور نہ میں اس کی عبادت کرنے والا ہوں جس کی تم نے عبادت کی" },
+          { word: "اعْبُدُوا", surah: "2:21", context: "يَا أَيُّهَا النَّاسُ اعْبُدُوا رَبَّكُمُ", def: "O mankind, worship your Lord", urdu_def: "اے لوگو! اپنے رب کی عبادت کرو" }
+        ]
+      },
+      {
+        root: "غ-ف-ر",
+        translit: "Gh-F-R",
+        meaning: "Forgiveness / Covering",
+        urdu_meaning: "مغفرت / بخشش / معاف کرنا",
+        examples: [
+          { word: "اغْفِرْ", surah: "71:28", context: "رَّبِّ اغْفِرْ لِي وَلِوَالِدَيَّ", def: "My Lord, forgive me and my parents", urdu_def: "اے میرے رب! مجھے اور میرے والدین کو بخش دے" },
+          { word: "الْغَفُورُ", surah: "85:14", context: "وَهُوَ الْغَفُورُ الْوَدُودُ", def: "And He is the Forgiving, the Loving", urdu_def: "اور وہی بہت بخشنے والا، محبت کرنے والا ہے" },
+          { word: "يَغْفِرُ", surah: "3:31", context: "قُلْ إِن كُنتُمْ تُحِبُّونَ اللَّهَ فَاتَّبِعُونِي يُحْبِبْكُمُ اللَّهُ وَيَغْفِرْ لَكُمْ", def: "Allah will love you and forgive you your sins", urdu_def: "اللہ تم سے محبت کرے گا اور تمہارے گناہ بخش دے گا" },
+          { word: "مَغْفِرَةً", surah: "2:268", context: "وَاللَّهُ يَعِدُكُم مَّغْفِرَةً مِّنْهُ وَفَضْلًا", def: "While Allah promises you forgiveness from Him and bounty", urdu_def: "اور اللہ تم سے اپنی طرف سے مغفرت اور فضل کا وعدہ کرتا ہے" }
+        ]
+      },
+      {
+        root: "ص-ب-ر",
+        translit: "Ṣ-B-R",
+        meaning: "Patience / Steadfastness",
+        urdu_meaning: "صبر / استقامت / برداشت",
+        examples: [
+          { word: "اصْبِرُوا", surah: "3:200", context: "يَا أَيُّهَا الَّذِينَ آمَنُوا اصْبِرُوا وَصَابِرُوا", def: "O you who have believed, persevere and be patient", urdu_def: "اے ایمان والو! صبر کرو اور ثابت قدم رہو" },
+          { word: "الصَّابِرِينَ", surah: "2:153", context: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", def: "Indeed, Allah is with the patient", urdu_def: "بے شک اللہ صبر کرنے والوں کے ساتھ ہے" },
+          { word: "صَبْرٌ", surah: "12:18", context: "فَصَبْرٌ جَمِيلٌ ۖ وَاللَّهُ الْمُسْتَعَانُ", def: "So patience is most fitting. And Allah is the one sought for help", urdu_def: "پس صبر ہی بہتر ہے، اور اللہ ہی سے مدد مانگی جاتی ہے" },
+          { word: "صَابِرَةٌ", surah: "8:66", context: "فَإِن يَكُن مِّنكُم مِّائَةٌ صَابِرَةٌ يَغْلِبُوا مِائَتَيْنِ", def: "If there are among you one hundred steadfast, they will overcome two hundred", urdu_def: "اگر تم میں سے سو صبر کرنے والے ہوں گے تو وہ دو سو پر غالب آئیں گے" }
+        ]
+      },
+      {
+        root: "ن-ص-ر",
+        translit: "N-Ṣ-R",
+        meaning: "Help / Victory",
+        urdu_meaning: "مدد / نصرت / فتح",
+        examples: [
+          { word: "نَصْرُ", surah: "110:1", context: "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ", def: "When the victory of Allah has come and the conquest", urdu_def: "جب اللہ کی مدد اور فتح آ پہنچے" },
+          { word: "فَانصُرْنَا", surah: "2:286", context: "أَنتَ مَوْلَانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", def: "You are our protector, so give us victory over the disbelieving people", urdu_def: "تو ہی ہمارا کارساز ہے، پس کافروں کی قوم کے مقابلے میں ہماری مدد فرما" },
+          { word: "يَنصُرْكُمُ", surah: "3:160", context: "إِن يَنصُرْكُمُ اللَّهُ فَلَا غَالِبَ لَكُمْ", def: "If Allah should aid you, no one can overcome you", urdu_def: "اگر اللہ تمہاری مدد کرے تو کوئی تم پر غالب نہیں آ سکتا" },
+          { word: "نَصِيرًا", surah: "4:45", context: "وَكَفَىٰ بِاللَّهِ وَلِيًّا وَكَفَىٰ بِاللَّهِ نَصِيرًا", def: "And sufficient is Allah as an ally and sufficient is Allah as a helper", urdu_def: "اور اللہ ہی کافی ہے کارساز اور اللہ ہی کافی ہے مددگار" }
+        ]
+      },
+      {
+        root: "خ-ل-ق",
+        translit: "Kh-L-Q",
+        meaning: "Creation / Originating",
+        urdu_meaning: "تخلیق / پیدا کرنا / مخلوق",
+        examples: [
+          { word: "خَلَقَ", surah: "96:1", context: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ", def: "Read in the name of your Lord who created", urdu_def: "پڑھیے اپنے رب کے نام سے جس نے پیدا کیا" },
+          { word: "الْخَالِقُ", surah: "59:24", context: "هُوَ اللَّهُ الْخَالِقُ الْبَارِئُ الْمُصَوِّرُ", def: "He is Allah, the Creator, the Inventor, the Fashioner", urdu_def: "وہی اللہ ہے پیدا کرنے والا، بنانے والا، صورت گری کرنے والا" },
+          { word: "خَلْقًا", surah: "17:51", context: "أَوْ خَلْقًا مِّمَّا يَكْبُرُ فِي صُدُورِكُمْ", def: "Or any creation of what is great within your breasts", urdu_def: "یا کوئی اور مخلوق جو تمہارے سینوں میں بڑی لگے" },
+          { word: "يَخْلُقُ", surah: "3:47", context: "كَذَٰلِكِ اللَّهُ يَخْلُقُ مَا يَشَاءُ", def: "Such is Allah; He creates what He wills", urdu_def: "اسی طرح اللہ جو چاہتا ہے پیدا کرتا ہے" }
+        ]
+      },
+      {
+        root: "ر-ز-ق",
+        translit: "R-Z-Q",
+        meaning: "Provision / Sustenance",
+        urdu_meaning: "رزق / روزی / عطا کرنا",
+        examples: [
+          { word: "ارْزُقْنَا", surah: "5:114", context: "وَارْزُقْنَا وَأَنتَ خَيْرُ الرَّازِقِينَ", def: "And provide for us, and You are the best of providers", urdu_def: "اور ہمیں رزق دے اور تو بہترین رزق دینے والا ہے" },
+          { word: "رَزَقْنَاهُمْ", surah: "2:3", context: "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", def: "And out of what We have provided them, they spend", urdu_def: "اور جو کچھ ہم نے انہیں دیا اس میں سے خرچ کرتے ہیں" },
+          { word: "الرَّزَّاقُ", surah: "51:58", context: "إِنَّ اللَّهَ هُوَ الرَّزَّاقُ ذُو الْقُوَّةِ الْمَتِينُ", def: "Indeed, it is Allah who is the Provider, possessor of strength", urdu_def: "بے شک اللہ ہی رزق دینے والا، زبردست قوت والا ہے" },
+          { word: "رِزْقًا", surah: "2:22", context: "فَأَخْرَجَ بِهِ مِنَ الثَّمَرَاتِ رِزْقًا لَّكُمْ", def: "And brought forth thereby fruits as provision for you", urdu_def: "پھر اس کے ذریعے تمہارے کھانے کے لیے پھل نکالے" }
+        ]
+      },
+      {
+        root: "ش-ك-ر",
+        translit: "Sh-K-R",
+        meaning: "Gratitude / Appreciation",
+        urdu_meaning: "شکر / احسان مندی / قدردانی",
+        examples: [
+          { word: "اشْكُرُوا", surah: "2:152", context: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ", def: "Remember Me; I will remember you. And be grateful to Me", urdu_def: "پس مجھے یاد کرو میں تمہیں یاد رکھوں گا اور میرا شکر ادا کرو" },
+          { word: "الشَّاكِرِينَ", surah: "3:144", context: "وَسَيَجْزِي اللَّهُ الشَّاكِرِينَ", def: "And Allah will reward the grateful", urdu_def: "اور عنقریب اللہ شکر کرنے والوں کو جزا دے گا" },
+          { word: "شَكُورٌ", surah: "35:30", context: "إِنَّهُ غَفُورٌ شَكُورٌ", def: "Indeed, He is Forgiving and Appreciative", urdu_def: "بے شک وہ بڑا بخشنے والا، قدردان ہے" },
+          { word: "شَكَرْتُمْ", surah: "14:7", context: "لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ", def: "If you are grateful, I will surely increase you in favor", urdu_def: "اگر تم شکر ادا کرو گے تو میں تمہیں اور زیادہ دوں گا" }
+        ]
+      },
+      {
+        root: "ف-ك-ر",
+        translit: "F-K-R",
+        meaning: "Thought / Reflection",
+        urdu_meaning: "فکر / غور و فکر / سوچنا",
+        examples: [
+          { word: "يَتَفَكَّرُونَ", surah: "16:44", context: "لِتُبَيِّنَ لِلنَّاسِ مَا نُزِّلَ إِلَيْهِمْ وَلَعَلَّهُمْ يَتَفَكَّرُونَ", def: "That you may explain to the people what was revealed to them", urdu_def: "تاکہ آپ لوگوں کے سامنے واضح کریں جو نازل کیا گیا تاکہ وہ غور و فکر کریں" },
+          { word: "تَفَكَّرُوا", surah: "7:184", context: "أَوَلَمْ يَتَفَكَّرُوا ۗ مَا بِصَاحِبِهِم مِّن جِنَّةٍ", def: "Then do they not give thought?", urdu_def: "کیا انہوں نے سوچا نہیں؟ ان کے ساتھی کو کوئی جنون نہیں" },
+          { word: "فَكَّرَ", surah: "74:18", context: "إِنَّهُ فَكَّرَ وَقَدَّرَ", def: "Indeed, he thought and deliberated", urdu_def: "بے شک اس نے سوچا اور اندازہ لگایا" },
+          { word: "تَتَفَكَّرُونَ", surah: "6:50", context: "قُلْ هَلْ يَسْتَوِي الْأَعْمَىٰ وَالْبَصِيرُ ۚ أَفَلَا تَتَفَكَّرُونَ", def: "Say, 'Is the blind equivalent to the seeing? Then will you not give thought?'", urdu_def: "کہہ دیجیے کیا اندھا اور دیکھنے والا برابر ہو سکتے ہیں؟" }
+        ]
+      },
+      {
+        root: "ذ-ك-ر",
+        translit: "Dh-K-R",
+        meaning: "Remembrance / Mention",
+        urdu_meaning: "ذکر / یاد کرنا / نصیحت",
+        examples: [
+          { word: "اذْكُرُوا", surah: "2:40", context: "اذْكُرُوا نِعْمَتِيَ الَّتِي أَنْعَمْتُ عَلَيْكُمْ", def: "Remember My favor which I have bestowed upon you", urdu_def: "میری اس نعمت کو یاد کرو جو میں نے تم پر کی" },
+          { word: "ذِكْرٌ", surah: "38:87", context: "إِنْ هُوَ إِلَّا ذِكْرٌ لِّلْعَالَمِينَ", def: "It is not except a reminder to the worlds", urdu_def: "یہ تو تمام جہانوں کے لیے صرف ایک نصیحت ہے" },
+          { word: "الذَّاكِرِينَ", surah: "33:35", context: "وَالذَّاكِرِينَ اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ", def: "And the men who remember Allah often and the women who do so", urdu_def: "اور اللہ کو کثرت سے یاد کرنے والے مرد اور یاد کرنے والی عورتیں" },
+          { word: "تَذَكَّرُونَ", surah: "6:80", context: "أَفَلَا تَتَذَكَّرُونَ", def: "Will you not then remember?", urdu_def: "کیا پھر بھی تم نصیحت حاصل نہیں کرتے؟" }
+        ]
+      },
+      {
+        root: "د-ع-و",
+        translit: "D-‘-W",
+        meaning: "Supplication / Call",
+        urdu_meaning: "دعا / پکارنا / دعوت",
+        examples: [
+          { word: "ادْعُونِي", surah: "40:60", context: "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ", def: "And your Lord says, 'Call upon Me; I will respond to you'", urdu_def: "اور تمہارے رب نے فرمایا مجھے پکارو میں تمہاری دعا قبول کروں گا" },
+          { word: "دَعْوَاهُمْ", surah: "10:10", context: "دَعْوَاهُمْ فِيهَا سُبْحَانَكَ اللَّهُمَّ", def: "Their call therein will be, 'Exalted are You, O Allah'", urdu_def: "ان کی پکار اس میں ہوگی کہ اے اللہ تو پاک ہے" },
+          { word: "يَدْعُونَ", surah: "6:52", context: "وَلَا تَطْرُدِ الَّذِينَ يَدْعُونَ رَبَّهُم بِالْغَدَاةِ وَالْعَشِيِّ", def: "And do not dismiss those who call upon their Lord morning and evening", urdu_def: "اور ان لوگوں کو نہ نکالیے جو صبح و شام اپنے رب کو پکارتے ہیں" },
+          { word: "الدَّاعِ", surah: "2:186", context: "أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ", def: "I respond to the invocation of the supplicant when he calls Upon Me", urdu_def: "میں پکارنے والے کی دعا قبول کرتا ہوں جب وہ مجھے پکارتا ہے" }
+        ]
+      },
+      {
+        root: "ت-و-ب",
+        translit: "T-W-B",
+        meaning: "Repentance / Turning back",
+        urdu_meaning: "توبہ / رجوع کرنا / معافی",
+        examples: [
+          { word: "تُوبُوا", surah: "66:8", context: "تُوبُوا إِلَى اللَّهِ تَوْبَةً نَّصُوحًا", def: "Repent to Allah with sincere repentance", urdu_def: "اللہ کی طرف سچی توبہ کرو" },
+          { word: "التَّوَّابُ", surah: "2:37", context: "إِنَّهُ هُوَ التَّوَّابُ الرَّحِيمُ", def: "Indeed, it is He who is the Accepting of repentance", urdu_def: "بے شک وہی توبہ قبول کرنے والا، نہایت مہربان ہے" },
+          { word: "تَابَ", surah: "5:39", context: "فَمَن تَابَ مِن بَعْدِ ظُلْمِهِ وَأَصْلَحَ فَإِنَّ اللَّهَ يَتُوبُ عَلَيْهِ", def: "But whoever repents after his wrongdoing and reforms...", urdu_def: "پس جو اپنے ظلم کے بعد توبہ کر لے اور اصلاح کر لے..." },
+          { word: "تَوْبَةً", surah: "4:17", context: "إِنَّمَا التَّوْبَةُ عَلَى اللَّهِ لِلَّذِينَ يَعْمَلُونَ السُّوءَ بِجَهَالَةٍ", def: "The repentance accepted by Allah is only for those who do wrong in ignorance", urdu_def: "اللہ کے ذمہ توبہ کی قبولیت صرف ان کے لیے ہے جو نادانی سے برائی کر بیٹھتے ہیں" }
+        ]
+      },
+      {
+        root: "ق-و-ل",
+        translit: "Q-W-L",
+        meaning: "Speech / Saying",
+        urdu_meaning: "بات / کہنا / قول",
+        examples: [
+          { word: "قُلْ", surah: "112:1", context: "قُلْ هُوَ اللَّهُ أَحَدٌ", def: "Say, 'He is Allah, who is One'", urdu_def: "کہہ دیجیے کہ وہ اللہ ایک ہے" },
+          { word: "قَوْلًا", surah: "73:5", context: "إِنَّا سَنُلْقِي عَلَيْكَ قَوْلًا ثَقِيلًا", def: "Indeed, We shall cast upon you a heavy word", urdu_def: "ہم عنقریب تم پر ایک بھاری کلام نازل کریں گے" },
+          { word: "يَقُولُونَ", surah: "2:8", context: "وَمِنَ النَّاسِ مَن يَقُولُ آمَنَّا بِاللَّهِ", def: "And of the people are some who say, 'We believe in Allah'", urdu_def: "اور لوگوں میں سے کچھ ایسے ہیں جو کہتے ہیں ہم اللہ پر ایمان لائے" },
+          { word: "قِيلَ", surah: "2:11", context: "وَإِذَا قِيلَ لَهُمْ لَا تُفْسِدُوا فِي الْأَرْضِ", def: "And when it is said to them, 'Do not cause corruption on the earth'", urdu_def: "اور جب ان سے کہا جاتا ہے کہ زمین میں فساد نہ پھیلاؤ" }
+        ]
+      },
+      {
+        root: "ع-ق-ل",
+        translit: "‘-Q-L",
+        meaning: "Intellect / Understanding",
+        urdu_meaning: "عقل / سمجھنا / شعور",
+        examples: [
+          { word: "تَعْقِلُونَ", surah: "2:44", context: "أَتَأْمُرُونَ النَّاسَ بِالْبِرِّ وَتَنسَوْنَ أَنفُسَكُمْ ... أَفَلَا تَعْقِلُونَ", def: "Will you not use your reason?", urdu_def: "کیا تم عقل سے کام نہیں لیتے؟" },
+          { word: "يَعْقِلُهَا", surah: "29:43", context: "وَتِلْكَ الْأَمْثَالُ نَضْرِبُهَا لِلنَّاسِ ۖ وَمَا يَعْقِلُهَا إِلَّا الْعَالِمُونَ", def: "And these examples We present to the people, but none will understand them except those of knowledge", urdu_def: "اور یہ مثالیں ہم لوگوں کے لیے بیان کرتے ہیں اور انہیں علم والوں کے سوا کوئی نہیں سمجھتا" },
+          { word: "يَعْقِلُونَ", surah: "5:103", context: "وَأَكْثَرُهُمْ لَا يَعْقِلُونَ", def: "And most of them do not use reason", urdu_def: "اور ان میں سے اکثر عقل نہیں رکھتے" },
+          { word: "عَقَلُوهُ", surah: "2:75", context: "ثُمَّ يُحَرِّفُونَهُ مِن بَعْدِ مَا عَقَلُوهُ", def: "Then they alter it after they had understood it", urdu_def: "پھر وہ اسے سمجھنے کے بعد بدل ڈالتے ہیں" }
+        ]
+      },
+      {
+        root: "ح-ق-ق",
+        translit: "Ḥ-Q-Q",
+        meaning: "Truth / Reality / Right",
+        urdu_meaning: "حق / سچائی / ثابت ہونا",
+        examples: [
+          { word: "الْحَقُّ", surah: "2:147", context: "الْحَقُّ مِن رَّبِّكَ فَلَا تَكُونَنَّ مِنَ الْمُمْتَرِينَ", def: "The truth is from your Lord, so never be among the doubters", urdu_def: "حق تیرے رب کی طرف سے ہے، پس شک کرنے والوں میں سے نہ ہونا" },
+          { word: "حَقَّ", surah: "3:102", context: "اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ", def: "Fear Allah as He should be feared", urdu_def: "اللہ سے ڈرو جیسا کہ اس سے ڈرنے کا حق ہے" },
+          { word: "يُحِقَّ", surah: "8:8", context: "لِيُحِقَّ الْحَقَّ وَيُبْطِلَ الْبَاطِلَ", def: "That He should justify the truth and abolish falsehood", urdu_def: "تاکہ وہ حق کو حق ثابت کر دے اور باطل کو باطل کر دے" },
+          { word: "حَقِيقٌ", surah: "7:105", context: "حَقِيقٌ عَلَىٰ أَن لَّا أَقُولَ عَلَى اللَّهِ إِلَّا الْحَقَّ", def: "Obligated as I am that I should not say about Allah except the truth", urdu_def: "مجھ پر لازم ہے کہ اللہ پر صرف سچی بات ہی کہوں" }
+        ]
+      },
+      {
+        root: "ن-ف-س",
+        translit: "N-F-S",
+        meaning: "Soul / Self",
+        urdu_meaning: "نفس / جان / ذات",
+        examples: [
+          { word: "نَفْسٍ", surah: "3:185", context: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ", def: "Every soul will taste death", urdu_def: "ہر جان کو موت کا ذائقہ چکھنا ہے" },
+          { word: "أَنفُسَكُمْ", surah: "2:44", context: "وَتَنسَوْنَ أَنفُسَكُمْ وَأَنتُمْ تَتْلُونَ الْكِتَابَ", def: "And forget yourselves while you recite the Scripture?", urdu_def: "اور اپنے آپ کو بھول جاتے ہو حالانکہ تم کتاب پڑھتے ہو؟" },
+          { word: "النَّفْسُ", surah: "12:53", context: "إِنَّ النَّفْسَ لَأَمَّارَةٌ بِالسُّوءِ", def: "Indeed, the soul is a persistent enjoiner of evil", urdu_def: "بے شک نفس تو برائی کا بہت حکم دینے والا ہے" },
+          { word: "نُفُوسِهِمْ", surah: "4:66", context: "وَلَوْ أَنَّهُمْ فَعَلُوا مَا يُوعَظُونَ بِهِ لَكَانَ خَيْرًا لَّهُمْ", def: "It would have been better for them in themselves", urdu_def: "تو یہ ان کے دل و جان کے لیے زیادہ بہتر ہوتا" }
+        ]
+      },
+      {
+        root: "أ-م-ن",
+        translit: "A-M-N",
+        meaning: "Faith / Trust / Security",
+        urdu_meaning: "ایمان / امن / امانت",
+        examples: [
+          { word: "آمَنُوا", surah: "2:257", context: "اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا", def: "Allah is the ally of those who believe", urdu_def: "اللہ ایمان والوں کا مدددگار ہے" },
+          { word: "الأَمْنُ", surah: "6:82", context: "أُولَٰئِكَ لَهُمُ الْأَمْنُ وَهُم مُّهْتَدُونَ", def: "They will have security, and they are rightly guided", urdu_def: "انہی کے لیے امن ہے اور وہی ہدایت پانے والے ہیں" },
+          { word: "الْمُؤْمِنِينَ", surah: "2:223", context: "وَبَشِّرِ الْمُؤْمِنِينَ", def: "And give good tidings to the believers", urdu_def: "اور ایمان والوں کو خوشخبری دے دیجیے" },
+          { word: "أَمِينٌ", surah: "26:107", context: "إِنِّي لَكُمْ رَسُولٌ أَمِينٌ", def: "Indeed, I am to you a trustworthy messenger", urdu_def: "بے شک میں تمہارے لیے ایک امانت دار رسول ہوں" }
+        ]
+      },
+      {
+        root: "خ-و-ف",
+        translit: "Kh-W-F",
+        meaning: "Fear / Apprehension",
+        urdu_meaning: "خوف / ڈر / خدشہ",
+        examples: [
+          { word: "خَوْفٌ", surah: "2:38", context: "فَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ", def: "There will be no fear concerning them, nor will they grieve", urdu_def: "ان پر نہ کوئی خوف ہوگا اور نہ وہ غمگین ہوں گے" },
+          { word: "يَخَافُونَ", surah: "16:50", context: "يَخَافُونَ رَبَّهُم مِّن فَوْقِهِمْ", def: "They fear their Lord above them", urdu_def: "وہ اپنے رب سے ڈرتے ہیں جو ان کے اوپر ہے" },
+          { word: "خِيفَةً", surah: "20:67", context: "فَأَوْجَسَ فِي نَفْسِهِ خِيفَةً مُّوسَىٰ", def: "And Moses felt within himself apprehension", urdu_def: "تو موسیٰ نے اپنے دل میں ڈر محسوس کیا" },
+          { word: "خَوْفًا", surah: "7:56", context: "وَادْعُوهُ خَوْفًا وَطَمَعًا", def: "And call upon Him in fear and aspiration", urdu_def: "اور اللہ کو پکارو خوف اور امید کے ساتھ" }
+        ]
+      },
+      {
+        root: "أ-م-ر",
+        translit: "A-M-R",
+        meaning: "Command / Matter / Affair",
+        urdu_meaning: "حکم / معاملہ / امر",
+        examples: [
+          { word: "أَمَرَ", surah: "16:90", context: "إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ", def: "Indeed, Allah orders justice and good conduct", urdu_def: "بے شک اللہ عدل اور احسان کا حکم دیتا ہے" },
+          { word: "الْأَمْرُ", surah: "2:210", context: "وَإِلَى اللَّهِ تُرْجَعُ الْأُمُورُ", def: "And to Allah all matters are returned", urdu_def: "اور تمام امور اللہ ہی کی طرف لوٹائے جاتے ہیں" },
+          { word: "أَمْرًا", surah: "65:1", context: "لَا تَدْرِي لَعَلَّ اللَّهَ يُحْدِثُ بَعْدَ ذَلِك أَمْرًا", def: "Perhaps Allah will bring about thereafter a new matter", urdu_def: "تم نہیں جانتے شاید اللہ اس کے بعد کوئی نئی صورت پیدا کر دے" },
+          { word: "أُولِي الْأَمْرِ", surah: "4:59", context: "وَأَطِيعُوا الرَّسُولَ وَأُولِي الْأَمْرِ مِنكُمْ", def: "And obey the Messenger and those in authority among you", urdu_def: "اور رسول کی اطاعت کرو اور تم میں سے صاحبِ امر کی" }
+        ]
+      },
+      {
+        root: "ن-ز-ل",
+        translit: "N-Z-L",
+        meaning: "Sending Down / Revelation",
+        urdu_meaning: "نازل کرنا / وحی / اترنا",
+        examples: [
+          { word: "أَنزَلَ", surah: "2:176", context: "ذَٰلِكَ بِأَنَّ اللَّهَ نَزَّلَ الْكِتَابَ بِالْحَقِّ", def: "That is because Allah has sent down the Book in truth", urdu_def: "یہ اس لیے کہ اللہ نے حق کے ساتھ کتاب نازل کی" },
+          { word: "تَنزِيلُ", surah: "32:2", context: "تَنزِيلُ الْكِتَابِ لَا رَيْبَ فِيهِ مِن رَّبِّ الْعَالَمِينَ", def: "The revelation of the Book is without doubt from the Lord of the worlds", urdu_def: "کتاب کا نازل کیا جانا جس میں کوئی شک نہیں، رب العالمین کی طرف سے ہے" },
+          { word: "نَزَّلَهُ", surah: "2:97", context: "فَإِنَّهُ نَزَّلَهُ عَلَىٰ قَلْبِكَ بِإِذْنِ اللَّهِ", def: "For indeed, he brought the Quran down upon your heart", urdu_def: "کیونکہ اس نے اللہ کے حکم سے یہ قرآن آپ کے دل پر نازل کیا" },
+          { word: "مُنزَلِينَ", surah: "3:124", context: "بِأَلْفٍ مِّنَ الْمَلَائِكَةِ مُنزَلِينَ", def: "With three thousand angels sent down", urdu_def: "تین ہزار فرشتوں کے ساتھ جو نازل کیے گئے" }
+        ]
+      },
+      {
+        root: "ص-ل-و",
+        translit: "Ṣ-L-W",
+        meaning: "Prayer / Connection / Blessings",
+        urdu_meaning: "نماز / درود / ارتباط",
+        examples: [
+          { word: "الصَّلَاةَ", surah: "2:3", context: "وَيُقِيمُونَ الصَّلَاةَ", def: "And establish prayer", urdu_def: "اور نماز قائم کرتے ہیں" },
+          { word: "صَلِّ", surah: "9:103", context: "وَصَلِّ عَلَيْهِمْ ۖ إِنَّ صَلَاتَكَ سَكَنٌ لَّهُمْ", def: "And invoke blessings upon them", urdu_def: "اور ان کے لیے دعا کرو، بے شک تمہاری دعا ان کے لیے سکون کا باعث ہے" },
+          { word: "يُصَلُّونَ", surah: "33:56", context: "إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ", def: "Indeed, Allah and His angels send blessings upon the Prophet", urdu_def: "بے شک اللہ اور اس کے فرشتے نبی پر درود بھیجتے ہیں" },
+          { word: "مُصَلًّى", surah: "2:125", context: "وَاتَّخِذُوا مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى", def: "And take from the standing place of Abraham a place of prayer", urdu_def: "اور مقامِ ابراہیم کو نماز کی جگہ بناؤ" }
+        ]
+      },
+      {
+        root: "ح-ي-ي",
+        translit: "Ḥ-Y-Y",
+        meaning: "Life / Living / Greeting",
+        urdu_meaning: "زندگی / زندہ ہونا / سلام",
+        examples: [
+          { word: "أَحْيَا", surah: "2:28", context: "كَيْفَ تَكْفُرُونَ بِاللَّهِ وَكُنتُمْ أَمْوَاتًا فَأَحْيَاكُمْ", def: "How can you disbelieve in Allah when you were lifeless and He brought you to life?", urdu_def: "تم اللہ کا کیسے انکار کرتے ہو حالانکہ تم مردہ تھے تو اس نے تمہیں زندگی دی" },
+          { word: "الْحَيُّ", surah: "2:255", context: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", def: "Allah - there is no deity except Him, the Ever-Living, the Sustainer", urdu_def: "اللہ، اس کے سوا کوئی معبود نہیں، وہ ہمیشہ زندہ اور قائم رہنے والا ہے" },
+          { word: "حَيَاةً", surah: "16:97", context: "فَلَنُحْيِيَنَّهُ حَيَاةً طَيِّبَةً", def: "We will surely cause him to live a good life", urdu_def: "تو ہم یقیناً اسے پاکیزہ زندگی عطا کریں گے" },
+          { word: "حُيِّيتُم", surah: "4:86", context: "وَإِذَا حُيِّيتُم بِتَحِيَّةٍ فَحَيُّوا بِأَحْسَنَ مِنْهَا", def: "And when you are greeted with a greeting, greet with one better than it", urdu_def: "اور جب تمہیں کوئی سلام پیش کیا جائے تو اس سے بہتر جواب دو" }
+        ]
+      },
+      {
+        root: "م-و-ت",
+        translit: "M-W-T",
+        meaning: "Death / Dying",
+        urdu_meaning: "موت / مرنا / وفات",
+        examples: [
+          { word: "الْمَوْتِ", surah: "3:185", context: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ", def: "Every soul will taste death", urdu_def: "ہر جان کو موت کا ذائقہ چکھنا ہے" },
+          { word: "يُمِيتُ", surah: "2:258", context: "رَبِّيَ الَّذِي يُحْيِي وَيُمِيتُ", def: "My Lord is the one who gives life and causes death", urdu_def: "میرا رب وہ ہے جو زندگی دیتا ہے اور موت دیتا ہے" },
+          { word: "مَيِّتًا", surah: "6:122", context: "أَوَمَن كَانَ مَيْتًا فَأَحْيَيْنَاهُ", def: "Is he who was dead and We gave him life...", urdu_def: "کیا وہ شخص جو مردہ تھا پھر ہم نے اسے زندہ کیا..." },
+          { word: "مِتُّ", surah: "19:66", context: "أَإِذَا مَا مِتُّ لَسَوْفَ أُخْرَجُ حَيًّا", def: "When I am dead, am I going to be brought forth alive?", urdu_def: "کیا جب میں مر جاؤں گا تو دوبارہ زندہ کر کے نکالا جاؤں گا؟" }
+        ]
+      },
+      {
+        root: "ظ-ل-م",
+        translit: "Ẓ-L-M",
+        meaning: "Wrongdoing / Injustice / Darkness",
+        urdu_meaning: "ظلم / ناانصافی / تاریکی",
+        examples: [
+          { word: "ظَلَمُوا", surah: "2:57", context: "وَمَا ظَلَمُونَا وَلَٰكِن كَانُوا أَنفُسَهُمْ يَظْلِمُونَ", def: "And they did not wrong Us, but they were wronging themselves", urdu_def: "اور انہوں نے ہمارا کچھ نہیں بگاڑا بلکہ وہ اپنے ہی نفس پر ظلم کرتے تھے" },
+          { word: "الظَّالِمِينَ", surah: "2:258", context: "وَاللَّهُ لَا يَهْدِي الْقَوْمَ الظَّالِمِينَ", def: "And Allah does not guide the wrongdoing people", urdu_def: "اور اللہ ظالم قوم کو ہدایت نہیں دیتا" },
+          { word: "الظُّلُمَاتِ", surah: "2:257", context: "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ", def: "He brings them out from darknesses into the light", urdu_def: "وہ انہیں اندھیروں سے نکال کر نور کی طرف لاتا ہے" },
+          { word: "ظُلْمًا", surah: "4:10", context: "إِنَّ الَّذِينَ يَأْكُلُونَ أَمْوَالَ الْيَتَامَىٰ ظُلْمًا", def: "Indeed, those who consume the property of orphans unjustly...", urdu_def: "بے شک جو لوگ یتیموں کے مال ناحق کھاتے ہیں..." }
+        ]
+      },
+      {
+        root: "ص-د-ق",
+        translit: "Ṣ-D-Q",
+        meaning: "Truth / Honesty / Charity",
+        urdu_meaning: "سچائی / صداقت / صدقہ",
+        examples: [
+          { word: "صَدَقَ", surah: "3:95", context: "قُلْ صَدَقَ اللَّهُ ۗ فَاتَّبِعُوا مِلَّةَ إِبْرَاهِيمَ حَنِيفًا", def: "Say, 'Allah has spoken the truth, so follow the religion of Abraham'", urdu_def: "کہہ دیجیے کہ اللہ نے سچ فرمایا، پس ابراہیم کی ملت کی پیروی کرو" },
+          { word: "الصَّادِقِينَ", surah: "9:119", context: "اتَّقُوا اللَّهَ وَكُونُوا مَعَ الصَّادِقِينَ", def: "Fear Allah and be with those who are truthful", urdu_def: "اللہ سے ڈرو اور سچوں کے ساتھ ہو جاؤ" },
+          { word: "الصَّدَقَاتِ", surah: "2:276", context: "يَمْحَقُ اللَّهُ الرِّبَا وَيُرْبِي الصَّدَقَاتِ", def: "Allah destroys interest and gives increase for charities", urdu_def: "اللہ سود کو مٹاتا ہے اور صدقات کو بڑھاتا ہے" },
+          { word: "صَدَقَةٍ", surah: "2:263", context: "قَوْلٌ مَّعْرُوفٌ وَمَغْفِرَةٌ خَيْرٌ مِّن صَدَقَةٍ يَتْبَعُهَا أَذًى", def: "Kind words and forgiveness are better than charity followed by injury", urdu_def: "اچھی بات اور درگزر کرنا اس صدقے سے بہتر ہے جس کے بعد تکلیف پہنچائی جائے" }
+        ]
+      },
+      {
+        root: "ك-ف-ر",
+        translit: "K-F-R",
+        meaning: "Disbelief / Ingratitude / Concealing",
+        urdu_meaning: "کفر / انکار / نا شکری",
+        examples: [
+          { word: "كَفَرُوا", surah: "2:6", context: "إِنَّ الَّذِينَ كَفَرُوا سَوَاءٌ عَلَيْهِمْ", def: "Indeed, those who disbelieve - it is all the same for them", urdu_def: "بے شک جن لوگوں نے کفر کیا ان کے لیے برابر ہے" },
+          { word: "الْكَافِرِينَ", surah: "2:191", context: "وَكَذَٰلِكَ جَزَاءُ الْكَافِرِينَ", def: "And such is the recompense of the disbelievers", urdu_def: "اور کافروں کی یہی سزا ہے" },
+          { word: "الْكُفْرَ", surah: "3:177", context: "إِنَّ الَّذِينَ اشْتَرَوُا الْكُفْرَ بِالْإِيمَانِ", def: "Indeed, those who purchased disbelief in exchange for faith...", urdu_def: "بے شک جن لوگوں نے ایمان کے بدلے کفر خریدا..." },
+          { word: "وَكَفِّرْ", surah: "3:193", context: "فَاغْفِرْ لَنَا ذُنُوبَنَا وَكَفِّرْ عَنَّا سَيِّئَاتِنَا", def: "Our Lord, forgive us our sins and remove from us our misdeeds", urdu_def: "اے ہمارے رب! ہمارے گناہ بخش دے اور ہماری برائیاں ہم سے دور کر دے" }
+        ]
+      },
+      {
+        root: "ع-م-ل",
+        translit: "‘-M-L",
+        meaning: "Action / Work / Deed",
+        urdu_meaning: "عمل / کام / کوشش",
+        examples: [
+          { word: "عَمِلُوا", surah: "2:25", context: "وَبَشِّرِ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ", def: "And give good tidings to those who believe and do righteous deeds", urdu_def: "اور ان لوگوں کو خوشخبری دے دیجیے جو ایمان لائے اور نیک عمل کیے" },
+          { word: "تَعْمَلُونَ", surah: "2:85", context: "وَمَا اللَّهُ بِغَافِلٍ عَمَّا تَعْمَلُونَ", def: "And Allah is not unaware of what you do", urdu_def: "اور اللہ اس سے غافل نہیں جو تم کرتے ہو" },
+          { word: "عَمَلًا", surah: "18:110", context: "فَمَن كَانَ يَرْجُو لِقَاءَ رَبِّهِ فَلْيَعْمَلْ عَمَلًا صَالِحًا", def: "So whoever hopes for the meeting with his Lord - let him do righteous work", urdu_def: "پس جو اپنے رب سے ملاقات کی امید رکھتا ہے اسے چاہیے کہ نیک عمل کرے" },
+          { word: "الْعَامِلِينَ", surah: "3:136", context: "وَنِعْمَ أَجْرُ الْعَامِلِينَ", def: "And excellent is the reward of the righteous workers", urdu_def: "اور عمل کرنے والوں کا کیا ہی اچھا اجر ہے" }
+        ]
+      },
+      {
+        root: "ج-ع-ل",
+        translit: "J-‘-L",
+        meaning: "To Make / To Appoint / To Place",
+        urdu_meaning: "بنانا / مقرر کرنا / رکھنا",
+        examples: [
+          { word: "جَعَلَ", surah: "6:1", context: "وَجَعَلَ الظُّلُمَاتِ وَالنُّورَ", def: "And made darknesses and light", urdu_def: "اور اس نے اندھیروں اور روشنی کو بنایا" },
+          { word: "جَاعِلٌ", surah: "2:30", context: "إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً", def: "Indeed, I will make upon the earth a successive authority", urdu_def: "میں زمین میں ایک خلیفہ بنانے والا ہوں" },
+          { word: "يَجْعَلُونَ", surah: "2:19", context: "يَجْعَلُونَ أَصَابِعَهُمْ فِي آذَانِهِم", def: "They put their fingers in their ears", urdu_def: "وہ اپنی انگلیاں اپنے کانوں میں ڈال لیتے ہیں" },
+          { word: "جَعَلْنَاكُمْ", surah: "2:143", context: "وَكَذَٰلِكَ جَعَلْنَاكُمْ أُمَّةً وَسَطًا", def: "And thus We have made you a just community", urdu_def: "اور اسی طرح ہم نے تمہیں ایک اعتدال پسند امت بنایا" }
+        ]
+      },
+      {
+        root: "ج-ن-ن",
+        translit: "J-N-N",
+        meaning: "Garden / Paradise / Jinn / Concealed",
+        urdu_meaning: "جنت / باغ / جن / پوشیدہ",
+        examples: [
+          { word: "الْجَنَّةَ", surah: "2:35", context: "اسْكُنْ أَنتَ وَزَوْجُكَ الْجَنَّةَ", def: "Dwell, you and your wife, in Paradise", urdu_def: "تم اور تمہاری بیوی جنت میں رہو" },
+          { word: "جَنَّاتٍ", surah: "2:25", context: "أَنَّ لَهُمْ جَنَّاتٍ تَجْرِي مِن تَحْتِهَا الْأَنْهَارُ", def: "That they will have gardens beneath which rivers flow", urdu_def: "کہ ان کے لیے ایسے باغات ہیں جن کے نیچے نہریں بہتی ہیں" },
+          { word: "الْجِنِّ", surah: "55:33", context: "يَا مَعْشَرَ الْجِنِّ وَالْإِنسِ", def: "O company of jinn and mankind", urdu_def: "اے جنوں اور انسانوں کے گروہ!" },
+          { word: "مَجْنُونٍ", surah: "37:36", context: "وَيَقُولُونَ أَئِنَّا لَتَارِكُو آلِهَتِنَا لِشَاعِرٍ مَّجْنُونٍ", def: "And saying, 'Are we to leave our gods for a mad poet?'", urdu_def: "اور کہتے تھے کیا ہم ایک مجنون شاعر کے لیے اپنے معبودوں کو چھوڑ دیں؟" }
+        ]
+      },
+      {
+        root: "خ-ي-ر",
+        translit: "Kh-Y-R",
+        meaning: "Good / Better / Choice",
+        urdu_meaning: "بھلائی / بہتر / خیر",
+        examples: [
+          { word: "خَيْرٌ", surah: "2:263", context: "قَوْلٌ مَّعْرُوفٌ وَمَغْفِرَةٌ خَيْرٌ مِّن صَدَقَةٍ", def: "Kind speech and forgiveness are better than charity", urdu_def: "اچھی بات اور درگزر کرنا صدقے سے بہتر ہے" },
+          { word: "الْخَيْرَاتِ", surah: "2:148", context: "فَاسْتَبِقُوا الْخَيْرَاتِ", def: "So race to all that is good", urdu_def: "پس نیکیوں کی طرف سبقت کرو" },
+          { word: "خَيْرًا", surah: "2:180", context: "إِن تَرَكَ خَيْرًا الْوَصِيَّةُ لِلْوَالِدَيْنِ", def: "If he leaves wealth, a bequest is prescribed", urdu_def: "اگر وہ کچھ مال چھوڑ جائے تو وصیت کرنا فرض ہے" },
+          { word: "يَخْتَارُ", surah: "28:68", context: "وَرَبُّكَ يَخْلُقُ مَا يَشَاءُ وَيَخْتَارُ", def: "And your Lord creates what He wills and chooses", urdu_def: "اور آپ کا رب جو چاہتا ہے پیدا کرتا ہے اور منتخب فرماتا ہے" }
+        ]
+      },
+      {
+        root: "ش-ر-ك",
+        translit: "Sh-R-K",
+        meaning: "Partnership / Polytheism",
+        urdu_meaning: "شرک / شریک کرنا / حصہ داری",
+        examples: [
+          { word: "تُشْرِكُوا", surah: "4:36", context: "وَاعْبُدُوا اللَّهَ وَلَا تُشْرِكُوا بِهِ شَيْئًا", def: "Worship Allah and associate nothing with Him", urdu_def: "اور اللہ کی عبادت کرو اور اس کے ساتھ کسی کو شریک نہ ٹھہراؤ" },
+          { word: "الْمُشْرِكِينَ", surah: "9:3", context: "أَنَّ اللَّهَ بَرِيءٌ مِّنَ الْمُشْرِكِينَ وَرَسُولُهُ", def: "That Allah is disassociated from the disbelievers", urdu_def: "کہ اللہ مشرکین سے بیزار ہے اور اس کا رسول بھی" },
+          { word: "الشِّرْكَ", surah: "31:13", context: "إِنَّ الشِّرْكَ لَظُلْمٌ عَظِيمٌ", def: "Indeed, associating partners with Him is a great injustice", urdu_def: "بے شک شرک بہت بڑا ظلم ہے" },
+          { word: "شُرَكَاءَ", surah: "6:136", context: "فَقَالُوا هَٰذَا لِلَّهِ بِزَعْمِهِمْ وَهَٰذَا لِشُرَكَائِنَا", def: "They say, 'This is for Allah' by their claim, 'and this is for our partners'", urdu_def: "انہوں نے اپنے زعم میں کہا یہ اللہ کے لیے ہے اور یہ ہمارے شریکوں کے لیے" }
+        ]
+      },
+      {
+        root: "ص-ر-ط",
+        translit: "Ṣ-R-Ṭ",
+        meaning: "Path / Way",
+        urdu_meaning: "راستہ / صراط / راہ",
+        examples: [
+          { word: "الصِّرَاطَ", surah: "1:6", context: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", def: "Guide us to the straight path", urdu_def: "ہمیں سیدھے راستے پر چلا" },
+          { word: "صِرَاطٍ", surah: "6:161", context: "قُلْ إِنَّنِي هَدَانِي رَبِّي إِلَىٰ صِرَاطٍ مُّسْتَقِيمٍ", def: "Say, 'Indeed, my Lord has guided me to a straight path'", urdu_def: "کہہ دیجیے کہ مجھے میرے رب نے سیدھے راستے کی ہدایت دی ہے" },
+          { word: "صِرَاطِ", surah: "14:1", context: "إِلَىٰ صِرَاطِ الْعَزِيزِ الْحَمِيدِ", def: "To the path of the Exalted in Might, the Praiseworthy", urdu_def: "غالب اور قابلِ تعریف ذات کے راستے کی طرف" },
+          { word: "صِرَاطِي", surah: "6:153", context: "وَأَنَّ هَٰذَا صِرَاطِي مُسْتَقِيمًا فَاتَّبِعُوهُ", def: "And this is My path, which is straight, so follow it", urdu_def: "اور یہ کہ یہ میرا سیدھا راستہ ہے پس اس کی پیروی کرو" }
+        ]
+      },
+      {
+        root: "س-م-ع",
+        translit: "S-M-‘",
+        meaning: "Hearing / Listening / Obeying",
+        urdu_meaning: "سننا / سماعت / اطاعت",
+        examples: [
+          { word: "سَمِعْنَا", surah: "2:285", context: "سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا", def: "We hear and we obey. We seek Your forgiveness, our Lord", urdu_def: "ہم نے سنا اور اطاعت کی، اے ہمارے رب تیری بخشش کے طالب ہیں" },
+          { word: "السَّمِيعُ", surah: "2:127", context: "إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ", def: "Indeed You are the Hearing, the Knowing", urdu_def: "بے شک تو ہی سننے والا، جاننے والا ہے" },
+          { word: "يَسْمَعُونَ", surah: "7:179", context: "وَلَهُمْ آذَانٌ لَّا يَسْمَعُونَ بِهَا", def: "And they have ears with which they do not hear", urdu_def: "اور ان کے کان ہیں جن سے وہ سنتے نہیں" },
+          { word: "اسْتَمِعُوا", surah: "7:204", context: "وَإِذَا قُرِئَ الْقُرْآنُ فَاسْتَمِعُوا لَهُ", def: "So when the Quran is recited, listen to it", urdu_def: "اور جب قرآن پڑھا جائے تو اسے غور سے سنو" }
+        ]
+      },
+      {
+        root: "ب-ص-ر",
+        translit: "B-Ṣ-R",
+        meaning: "Sight / Vision / Insight",
+        urdu_meaning: "دیکھنا / بصارت / بصیرت",
+        examples: [
+          { word: "الْبَصِيرُ", surah: "17:1", context: "إِنَّهُ هُوَ السَّمِيعُ الْبَصِيرُ", def: "Indeed, He is the Hearing, the Seeing", urdu_def: "بے شک وہی سب کچھ سننے والا، دیکھنے والا ہے" },
+          { word: "أَبْصَارِهِمْ", surah: "2:7", context: "وَعَلَىٰ أَبْصَارِهِمْ غِشَاوَةٌ", def: "And over their vision is a veil", urdu_def: "اور ان کی آنکھوں پر پردہ ہے" },
+          { word: "يَبْصُرُونَ", surah: "7:179", context: "وَلَهُمْ أَعْيُنٌ لَّا يَبْصُرُونَ بِهَا", def: "They have eyes with which they do not see", urdu_def: "ان کی آنکھیں ہیں جن سے وہ دیکھتے نہیں" },
+          { word: "بَصَائِرُ", surah: "6:104", context: "قَدْ جَاءَكُم بَصَائِرُ مِن رَّبِّكُمْ", def: "There has come to you enlightenment from your Lord", urdu_def: "تمہارے پاس تمہارے رب کی طرف سے روشن بصیرتیں آ چکی ہیں" }
+        ]
+      },
+      {
+        root: "ق-د-ر",
+        translit: "Q-D-R",
+        meaning: "Power / Decree / Measure",
+        urdu_meaning: "قدرت / تقدیر / اندازہ",
+        examples: [
+          { word: "قَدِيرٌ", surah: "2:20", context: "إِنَّ اللَّهَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", def: "Indeed, Allah is over all things competent", urdu_def: "بے شک اللہ ہر چیز پر قادر ہے" },
+          { word: "الْقَدْرِ", surah: "97:1", context: "إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ", def: "Indeed, We sent it down during the Night of Decree", urdu_def: "بے شک ہم نے اسے شبِ قدر میں نازل کیا" },
+          { word: "بِقَدَرٍ", surah: "54:49", context: "إِنَّا كُلَّ شَيْءٍ خَلَقْنَاهُ بِقَدَرٍ", def: "Indeed, all things We created with predetermined measure", urdu_def: "ہم نے ہر چیز کو ایک مقررہ اندازے سے پیدا کیا" },
+          { word: "يَقْدِرُ", surah: "13:26", context: "اللَّهُ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ", def: "Allah extends provision for whom He wills and restricts it", urdu_def: "اللہ جس کے لیے چاہتا ہے رزق کشادہ کرتا ہے اور تنگ کرتا ہے" }
+        ]
+      },
+      {
+        root: "م-ل-ك",
+        translit: "M-L-K",
+        meaning: "Dominion / Ownership / King / Angel",
+        urdu_meaning: "بادشاہی / ملکیت / فرشتہ / مالک",
+        examples: [
+          { word: "مَالِكِ", surah: "1:4", context: "مَالِكِ يَوْمِ الدِّينِ", def: "Sovereign of the Day of Recompense", urdu_def: "روزِ جزا کا مالک" },
+          { word: "الْمُلْكُ", surah: "2:107", context: "أَلَمْ تَعْلَمْ أَنَّ اللَّهَ لَهُ مُلْكُ السَّمَاوَاتِ وَالْأَرْضِ", def: "Do you not know that to Allah belongs the dominion of the heavens?", urdu_def: "کیا تم نہیں جانتے کہ آسمانوں اور زمین کی بادشاہی اللہ ہی کے لیے ہے؟" },
+          { word: "مَلَائِكَتِهِ", surah: "2:98", context: "مَن كَانَ عَدُوًّا لِّلَّهِ وَمَلَائِكَتِهِ", def: "Whoever is an enemy to Allah and His angels...", urdu_def: "جو اللہ اور اس کے فرشتوں کا دشمن ہو..." },
+          { word: "مُلُوكًا", surah: "5:20", context: "وَجَعَلَكُم مُّلُوكًا", def: "And made you kings", urdu_def: "اور تمہیں بادشاہ بنایا" }
+        ]
+      },
+      {
+        root: "ش-ه-د",
+        translit: "Sh-H-D",
+        meaning: "Witness / Testimony / Presence",
+        urdu_meaning: "گواہی / حاضر ہونا / شہید",
+        examples: [
+          { word: "شَهِدَ", surah: "3:18", context: "شَهِدَ اللَّهُ أَنَّهُ لَا إِلَٰهَ إِلَّا هُوَ", def: "Allah witnesses that there is no deity except Him", urdu_def: "اللہ نے گواہی دی کہ اس کے سوا کوئی معبود نہیں" },
+          { word: "الشَّهَادَةِ", surah: "59:22", context: "عَالِمُ الْغَيْبِ وَالشَّهَادَةِ", def: "Knower of the unseen and the witnessed", urdu_def: "غیب اور حاضر کا جاننے والا" },
+          { word: "شُهَدَاءَ", surah: "2:143", context: "وَتَكُونُوا شُهَدَاءَ عَلَى النَّاسِ", def: "And you may be witnesses over the people", urdu_def: "اور تم لوگوں پر گواہ بنو" },
+          { word: "شَهِيدًا", surah: "4:79", context: "وَكَفَىٰ بِاللَّهِ شَهِيدًا", def: "And sufficient is Allah as a witness", urdu_def: "اور اللہ گواہ کے طور پر کافی ہے" }
+        ]
+      },
+      {
+        root: "أ-ت-ي",
+        translit: "A-T-Y",
+        meaning: "To Come / To Bring / To Give",
+        urdu_meaning: "آنا / لانا / عطا کرنا",
+        examples: [
+          { word: "آتِنَا", surah: "2:201", context: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً", def: "Our Lord, give us in this world that which is good", urdu_def: "اے ہمارے رب! ہمیں دنیا میں بھی بھلائی عطا فرما" },
+          { word: "يَأْتِي", surah: "2:259", context: "فَإِنَّ اللَّهَ يَأْتِي بِالشَّمْسِ مِنَ الْمَشْرِقِ", def: "Indeed, Allah brings the sun from the east", urdu_def: "بے شک اللہ سورج کو مشرق سے لاتا ہے" },
+          { word: "يُؤْتِي", surah: "2:269", context: "يُؤْتِي الْحِكْمَةَ مَن يَشَاءُ", def: "He gives wisdom to whom He wills", urdu_def: "وہ جسے چاہتا ہے حکمت عطا فرماتا ہے" },
+          { word: "أَتَىٰ", surah: "16:1", context: "أَتَىٰ أَمْرُ اللَّهِ فَلَا تَسْتَعْجِلُوهُ", def: "The command of Allah has come, so be not impatient for it", urdu_def: "اللہ کا حکم آ پہنچا، پس تم اس میں جلدی نہ کرو" }
+        ]
+      },
+      {
+        root: "ب-ع-ث",
+        translit: "B-‘-Th",
+        meaning: "Resurrection / Sending / Raising",
+        urdu_meaning: "دوبارہ اٹھانا / بھیجنا / بعثت",
+        examples: [
+          { word: "بَعَثَ", surah: "2:213", context: "فَبَعَثَ اللَّهُ النَّبِيِّينَ مُبَشِّرِينَ وَمُنذِرِينَ", def: "So Allah sent the prophets as bringers of good tidings and warners", urdu_def: "تو اللہ نے نبیوں کو بشارت دینے والے اور ڈرانے والے بنا کر بھیجا" },
+          { word: "يَبْعَثُ", surah: "22:7", context: "وَأَنَّ اللَّهَ يَبْعَثُ مَن فِي الْقُبُورِ", def: "And that Allah will resurrect those in the graves", urdu_def: "اور یہ کہ اللہ ان لوگوں کو اٹھائے گا جو قبروں میں ہیں" },
+          { word: "بَعَثْنَا", surah: "17:5", context: "بَعَثْنَا عَلَيْكُمْ عِبَادًا لَّنَا", def: "We sent against you servants of Ours", urdu_def: "ہم نے تم پر اپنے کچھ بندے مسلط کر دیے" },
+          { word: "مَبْعُوثُونَ", surah: "83:4", context: "أَلَا يَظُنُّ أُولَٰئِكَ أَنَّهُم مَّبْعُوثُونَ", def: "Do those not think that they will be resurrected?", urdu_def: "کیا یہ لوگ نہیں سوچتے کہ وہ دوبارہ اٹھائے جائیں گے؟" }
+        ]
+      },
+      {
+        root: "ح-ك-م",
+        translit: "Ḥ-K-M",
+        meaning: "Wisdom / Judgment / Decree",
+        urdu_meaning: "حکمت / فیصلہ / حکم",
+        examples: [
+          { word: "الْحَكِيمُ", surah: "2:32", context: "إِنَّكَ أَنتَ الْعَلِيمُ الْحَكِيمُ", def: "Indeed, it is You who are the Knowing, the Wise", urdu_def: "بے شک تو ہی علم والا، حکمت والا ہے" },
+          { word: "يَحْكُمُ", surah: "5:1", context: "إِنَّ اللَّهَ يَحْكُمُ مَا يُرِيدُ", def: "Indeed, Allah commands what He intends", urdu_def: "بے شک اللہ جو چاہتا ہے حکم دیتا ہے" },
+          { word: "الْحُكْمُ", surah: "12:40", context: "إِنِ الْحُكْمُ إِلَّا لِلَّهِ", def: "Decision is only for Allah", urdu_def: "حکم صرف اللہ ہی کا ہے" },
+          { word: "الْحِكْمَةَ", surah: "2:269", context: "وَمَن يُؤْتَ الْحِكْمَةَ فَقَدْ أُوتِيَ خَيْرًا كَثِيرًا", def: "And whoever has been given wisdom has certainly been given much good", urdu_def: "اور جسے حکمت دی گئی اسے بہت بڑی بھلائی دی گئی" }
+        ]
+      },
+      {
+        root: "س-أ-ل",
+        translit: "S-A-L",
+        meaning: "Asking / Questioning / Begging",
+        urdu_meaning: "پوچھنا / سوال / مانگنا",
+        examples: [
+          { word: "سَأَلَكَ", surah: "2:186", context: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي", def: "And when My servants ask you concerning Me", urdu_def: "اور جب میرے بندے آپ سے میرے بارے میں پوچھیں" },
+          { word: "تُسْأَلُونَ", surah: "2:134", context: "وَلَا تُسْأَلُونَ عَمَّا كَانُوا يَعْمَلُونَ", def: "And you will not be asked about what they used to do", urdu_def: "اور تم سے ان کے اعمال کے بارے میں نہیں پوچھا جائے گا" },
+          { word: "لِّلسَّائِلِ", surah: "51:19", context: "وَفِي أَمْوَالِهِمْ حَقٌّ لِّلسَّائِلِ وَالْمَحْرُومِ", def: "And in their wealth was a rightful share for the beggar", urdu_def: "اور ان کے مال میں مانگنے والے اور محروم کا حق تھا" },
+          { word: "سُؤْلَكَ", surah: "20:36", context: "قَالَ قَدْ أُوتِيتَ سُؤْلَكَ يَا مُوسَىٰ", def: "He said, 'You have been granted your request, O Moses'", urdu_def: "فرمایا: اے موسیٰ! تمہاری مانگ پوری کر دی گئی" }
+        ]
+      },
+      {
+        root: "ص-ر-ف",
+        translit: "Ṣ-R-F",
+        meaning: "Turning / Averting / Explaining",
+        urdu_meaning: "پھیرنا / موڑنا / تفصیل بیان کرنا",
+        examples: [
+          { word: "اصْرِفْ", surah: "25:65", context: "رَبَّنَا اصْرِفْ عَنَّا عَذَابَ جَهَنَّمَ", def: "Our Lord, avert from us the punishment of Hell", urdu_def: "اے ہمارے رب! ہم سے جہنم کا عذاب موڑ دے" },
+          { word: "صَرَّفْنَا", surah: "17:89", context: "وَلَقَدْ صَرَّفْنَا لِلنَّاسِ فِي هَٰذَا الْقُرْآنِ مِن كُلِّ مَثَلٍ", def: "And We have certainly diversified for the people in this Quran every example", urdu_def: "اور ہم نے اس قرآن میں لوگوں کے لیے ہر قسم کی مثال مختلف طریقوں سے بیان کی" },
+          { word: "يُصْرَفُ", surah: "6:16", context: "مَّن يُصْرَفْ عَنْهُ يَوْمَئِذٍ فَقَدْ رَحِمَهُ", def: "He from whom it is averted that Day - He has granted him mercy", urdu_def: "جس سے اس دن عذاب ٹال دیا گیا اس پر اللہ نے رحم کر دیا" },
+          { word: "مَصْرِفًا", surah: "18:53", context: "وَلَمْ يَجِدُوا عَنْهَا مَصْرِفًا", def: "And found no way of escape from it", urdu_def: "اور وہاں سے فرار کی کوئی جگہ نہ پائیں گے" }
+        ]
+      },
+      {
+        root: "خ-ر-ج",
+        translit: "Kh-R-J",
+        meaning: "Exit / Leaving / Bringing Forth",
+        urdu_meaning: "نکلنا / نکالنا / خروج",
+        examples: [
+          { word: "يَخْرُجُ", surah: "57:2", context: "يَعْلَمُ مَا يَلِجُ فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا", def: "He knows what penetrates into the earth and what emerges from it", urdu_def: "وہ جانتا ہے جو زمین میں داخل ہوتا ہے اور جو اس سے نکلتا ہے" },
+          { word: "يُخْرِجُهُم", surah: "2:257", context: "يُخْرِجُهُم مِّنَ الظُّلُمَاتِ إِلَى النُّورِ", def: "He brings them out from darknesses into the light", urdu_def: "وہ انہیں اندھیروں سے نکال کر نور کی طرف لاتا ہے" },
+          { word: "مَخْرَجًا", surah: "65:2", context: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", def: "And whoever fears Allah - He will make for him a way out", urdu_def: "اور جو اللہ سے ڈرتا ہے وہ اس کے لیے نکلنے کا راستہ بنا دیتا ہے" },
+          { word: "أَخْرَجَ", surah: "2:22", context: "فَأَخْرَجَ بِهِ مِنَ الثَّمَرَاتِ رِزْقًا لَّكُمْ", def: "And brought forth thereby fruits as provision for you", urdu_def: "پھر اس کے ذریعے تمہارے کھانے کے لیے پھل نکالے" }
+        ]
+      },
+      {
+        root: "ش-ج-ر",
+        translit: "Sh-J-R",
+        meaning: "Tree / Plant / Dispute",
+        urdu_meaning: "درخت / پودا / تنازع ہونا",
+        examples: [
+          { word: "كَشَجَرَةٍ", surah: "14:24", context: "كَلِمَةً طَيِّبَةً كَشَجَرَةٍ طَيِّبَةٍ", def: "A good word like a good tree", urdu_def: "پاکیزہ بات ایک پاکیزہ درخت کی طرح ہے" },
+          { word: "الشَّجَرَةَ", surah: "2:35", context: "وَلَا تَقْرَبَا هَٰذِهِ الشَّجَرَةَ", def: "And do not approach this tree", urdu_def: "اور اس درخت کے قریب نہ جانا" },
+          { word: "يَشْجُرُ", surah: "4:65", context: "فِيمَا شَجَرَ بَيْنَهُمْ", def: "In concerning that which arises between them", urdu_def: "اس تنازع میں جو ان کے درمیان پیدا ہو" },
+          { word: "الشَّجَرِ", surah: "16:68", context: "مِنَ الشَّجَرِ وَمِمَّا يَعْرِشُونَ", def: "From trees and from what they construct", urdu_def: "درختوں سے اور ان کے بنائے ہوئے چھپروں سے" }
+        ]
+      },
+      {
+        root: "ط-ه-ر",
+        translit: "Ṭ-H-R",
+        meaning: "Purity / Cleanliness / Purification",
+        urdu_meaning: "پاکیزگی / طہارت / صاف ہونا",
+        examples: [
+          { word: "الْمُتَطَهِّرِينَ", surah: "2:222", context: "إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ وَيُحِبُّ الْمُتَطَهِّرِينَ", def: "Indeed, Allah loves those who purify themselves", urdu_def: "بے شک اللہ توبہ کرنے والوں اور پاک صاف رہنے والوں سے محبت کرتا ہے" },
+          { word: "طَهِّرَا", surah: "2:125", context: "أَن طَهِّرَا بَيْتِيَ لِلطَّائِفِينَ", def: "Purify My House for those who perform Tawaf", urdu_def: "تم دونوں میرے گھر کو طواف کرنے والوں کے لیے پاک کرو" },
+          { word: "مُطَهَّرَةً", surah: "98:2", context: "رَسُولٌ مِّنَ اللَّهِ يَتْلُو صُحُفًا مُّطَهَّرَةً", def: "A Messenger from Allah, reciting purified scriptures", urdu_def: "اللہ کا رسول جو پاکیزہ صحیفے پڑھ کر سناتا ہے" },
+          { word: "لِيُطَهِّرَكُمْ", surah: "5:6", context: "وَلَٰكِن يُرِيدُ لِيُطَهِّرَكُمْ", def: "But He intends to purify you", urdu_def: "لیکن وہ تمہیں پاک کرنا چاہتا ہے" }
+        ]
+      },
+      {
+        root: "و-ل-ي",
+        translit: "W-L-Y",
+        meaning: "Guardian / Friend / Helper / Nearness",
+        urdu_meaning: "ولی / دوست / سرپرست / نزدیک ہونا",
+        examples: [
+          { word: "وَلِيُّ", surah: "2:257", context: "اللَّهُ وَلِيُّ الَّذِينَ آمَنُوا", def: "Allah is the ally of those who believe", urdu_def: "اللہ ایمان والوں کا ولی و مددگار ہے" },
+          { word: "أَوْلِيَاءَ", surah: "10:62", context: "أَلَا إِنَّ أَوْلِيَاءَ اللَّهِ لَا خَوْفٌ عَلَيْهِمْ", def: "Unquestionably, the allies of Allah will have no fear", urdu_def: "آگاہ ہو جاؤ! بے شک اللہ کے ولیوں پر نہ کوئی خوف ہوگا" },
+          { word: "مَوْلَاكُمْ", surah: "22:78", context: "هُوَ مَوْلَاكُمْ ۖ فَنِعْمَ الْمَوْلَىٰ", def: "He is your protector; and excellent is the protector", urdu_def: "وہی تمہارا مولا ہے، پس وہ کیا ہی اچھا مولا ہے" },
+          { word: "يُوَلُّوا", surah: "3:111", context: "ثُمَّ لَا يُنصَرُونَ ۖ يُوَلُّوكُمُ الْأَدْبَارَ", def: "Then they will turn their backs on you", urdu_def: "پھر وہ تمہارے سامنے پیٹھ پھیر لیں گے" }
+        ]
+      },
+      {
+        root: "ش-ف-ع",
+        translit: "Sh-F-‘",
+        meaning: "Intercession / Pair",
+        urdu_meaning: "سفارش / شفاعت / جفت",
+        examples: [
+          { word: "يَشْفَعُ", surah: "2:255", context: "مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ", def: "Who is it that can intercede with Him except by His permission?", urdu_def: "کون ہے جو اس کے پاس اس کی اجازت کے بغیر سفارش کر سکے؟" },
+          { word: "شَافِعِينَ", surah: "26:100", context: "فَمَا لَنَا مِن شَافِعِينَ", def: "So now we have no intercessors", urdu_def: "پس اب ہمارا کوئی سفارش کرنے والا نہیں" },
+          { word: "شَفَاعَةً", surah: "4:85", context: "مَّن يَشْفَعْ شَفَاعَةً حَسَنَةً", def: "Whoever intercedes for a good cause...", urdu_def: "جو کوئی اچھی سفارش کرے..." },
+          { word: "وَالشَّفْعِ", surah: "89:3", context: "وَالشَّفْعِ وَالْوَتْرِ", def: "And by the even and the odd", urdu_def: "اور جفت اور طاق کی قسم" }
+        ]
+      },
+      {
+        root: "ف-ت-ح",
+        translit: "F-T-Ḥ",
+        meaning: "Opening / Victory / Decision",
+        urdu_meaning: "کھولنا / فتح / فیصلہ",
+        examples: [
+          { word: "الْفَتْحُ", surah: "110:1", context: "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ", def: "When the victory of Allah has come and the conquest", urdu_def: "جب اللہ کی مدد اور فتح آ پہنچے" },
+          { word: "فَتَحْنَا", surah: "48:1", context: "إِنَّا فَتَحْنَا لَكَ فَتْحًا مُّبِينًا", def: "Indeed, We have granted you a clear triumph", urdu_def: "بے شک ہم نے آپ کو کھلی فتح عطا کی" },
+          { word: "الْفَتَّاحُ", surah: "34:26", context: "وَهُوَ الْفَتَّاحُ الْعَلِيمُ", def: "And He is the Knowing Judge/Opener", urdu_def: "اور وہی سب سے بڑا فیصلہ کرنے والا، جاننے والا ہے" },
+          { word: "مَفَاتِحُ", surah: "6:59", context: "وَعِندَهُ مَفَاتِحُ الْغَيْبِ", def: "And with Him are the keys of the unseen", urdu_def: "اور اسی کے پاس غیب کی کنجیاں ہیں" }
+        ]
+      },
+      {
+        root: "ع-ز-ز",
+        translit: "‘-Z-Z",
+        meaning: "Might / Honor / Power / Glory",
+        urdu_meaning: "عزت / غلبہ / طاقت",
+        examples: [
+          { word: "الْعَزِيزُ", surah: "2:209", context: "وَاعْلَمُوا أَنَّ اللَّهَ عَزِيزٌ حَكِيمٌ", def: "And know that Allah is Exalted in Might and Wise", urdu_def: "اور جان لو کہ اللہ غالب، حکمت والا ہے" },
+          { word: "الْعِزَّةُ", surah: "35:10", context: "مَن كَانَ يُرِيدُ الْعِزَّةَ فَلِلَّهِ الْعِزَّةُ جَمِيعًا", def: "Whoever desires honor - to Allah belongs all honor", urdu_def: "جو عزت چاہتا ہے تو تمام عزت اللہ ہی کے لیے ہے" },
+          { word: "تُعِزُّ", surah: "3:26", context: "وَتُعِزُّ مَن تَشَاءُ وَتُذِلُّ مَن تَشَاءُ", def: "You honor whom You will and You humble whom You will", urdu_def: "اور تو جسے چاہے عزت دیتا ہے اور جسے چاہے ذلیل کرتا ہے" },
+          { word: "عَزِيزٌ", surah: "9:128", context: "عَزِيزٌ عَلَيْهِ مَا عَنِتُّمْ", def: "Grievous to him is what you suffer", urdu_def: "ان پر تمہاری تکلیف گراں گزرتی ہے" }
+        ]
+      },
+      {
+        root: "س-ب-ح",
+        translit: "S-B-Ḥ",
+        meaning: "Glorification / Swimming / Floating",
+        urdu_meaning: "تسبیح / پاکی بیان کرنا / تیرنا",
+        examples: [
+          { word: "سُبْحَانَ", surah: "2:32", context: "قَالُوا سُبْحَانَكَ لَا عِلْمَ لَنَا", def: "They said, 'Exalted are You; we have no knowledge'", urdu_def: "انہوں نے کہا تو پاک ہے، ہمیں کوئی علم نہیں" },
+          { word: "يُسَبِّحُ", surah: "59:24", context: "يُسَبِّحُ لَهُ مَا فِي السَّمَاوَاتِ وَالْأَرْضِ", def: "Whatever is in the heavens and earth is exalting Him", urdu_def: "آسمانوں اور زمین کی ہر چیز اس کی تسبیح کرتی ہے" },
+          { word: "سَبِّحْ", surah: "110:3", context: "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ", def: "Then exalt with praise of your Lord and ask forgiveness", urdu_def: "پس اپنے رب کی حمد کے ساتھ تسبیح کرو اور معافی مانگو" },
+          { word: "يَسْبَحُونَ", surah: "21:33", context: "كُلُّ فِي فَلَكٍ يَسْبَحُونَ", def: "Each floating in an orbit", urdu_def: "ہر ایک ایک مدار میں تیر رہا ہے" }
+        ]
+      },
+      {
+        root: "ص-ل-ح",
+        translit: "Ṣ-L-Ḥ",
+        meaning: "Righteousness / Reform / Goodness",
+        urdu_meaning: "اصلاح / نیکی / صلاحیت",
+        examples: [
+          { word: "الصَّالِحَاتِ", surah: "2:25", context: "وَعَمِلُوا الصَّالِحَاتِ", def: "And do righteous deeds", urdu_def: "اور نیک اعمال کیے" },
+          { word: "أَصْلَحَ", surah: "5:39", context: "فَمَن تَابَ مِن بَعْدِ ظُلْمِهِ وَأَصْلَحَ", def: "Whoever repents after wrongdoing and reforms", urdu_def: "پس جو توبہ کر لے اور اصلاح کر لے" },
+          { word: "صَالِحًا", surah: "18:110", context: "فَلْيَعْمَلْ عَمَلًا صَالِحًا", def: "Let him do righteous work", urdu_def: "پس اسے چاہیے کہ وہ نیک عمل کرے" },
+          { word: "الْمُصْلِحِينَ", surah: "7:170", context: "إِنَّا لَا نُضِيعُ أَجْرَ الْمُصْلِحِينَ", def: "We do not cause the reward of the reformers to be lost", urdu_def: "بے شک ہم اصلاح کرنے والوں کا اجر ضائع نہیں کرتے" }
+        ]
+      },
+      {
+        root: "ح-س-ن",
+        translit: "Ḥ-S-N",
+        meaning: "Goodness / Beauty / Excellence",
+        urdu_meaning: "حسن / خوبی / نیک سلوک",
+        examples: [
+          { word: "حَسَنَةً", surah: "2:201", context: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً", def: "Our Lord, give us in this world that which is good", urdu_def: "اے ہمارے رب! ہمیں دنیا میں بھی بھلائی عطا فرما" },
+          { word: "الْإِحْسَانِ", surah: "16:90", context: "إِنَّ اللَّهَ يَأْمُرُ بِالْعَدْلِ وَالْإِحْسَانِ", def: "Indeed, Allah orders justice and good conduct", urdu_def: "بے شک اللہ عدل اور احسان کا حکم دیتا ہے" },
+          { word: "أَحْسَنُ", surah: "95:4", context: "لَقَدْ خَلَقْنَا الْإِنسَانَ فِي أَحْسَنِ تَقْوِيمٍ", def: "We have certainly created man in the best of stature", urdu_def: "ہم نے انسان کو بہترین ساخت پر پیدا کیا" },
+          { word: "الْمُحْسِنِينَ", surah: "2:195", context: "وَأَحْسِنُوا ۛ إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", def: "And do good; indeed Allah loves the doers of good", urdu_def: "اور احسان کرو، بے شک اللہ احسان کرنے والوں کو پسند کرتا ہے" }
+        ]
+      },
+      {
+        root: "ك-ب-ر",
+        translit: "K-B-R",
+        meaning: "Greatness / Pride / Old Age",
+        urdu_meaning: "بڑائی / بڑا ہونا / بڑھاپا",
+        examples: [
+          { word: "أَكْبَرُ", surah: "29:45", context: "وَلَذِكْرُ اللَّهِ أَكْبَرُ", def: "And the remembrance of Allah is greater", urdu_def: "اور اللہ کا ذکر یقیناً سب سے بڑا ہے" },
+          { word: "الْكِبَرُ", surah: "15:54", context: "أَبَشَّرْتُمُونِي عَلَىٰ أَن مَّسَّنِيَ الْكِبَرُ", def: "Have you given me good tidings although old age has come upon me?", urdu_def: "کیا تم مجھے بشارت دیتے ہو حالانکہ مجھے بڑھاپا آ پہنچا ہے؟" },
+          { word: "الْمُتَكَبِّرُ", surah: "59:23", context: "الْجَبَّارُ الْمُتَكَبِّرُ", def: "The Compeller, the Superior", urdu_def: "زبردست، بڑائی والا" },
+          { word: "كَبُرَ", surah: "6:35", context: "وَإِن كَانَ كَبُرَ عَلَيْكَ إِعْرَاضُهُمْ", def: "And if their evasion is difficult for you", urdu_def: "اور اگر ان کا اعراض آپ پر گراں گزرتا ہے" }
+        ]
+      },
+      {
+        root: "ظ-ه-ر",
+        translit: "Ẓ-H-R",
+        meaning: "Manifest / Apparent / Back / Support",
+        urdu_meaning: "ظاہر ہونا / پیٹھ / مدد",
+        examples: [
+          { word: "الظَّاهِرُ", surah: "57:3", context: "هُوَ الْأَوَّلُ وَالْآخِرُ وَالظَّاهِرُ وَالْبَاطِنُ", def: "He is the First and the Last, the Ascendant and the Intimate", urdu_def: "وہی اول ہے اور وہی آخر، وہی ظاہر ہے اور وہی باطن" },
+          { word: "ظَهَرَ", surah: "30:41", context: "ظَهَرَ الْفَسَادُ فِي الْبَرِّ وَالْبَحْرِ", def: "Corruption has appeared throughout land and sea", urdu_def: "خشکی اور تری میں فساد برپا ہو گیا" },
+          { word: "ظَاهِرَةً", surah: "31:20", context: "وَأَسْبَغَ عَلَيْكُمْ نِعَمَهُ ظَاهِرَةً وَبَاطِنَةً", def: "And amply bestowed upon you His favors, apparent and unapparent", urdu_def: "اور اس نے تم پر اپنی ظاہری اور باطنی نعمتیں تمام کر دیں" },
+          { word: "ظَهْرِكَ", surah: "94:3", context: "الَّذِي أَنقَضَ ظَهْرَكَ", def: "Which had weighed upon your back", urdu_def: "جس نے آپ کی پیٹھ کو بوجھل کر دیا تھا" }
+        ]
+      },
+      {
+        root: "ب-ط-ن",
+        translit: "B-Ṭ-N",
+        meaning: "Interior / Concealed / Belly",
+        urdu_meaning: "باطن / چھپا ہوا / پیٹ",
+        examples: [
+          { word: "وَالْبَاطِنُ", surah: "57:3", context: "وَالظَّاهِرُ وَالْبَاطِنُ", def: "The Ascendant and the Intimate", urdu_def: "اور وہی ظاہر ہے اور وہی باطن" },
+          { word: "بُطُونِ", surah: "16:66", context: "نُّسْقِيكُم مِّمَّا فِي بُطُونِهِ", def: "We give you drink from what is in their bellies", urdu_def: "ہم تمہیں اس چیز میں سے پلاتے ہیں جو ان کے پیٹ میں ہے" },
+          { word: "بَاطِنَةً", surah: "31:20", context: "نِعَمَهُ ظَاهِرَةً وَبَاطِنَةً", def: "His favors, apparent and unapparent", urdu_def: "اس کی ظاہری اور باطنی نعمتیں" },
+          { word: "بَاطِنُهُ", surah: "57:13", context: "بَابٌ بَاطِنُهُ فِيهِ الرَّحْمَةُ", def: "A door whose interior contains mercy", urdu_def: "ایک دروازہ جس کے اندرونی حصے میں رحمت ہے" }
+        ]
+      },
+      {
+        root: "غ-ي-ب",
+        translit: "Gh-Y-B",
+        meaning: "Unseen / Absence / Hidden",
+        urdu_meaning: "غیب / پوشیدہ / غائب ہونا",
+        examples: [
+          { word: "الْغَيْبِ", surah: "2:3", context: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ", def: "Who believe in the unseen", urdu_def: "جو غیب پر ایمان لاتے ہیں" },
+          { word: "غَائِبِينَ", surah: "7:7", context: "وَمَا كُنَّا غَائِبِينَ", def: "And We were not absent", urdu_def: "اور ہم کبھی غائب نہیں تھے" },
+          { word: "غَيَابَتِ", surah: "12:10", context: "وَأَلْقُوهُ فِي غَيَابَتِ الْجُبِّ", def: "And throw him into the bottom of the well", urdu_def: "اور اسے گہرے کنویں کی تہہ میں ڈال دو" },
+          { word: "الْغُيُوبِ", surah: "5:109", context: "إِنَّكَ أَنتَ عَلَّامُ الْغُيُوبِ", def: "Indeed You are the Knower of the unseen", urdu_def: "بے شک تو ہی غیب کی باتوں کا بڑا جاننے والا ہے" }
+        ]
+      },
+      {
+        root: "ن-ع-م",
+        translit: "N-‘-M",
+        meaning: "Favor / Blessing / Cattle / Delight",
+        urdu_meaning: "نعمت / انعام / مویشی / خوشحالی",
+        examples: [
+          { word: "نِعْمَتِيَ", surah: "2:40", context: "اذْكُرُوا نِعْمَتِيَ الَّتِي أَنْعَمْتُ عَلَيْكُمْ", def: "Remember My favor which I bestowed upon you", urdu_def: "میری اس نعمت کو یاد کرو جو میں نے تم پر کی" },
+          { word: "أَنْعَمْتَ", surah: "1:7", context: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ", def: "The path of those upon whom You have bestowed favor", urdu_def: "ان لوگوں کا راستہ جن پر تو نے انعام کیا" },
+          { word: "الْأَنْعَامِ", surah: "6:142", context: "وَمِنَ الْأَنْعَامِ حَمُولَةً وَفَرْشًا", def: "And of the cattle are some for burden and some for meat", urdu_def: "اور مویشیوں میں سے کچھ بوجھ اٹھانے والے ہیں اور کچھ چھوٹے" },
+          { word: "نَعِيمٍ", surah: "82:13", context: "إِنَّ الْأَبْرَارَ لَفِي نَعِيمٍ", def: "Indeed, the righteous will be in pleasure", urdu_def: "بے شک نیک لوگ نعمتوں کے باغوں میں ہوں گے" }
+        ]
+      },
+      {
+        root: "ع-ذ-ب",
+        translit: "‘-Dh-B",
+        meaning: "Punishment / Torment / Sweet Water",
+        urdu_meaning: "عذاب / سزا / شیریں پانی",
+        examples: [
+          { word: "عَذَابٌ", surah: "2:7", context: "وَلَهُمْ عَذَابٌ عَظِيمٌ", def: "And for them is a great punishment", urdu_def: "اور ان کے لیے بڑا عذاب ہے" },
+          { word: "يُعَذِّبُ", surah: "2:284", context: "فَيَغْفِرُ لِمَن يَشَاءُ وَيُعَذِّبُ مَن يَشَاءُ", def: "He forgives whom He wills and punishes whom He wills", urdu_def: "پس وہ جسے چاہتا ہے بخش دیتا ہے اور جسے چاہتا ہے عذاب دیتا ہے" },
+          { word: "عَذْبٌ", surah: "35:12", context: "هَٰذَا عَذْبٌ فُرَاتٌ", def: "This is sweet and palatable water", urdu_def: "یہ میٹھا اور خوشگوار پانی ہے" },
+          { word: "مُعَذَّبِينَ", surah: "17:15", context: "وَمَا كُنَّا مُعَذَّبِينَ حَتَّىٰ نَبْعَثَ رَسُولًا", def: "And We never punish until We send a messenger", urdu_def: "اور ہم اس وقت تک عذاب دینے والے نہیں جب تک کہ کوئی رسول نہ بھیج لیں" }
+        ]
+      },
+      {
+        root: "ج-ز-ي",
+        translit: "J-Z-Y",
+        meaning: "Reward / Recompense / Pay",
+        urdu_meaning: "جزا / بدلہ دینا / بدلہ ملنا",
+        examples: [
+          { word: "جَزَاءٌ", surah: "5:38", context: "جَزَاءً بِمَا كَسَبَا نَكَالًا مِّنَ اللَّهِ", def: "A recompense for what they committed, a punishment from Allah", urdu_def: "ان کی کمائی کی سزا، اللہ کی طرف سے عبرت ناک عذاب" },
+          { word: "نَجْزِي", surah: "6:84", context: "وَكَذَٰلِكَ نَجْزِي الْمُحْسِنِينَ", def: "And thus do We reward the doers of good", urdu_def: "اور اسی طرح ہم احسان کرنے والوں کو بدلہ دیتے ہیں" },
+          { word: "يُجْزَىٰ", surah: "6:160", context: "فَلَا يُجْزَىٰ إِلَّا مِثْلَهَا", def: "He will not be recompensed except the like thereof", urdu_def: "تو اس کو اس جیسا ہی بدلہ دیا جائے گا" },
+          { word: "تَجْزِي", surah: "2:48", context: "وَاتَّقُوا يَوْمًا لَّا تَجْزِي نَفْسٌ عَن نَّفْسٍ شَيْئًا", def: "And fear a Day when no soul will avail another soul at all", urdu_def: "اور اس دن سے ڈرو جب کوئی نفس کسی نفس کے کچھ کام نہ آئے گا" }
+        ]
+      },
+      {
+        root: "ص-د-ر",
+        translit: "Ṣ-D-R",
+        meaning: "Chest / Breast / Return / Issue",
+        urdu_meaning: "سینہ / صدر / لوٹنا / صادر ہونا",
+        examples: [
+          { word: "صُدُورِ", surah: "3:118", context: "وَمَا تُخْفِي صُدُورُهُمْ أَكْبَرُ", def: "And what their breasts conceal is greater", urdu_def: "اور جو ان کے سینے چھپاتے ہیں وہ اس سے بھی بڑا ہے" },
+          { word: "الصُّدُورِ", surah: "3:119", context: "إِنَّ اللَّهَ عَلِيمٌ بِذَاتِ الصُّدُورِ", def: "Indeed, Allah is Knowing of that within the breasts", urdu_def: "بے شک اللہ سینوں کے بھیدوں کو خوب جاننے والا ہے" },
+          { word: "يَصْدُرُ", surah: "99:6", context: "يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا", def: "That Day, the people will depart separated", urdu_def: "اس دن لوگ گروہ در گروہ ہو کر لوٹیں گے" },
+          { word: "يُصْدِرَ", surah: "28:23", context: "حَتَّىٰ يُصْدِرَ الرِّعَاءُ", def: "Until the shepherds take back their flocks", urdu_def: "یہاں تک کہ چرواہے اپنے مویشی واپس نہ لے جائیں" }
+        ]
+      },
+      {
+        root: "ق-ل-ب",
+        translit: "Q-L-B",
+        meaning: "Heart / Turn / Transform",
+        urdu_meaning: "دل / پلٹنا / الٹنا",
+        examples: [
+          { word: "قُلُوبِهِمْ", surah: "2:7", context: "خَتَمَ اللَّهُ عَلَىٰ قُلُوبِهِمْ", def: "Allah has set a seal upon their hearts", urdu_def: "اللہ نے ان کے دلوں پر مہر لگا دی ہے" },
+          { word: "تَتَقَلَّبُ", surah: "24:37", context: "يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصَارُ", def: "They fear a Day in which the hearts and eyes will turn about", urdu_def: "وہ اس دن سے ڈرتے ہیں جس میں دل اور آنکھیں الٹ جائیں گی" },
+          { word: "يَنقَلِبُ", surah: "3:144", context: "وَمَن يَنقَلِبْ عَلَىٰ عَقِبَيْهِ", def: "And he who turns back on his heels...", urdu_def: "اور جو الٹے پاؤں پھر جائے..." },
+          { word: "مُنقَلَبٍ", surah: "26:227", context: "وَسَيَعْلَمُ الَّذِينَ ظَلَمُوا أَيَّ مُنقَلَبٍ يَنقَلِبُونَ", def: "And those who have wronged are going to know to what kind of return they will be returned", urdu_def: "اور ظالموں کو عنقریب معلوم ہو جائے گا کہ وہ کس کروٹ پلٹتے ہیں" }
+        ]
+      },
+      {
+        root: "ع-ه-د",
+        translit: "‘-H-D",
+        meaning: "Covenant / Promise / Pledge",
+        urdu_meaning: "عہد / پیمان / وعدہ",
+        examples: [
+          { word: "عَهْدِي", surah: "2:124", context: "قَالَ لَا يَنَالُ عَهْدِي الظَّالِمِينَ", def: "He said, 'My covenant does not include the wrongdoers'", urdu_def: "فرمایا: میرا عہد ظالموں کو نہیں پہنچتا" },
+          { word: "أَوْفُوا", surah: "2:40", context: "وَأَوْفُوا بِعَهْدِي أُوفِ بِعَهْدِكُمْ", def: "And fulfill My covenant that I will fulfill your covenant", urdu_def: "اور میرا عہد پورا کرو، میں تمہارا عہد پورا کروں گا" },
+          { word: "يَنقُضُونَ", surah: "2:27", context: "الَّذِينَ يَنقُضُونَ عَهْدَ اللَّهِ مِن بَعْدِ مِيثَاقِهِ", def: "Who break the covenant of Allah after contracting it", urdu_def: "جو اللہ کے عہد کو پکا کرنے کے بعد توڑتے ہیں" },
+          { word: "عَهْدًا", surah: "19:87", context: "إِلَّا مَنِ اتَّخَذَ عِندَ الرَّحْمَٰنِ عَهْدًا", def: "Except those who have taken a covenant from the Most Merciful", urdu_def: "سوائے اس کے جس نے رحمان کے پاس سے کوئی عہد لیا ہو" }
+        ]
+      },
+      {
+        root: "ب-د-أ",
+        translit: "B-D-A",
+        meaning: "Origin / Beginning / Create First",
+        urdu_meaning: "شروعات / ابتدا / پہلی بار بنانا",
+        examples: [
+          { word: "يَبْدَأُ", surah: "10:4", context: "إِنَّهُ يَبْدَأُ الْخَلْقَ ثُمَّ يُعِيدُهُ", def: "Indeed, He begins creation then repeats it", urdu_def: "بے شک وہی تخلیق کی شروعات کرتا ہے پھر اسے دہرائے گا" },
+          { word: "بَدَأَ", surah: "32:7", context: "وَبَدَأَ خَلْقَ الْإِنسَانِ مِن طِينٍ", def: "And began the creation of man from clay", urdu_def: "اور اس نے انسان کی تخلیق کی شروعات مٹی سے کی" },
+          { word: "بَدَءُوكُمْ", surah: "9:13", context: "وَهُم بَدَءُوكُمْ أَوَّلَ مَرَّةٍ", def: "And they initiated the attack against you the first time", urdu_def: "اور انہوں نے ہی پہلی بار تم سے شروعات کی تھی" },
+          { word: "بَادِيَ", surah: "11:27", context: "بَادِيَ الرَّأْيِ", def: "Outward / Immature judgment", urdu_def: "سرسری اور ظاہری رائے" }
+        ]
+      },
+      {
+        root: "ع-و-د",
+        translit: "‘-W-D",
+        meaning: "Return / Repeat / Custom",
+        urdu_meaning: "لوٹنا / دہرانا / عادت",
+        examples: [
+          { word: "يُعِيدُهُ", surah: "10:4", context: "يَبْدَأُ الْخَلْقَ ثُمَّ يُعِيدُهُ", def: "He begins creation then repeats it", urdu_def: "وہ تخلیق کو شروع کرتا ہے پھر اسے لوٹاتا ہے" },
+          { word: "تَعُودُوا", surah: "8:19", context: "وَإِن تَعُودُوا نَعُدْ", def: "And if you return to hostility, We will return to punishment", urdu_def: "اور اگر تم دوبارہ وہی کرو گے تو ہم بھی دوبارہ وہی کریں گے" },
+          { word: "يَعُودُونَ", surah: "58:8", context: "ثُمَّ يَعُودُونَ لِمَا نُهُوا عَنْهُ", def: "Then they return to what they were forbidden", urdu_def: "پھر وہ اسی طرف لوٹتے ہیں جس سے انہیں روکا گیا تھا" },
+          { word: "مَعَادٍ", surah: "28:85", context: "لَرَادُّكَ إِلَىٰ مَعَادٍ", def: "Will surely take you back to a place of return", urdu_def: "آپ کو لوٹنے کی جگہ ضرور واپس لائے گا" }
+        ]
+      },
+      {
+        root: "ق-د-م",
+        translit: "Q-D-M",
+        meaning: "Send Forth / Advance / Foot / Ancient",
+        urdu_meaning: "آگے بھیجنا / قدَم / قدیم / آگے ہونا",
+        examples: [
+          { word: "قَدَّمَتْ", surah: "2:95", context: "بِمَا قَدَّمَتْ أَيْدِيهِمْ", def: "For what their hands have sent forth", urdu_def: "اس کی وجہ سے جو ان کے ہاتھوں نے آگے بھیجا" },
+          { word: "قَدَمَ", surah: "10:2", context: "أَنَّ لَهُمْ قَدَمَ صِدْقٍ عِندَ رَبِّهِمْ", def: "That they have a firm footing with their Lord", urdu_def: "کہ ان کے لیے ان کے رب کے پاس سچا مقام ہے" },
+          { word: "يَقْدُمُ", surah: "11:98", context: "يَقْدُمُ قَوْمَهُ يَوْمَ الْقِيَامَةِ", def: "He will precede his people on the Day of Resurrection", urdu_def: "وہ قیامت کے دن اپنی قوم کے آگے چلے گا" },
+          { word: "قَدِيمٍ", surah: "12:95", context: "إِنَّكَ لَفِي ضَلَالِكَ الْقَدِيمِ", def: "Indeed, you are still in your old delusion", urdu_def: "بے شک آپ ابھی تک اپنی پرانی خود رفتگی میں ہیں" }
+        ]
+      },
+      {
+        root: "ب-ق-ي",
+        translit: "B-Q-Y",
+        meaning: "Remain / Endure / Lasting",
+        urdu_meaning: "باقی رہنا / پائیدار / بقا",
+        examples: [
+          { word: "يَبْقَىٰ", surah: "55:27", context: "وَيَبْقَىٰ وَجْهُ رَبِّكَ ذُو الْجَلَالِ وَالْإِكْرَامِ", def: "And there will remain the Face of your Lord, Owner of Majesty and Honor", urdu_def: "اور صرف آپ کے رب کی ذوالجلال والاکرام ذات باقی رہے گی" },
+          { word: "الْبَاقِيَاتُ", surah: "18:46", context: "وَالْبَاقِيَاتُ الصَّالِحَاتُ خَيْرٌ عِندَ رَبِّكَ ثَوَابًا", def: "But the enduring good deeds are better with your Lord", urdu_def: "اور باقی رہنے والی نیکیاں تیرے رب کے نزدیک ثواب میں بہتر ہیں" },
+          { word: "بَقِيَّتُ", surah: "11:86", context: "بَقِيَّتُ اللَّهِ خَيْرٌ لَّكُمْ إِن كُنتُم مُّؤْمِنِينَ", def: "What remains from Allah is best for you if you are believers", urdu_def: "اللہ کی دی ہوئی بچت تمہارے لیے بہتر ہے اگر تم ایمان والے ہو" },
+          { word: "أَبْقَىٰ", surah: "20:131", context: "وَرِزْقُ رَبِّكَ خَيْرٌ وَأَبْقَىٰ", def: "And the provision of your Lord is better and more enduring", urdu_def: "اور تیرے رب کا رزق بہتر اور باقی رہنے والا ہے" }
+        ]
+      },
+      {
+        root: "م-ض-ي",
+        translit: "M-Ḍ-Y",
+        meaning: "Pass Away / Proceed / Elapsed",
+        urdu_meaning: "گزر جانا / آگے بڑھنا / ماضی",
+        examples: [
+          { word: "مَضَتْ", surah: "8:38", context: "فَقَدْ مَضَتْ سُنَّتُ الْأَوَّلِينَ", def: "The precedent of the former people has already occurred", urdu_def: "تو پچھلے لوگوں کا طریقہ جاری ہو چکا ہے" },
+          { word: "وَامْضُوا", surah: "15:65", context: "وَامْضُوا حَيْثُ تُؤْمَرُونَ", def: "And proceed to where you are commanded", urdu_def: "اور ادھر چلے جاؤ جہاں کا تمہیں حکم دیا جاتا ہے" },
+          { word: "مَضَىٰ", surah: "43:8", context: "وَمَضَىٰ مَثَلُ الْأَوَّلِينَ", def: "And the example of the former people has passed", urdu_def: "اور پہلے لوگوں کی مثال گزر چکی ہے" },
+          { word: "أَمْضِيَ", surah: "18:60", context: "أَوْ أَمْضِيَ حُقُبًا", def: "Or I will continue for a long period", urdu_def: "یا میں ایک لمبی مدت تک چلتا رہوں گا" }
+        ]
+      },
+      {
+        root: "ن-ف-ع",
+        translit: "N-F-‘",
+        meaning: "Benefit / Profit / Utility",
+        urdu_meaning: "نفع / فائدہ پہنچنا / مفاد",
+        examples: [
+          { word: "يَنفَعُ", surah: "10:18", context: "مَا لَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ", def: "What neither harms them nor benefits them", urdu_def: "جو انہیں نہ نقصان پہنچا سکے اور نہ نفع دے سکے" },
+          { word: "نَفْعًا", surah: "7:188", context: "لَا أَمْلِكُ لِنَفْسِي نَفْعًا وَلَا ضَرًّا", def: "I possess not for myself any benefit or harm", urdu_def: "میں اپنے نفس کے لیے بھی کسی نفع یا نقصان کا مالک نہیں" },
+          { word: "مَنَافِعُ", surah: "22:28", context: "لِّيَشْهَدُوا مَنَافِعَ لَهُمْ", def: "That they may witness benefits for themselves", urdu_def: "تاکہ وہ اپنے فائدوں کو حاصل کریں" },
+          { word: "يَنفَعُهُمْ", surah: "2:102", context: "وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ", def: "And they learned what harmed them and did not benefit them", urdu_def: "اور وہ ایسی چیز سیکھتے تھے جو انہیں نقصان پہنچاتی تھی اور فائدہ نہیں دیتی تھی" }
+        ]
+      }
+    ];
+
+    let isAllVisible = false;
+
+    const searchInput = document.getElementById('searchInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const placeholderState = document.getElementById('placeholderState');
+    const rootGrid = document.getElementById('rootGrid');
+    const statsBar = document.getElementById('statsBar');
+    const resultsCount = document.getElementById('resultsCount');
+
+    function renderCards(rootsToRender, query = "") {
+      rootGrid.innerHTML = "";
+
+      if (rootsToRender.length === 0) {
+        rootGrid.innerHTML = `
+          <div class="placeholder-state" style="grid-column: 1 / -1; width: 100%; max-width: 100%;">
+            <p>❌ <strong>کوئی نتائج نہیں ملے / No results found</strong><br>
+            برائے مہربانی مختلف الفاظ یا حروف سے تلاش کرنے کی کوشش کریں۔</p>
+          </div>
+        `;
+        return;
+      }
+
+      rootsToRender.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const rootHighlighted = highlightMatch(item.root, query);
+        const translitHighlighted = highlightMatch(item.translit, query);
+        const meaningEnHighlighted = highlightMatch(item.meaning, query);
+        const meaningUrHighlighted = highlightMatch(item.urdu_meaning, query);
+
+        let examplesHtml = "";
+        item.examples.forEach((ex) => {
+          const wordH = highlightMatch(ex.word, query);
+          const surahH = highlightMatch(ex.surah, query);
+          const contextH = highlightMatch(ex.context, query);
+          const defH = highlightMatch(ex.def, query);
+          const urduDefH = highlightMatch(ex.urdu_def, query);
+
+          examplesHtml += `
+            <div class="verse-card">
+              <div class="verse-header">
+                <span class="ar-word">${wordH}</span>
+                <span class="citation">Surah ${surahH}</span>
+              </div>
+              <div class="arabic-context">${contextH}</div>
+              <div class="def-container">
+                <div class="meaning-en">${defH}</div>
+                <div class="meaning-ur">${urduDefH}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="root-header">
+            <span class="root-arabic">${rootHighlighted}</span>
+            <span class="translit">${translitHighlighted}</span>
+          </div>
+          <div class="meanings-box">
+            <div class="meaning-ur">${meaningUrHighlighted}</div>
+            <div class="meaning-en">${meaningEnHighlighted}</div>
+          </div>
+          <div class="toggle-indicator">
+            <span>قرآنی مثالیں دیکھیں (${item.examples.length})</span>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="examples-container">
+            ${examplesHtml}
+          </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          card.classList.toggle('active');
+        });
+
+        rootGrid.appendChild(card);
+      });
+    }
+
+    function performSearch() {
+      const query = searchInput.value.trim();
+      const cleanQ = removeDiacritics(query);
+
+      if (query === "" && !isAllVisible) {
+        placeholderState.style.display = "block";
+        statsBar.style.display = "none";
+        rootGrid.innerHTML = "";
+        return;
+      }
+
+      placeholderState.style.display = "none";
+      statsBar.style.display = "flex";
+
+      if (query === "" && isAllVisible) {
+        resultsCount.textContent = `${quranicRoots.length} جذور / Roots`;
+        renderCards(quranicRoots, "");
+        return;
+      }
+
+      const filtered = quranicRoots.filter((item) => {
+        const rootNorm = removeDiacritics(item.root);
+        const translitNorm = item.translit.toLowerCase();
+        const meaningNorm = item.meaning.toLowerCase();
+        const urduMeaningNorm = removeDiacritics(item.urdu_meaning);
+
+        const matchRoot = rootNorm.includes(cleanQ);
+        const matchTranslit = translitNorm.includes(cleanQ);
+        const matchMeaning = meaningNorm.includes(cleanQ);
+        const matchUrduMeaning = urduMeaningNorm.includes(cleanQ);
+
+        const matchExamples = item.examples.some((ex) => {
+          const wordNorm = removeDiacritics(ex.word);
+          const contextNorm = removeDiacritics(ex.context);
+          const defNorm = ex.def.toLowerCase();
+          const urduDefNorm = removeDiacritics(ex.urdu_def);
+          const surahMatch = ex.surah.toLowerCase().includes(cleanQ);
+
+          return (
+            wordNorm.includes(cleanQ) ||
+            contextNorm.includes(cleanQ) ||
+            defNorm.includes(cleanQ) ||
+            urduDefNorm.includes(cleanQ) ||
+            surahMatch
+          );
+        });
+
+        return matchRoot || matchTranslit || matchMeaning || matchUrduMeaning || matchExamples;
+      });
+
+      resultsCount.textContent = `${filtered.length} / ${quranicRoots.length} جذور`;
+      renderCards(filtered, query);
+    }
+
+    searchInput.addEventListener('input', () => {
+      performSearch();
+    });
+
+    toggleBtn.addEventListener('click', () => {
+      isAllVisible = !isAllVisible;
+      if (isAllVisible) {
+        toggleBtn.textContent = "کم کریں / Hide Extra Roots";
+        if (searchInput.value.trim() === "") {
+          performSearch();
+        }
+      } else {
+        toggleBtn.textContent = "تمام جذور دیکھیں / Show All Roots";
+        if (searchInput.value.trim() === "") {
+          placeholderState.style.display = "block";
+          statsBar.style.display = "none";
+          rootGrid.innerHTML = "";
+        }
+      }
+    });
+
+    // Initial check
+    window.onload = function() {
+      searchInput.focus();
+    };
+  </script>
+</body>
+</html>
