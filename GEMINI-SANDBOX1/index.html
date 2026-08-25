@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quranic Root Search Engine</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #e9ecef;
+            --accent-color: #10b981;
+            --derived-bg: #f1f5f9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #34d399;
+            --derived-bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .clear-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .root-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .root-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .root-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .derived-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .derived-card {
+            background: var(--derived-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            height: auto;
+            min-height: max-content;
+        }
+
+        .ayah-arabic {
+            font-size: 18px;
+            text-align: right;
+            direction: rtl;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Quranic Root Search</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search Arabic, English, or Urdu..." oninput="handleSearch()">
+        <button class="clear-btn" onclick="clearSearch()">Clear</button>
+    </div>
+
+    <p id="rootCount" style="margin-bottom: 16px; font-weight: 500; color: var(--text-secondary);"></p>
+
+    <div id="resultsContainer"></div>
+
+    <!-- 1. External Dataset File -->
+    <script src="rootsData.js"></script>
+
+    <!-- 2. Application Logic -->
+    <script>
+        function renderResults(data) {
+            const container = document.getElementById('resultsContainer');
+            const countElement = document.getElementById('rootCount');
+            
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                countElement.textContent = 'Showing 0 roots';
+            } else {
+                countElement.textContent = `Showing ${data.length} root${data.length === 1 ? '' : 's'}`;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'root-card';
+                card.innerHTML = `
+                    <div class="root-header">
+                        <div>
+                            <span class="root-title">${item.rootArabic}</span> (${item.rootEnglish})
+                            <p style="color: var(--text-secondary);">${item.meaningEnglish} | ${item.meaningUrdu}</p>
+                        </div>
+                    </div>
+                    <div class="derived-grid">
+                        ${item.derivedForms.map(d => `
+                            <div class="derived-card">
+                                <strong>${d.arabic}</strong> (${d.english}) - <em>${d.urdu}</em>
+                                <p class="ayah-arabic">${d.ayahArabic}</p>
+                                <p style="font-size: 14px;"><strong>[${d.reference}]</strong> ${d.ayahEnglish}</p>
+                                <p style="font-size: 14px; color: var(--text-secondary);">${d.ayahUrdu}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderResults(rootsData);
+                return;
+            }
+
+            const filtered = rootsData.filter(item => {
+                return item.rootArabic.includes(query) ||
+                       item.rootEnglish.toLowerCase().includes(query) ||
+                       item.meaningEnglish.toLowerCase().includes(query) ||
+                       item.meaningUrdu.includes(query) ||
+                       item.derivedForms.some(d => d.arabic.includes(query) || d.english.toLowerCase().includes(query) || d.urdu.includes(query));
+            });
+
+            renderResults(filtered);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            renderResults([]);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        // Render initial view
+        renderResults(rootsData);
+    </script>
+
+</body>
+</html>
