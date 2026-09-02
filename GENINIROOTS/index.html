@@ -7,18 +7,19 @@
   <style>
     /* CSS Custom Properties & Design System */
     :root {
-      --bg-color: #f8fafc;
-      --surface-color: #ffffff;
-      --border-color: #e2e8f0;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary: #047857;
-      --primary-light: #ecfdf5;
-      --primary-border: #a7f3d0;
-      --accent-urdu: #0369a1;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      --radius: 12px;
+      --bg-color: #f7f1e3;
+      --surface-color: #fdf6e2;
+      --border-color: #e6d7b8;
+      --text-main: #2c1810;
+      --text-muted: #6e5d4f;
+      --primary: #7c2d12;
+      --primary-light: #fef3c7;
+      --primary-border: #d97706;
+      --accent-urdu: #1e3a8a;
+      --card-bg: #faebd7;
+      --shadow-sm: 0 1px 2px 0 rgb(80 40 10 / 0.08);
+      --shadow-md: 0 4px 6px -1px rgb(80 40 10 / 0.12);
+      --radius: 10px;
       --font-arabic: 'Traditional Arabic', 'Scheherazade New', 'Amiri', 'Noto Naskh Arabic', serif;
       --font-urdu: 'Jameel Noori Nastaleeq', 'Urdu Typesetting', 'Noto Nastaliq Urdu', serif;
     }
@@ -29,26 +30,28 @@
       --border-color: #334155;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --primary: #10b981;
+      --primary: #34d399;
       --primary-light: #064e3b;
       --primary-border: #047857;
       --accent-urdu: #38bdf8;
+      --card-bg: #0f172a;
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
     }
 
-    [data-theme="parchment"] {
-      --bg-color: #f7f1e3;
-      --surface-color: #fdf6e2;
-      --border-color: #e6d7b8;
-      --text-main: #2c1810;
-      --text-muted: #6e5d4f;
-      --primary: #7c2d12;
-      --primary-light: #fef3c7;
-      --primary-border: #d97706;
-      --accent-urdu: #1e3a8a;
-      --shadow-sm: 0 1px 2px 0 rgb(80 40 10 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(80 40 10 / 0.1);
+    [data-theme="light"] {
+      --bg-color: #f8fafc;
+      --surface-color: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --accent-urdu: #0369a1;
+      --card-bg: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     }
 
     * {
@@ -67,9 +70,9 @@
     }
 
     .container {
-      max-width: 680px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 12px;
+      padding: 16px;
     }
 
     header {
@@ -89,7 +92,7 @@
     }
 
     .app-title-bar h1 {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--primary);
       display: flex;
@@ -187,29 +190,30 @@
 
     .root-card {
       background: var(--surface-color);
-      border: 1px solid var(--border-color);
+      border: 2px solid var(--border-color);
       border-radius: var(--radius);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
 
     .root-header {
-      padding: 16px;
+      padding: 16px 20px;
       cursor: pointer;
       user-select: none;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .root-title-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .arabic-root-display {
       font-family: var(--font-arabic);
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       font-weight: bold;
       color: var(--primary);
       direction: rtl;
@@ -229,123 +233,110 @@
       font-size: 0.9rem;
     }
 
-    .meanings-grid {
+    .root-summary-bar {
+      font-size: 1.05rem;
+      color: var(--text-main);
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.95rem;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
     }
 
-    .meaning-item {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .meaning-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      font-weight: 600;
-      min-width: 55px;
-    }
-
-    .urdu-text {
+    .urdu-summary {
       direction: rtl;
       font-family: var(--font-urdu);
-      color: var(--accent-urdu);
-      font-size: 1.05rem;
+      color: var(--text-main);
+      font-size: 1.15rem;
     }
 
     .examples-container {
-      border-top: 1px solid var(--border-color);
-      background-color: rgba(0, 0, 0, 0.015);
+      background-color: var(--surface-color);
       display: none;
-      padding: 12px;
+      padding: 16px;
     }
 
     .root-card.expanded .examples-container {
       display: block;
     }
 
-    .examples-header {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--border-color);
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
     }
 
-    .derived-item {
-      background: var(--surface-color);
+    .derived-card {
+      background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .derived-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .derived-word-header {
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
     }
 
-    .derived-arabic {
+    .derived-word-title {
       font-family: var(--font-arabic);
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: bold;
       color: var(--primary);
-      direction: rtl;
-    }
-
-    .surah-ref {
-      font-size: 0.75rem;
-      background: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid var(--primary-border);
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .verse-block {
-      background-color: var(--bg-color);
-      border-right: 3px solid var(--primary);
-      padding: 10px;
-      border-radius: 4px;
-      margin: 8px 0;
-    }
-
-    .verse-arabic {
-      font-family: var(--font-arabic);
-      font-size: 1.25rem;
-      direction: rtl;
-      line-height: 1.8;
       text-align: right;
-      margin-bottom: 6px;
-    }
-
-    .verse-trans-en {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      direction: rtl;
       margin-bottom: 4px;
     }
 
-    .verse-trans-ur {
-      font-size: 0.95rem;
-      color: var(--accent-urdu);
+    .derived-meaning-en {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .derived-meaning-ur {
+      direction: rtl;
+      font-family: var(--font-urdu);
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      text-align: right;
+    }
+
+    .verse-inline-block {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 0.85rem;
+    }
+
+    .verse-arabic-text {
+      font-family: var(--font-arabic);
+      font-size: 1.2rem;
       direction: rtl;
       text-align: right;
+      margin-bottom: 6px;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .verse-meta {
+      font-weight: bold;
+      color: var(--primary);
+      margin-right: 4px;
+    }
+
+    .verse-translation-en {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+    }
+
+    .verse-translation-ur {
+      direction: rtl;
       font-family: var(--font-urdu);
+      font-size: 0.9rem;
+      color: var(--text-main);
+      text-align: right;
     }
 
     .modal-overlay {
@@ -456,21 +447,18 @@
   <div id="infoModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>ⓘ Methodology & Verification</h3>
+        <h3>ⓘ Verification Protocol & Data Governance</h3>
         <button class="close-modal-btn" id="closeModalBtn">&times;</button>
       </div>
       <div class="modal-body">
-        <p>This offline prototype is designed for rigorous educational exploration of Qur'anic roots.</p>
+        <p>This lexicon uses strict verification criteria across 20-root incremental batches.</p>
         
-        <h4>Three-Level Scrutiny Protocol:</h4>
+        <h4>Verification Checklist:</h4>
         <ul>
-          <li><strong>1. Occurrence Verification:</strong> Verifies exact Qur'anic spelling, Surah, and Ayah presence.</li>
-          <li><strong>2. Morphological Verification:</strong> Ensures the derived word is genuinely attributable to the root without duplication.</li>
-          <li><strong>3. Contextual Translation:</strong> Separates core root concept from context-specific translation in English and Urdu.</li>
+          <li><strong>1. Exact Root Identification:</strong> Primary trilateral/quadrilateral root spelling.</li>
+          <li><strong>2. Accurate Verse Attribution:</strong> Verified Surah:Ayah numbering and Arabic text.</li>
+          <li><strong>3. Standardized Translations:</strong> Cross-checked English and Urdu glosses.</li>
         </ul>
-
-        <h4>Data Scaling Strategy:</h4>
-        <p>Roots are ingested in verified 50-root batches. Interface logic is separated completely from data (<code>rootsData.js</code>) to allow seamless offline expansion up to 1,800 roots.</p>
       </div>
     </div>
   </div>
@@ -543,7 +531,6 @@
       const normArabicQuery = normalizeArabic(rawQuery);
       const isArabicInput = /[\u0600-\u06FF]/.test(rawQuery);
 
-      // Cleaned letter sequence specifically for Latin root letters (e.g. "k", "kt", "ktb")
       const alphaOnlyQuery = lowerQuery.replace(/[^a-z]/g, "");
 
       searchResults = QURANIC_ROOTS_DATA.filter(item => {
@@ -559,7 +546,7 @@
           ) || (item.rootUrdu && item.rootUrdu.includes(rawQuery));
         }
 
-        // 2. ROOT TRANSLITERATION LETTER MATCH (PROGRESSIVE: "k" -> "kt" -> "ktb")
+        // 2. ROOT TRANSLITERATION LETTER MATCH ("k" -> "kt" -> "ktb")
         const rootId = item.id ? item.id.toLowerCase() : "";
         if (alphaOnlyQuery.length > 0 && alphaOnlyQuery.length <= 4) {
           if (rootId.startsWith(alphaOnlyQuery)) {
@@ -567,7 +554,7 @@
           }
         }
 
-        // 3. ENGLISH KEYWORD MATCHING (Min 3 characters or exact word match to avoid noise)
+        // 3. ENGLISH KEYWORD MATCHING
         if (lowerQuery.length >= 3) {
           const rootEn = item.rootEnglish ? item.rootEnglish.toLowerCase() : "";
           if (rootEn.includes(lowerQuery)) return true;
@@ -597,53 +584,39 @@
       let html = '';
 
       data.forEach((rootItem) => {
-        const examplesCount = rootItem.examples.length;
-        
         html += `
-          <div class="root-card" id="card-${rootItem.id}">
+          <div class="root-card expanded" id="card-${rootItem.id}">
             <div class="root-header" onclick="toggleCardExpansion('card-${rootItem.id}')">
               <div class="root-title-row">
-                <div class="arabic-root-display">${escapeHTML(rootItem.root)}</div>
-                <div class="expand-toggle">⌄</div>
+                <div class="arabic-root-display">${escapeHTML(rootItem.root)} <span style="font-size:1.1rem; color: var(--text-muted); font-family: sans-serif;">(${escapeHTML(rootItem.id)})</span></div>
+                <div class="expand-toggle">⌃</div>
               </div>
               
-              <div class="meanings-grid">
-                <div class="meaning-item">
-                  <span class="meaning-label">English:</span>
-                  <span>${escapeHTML(rootItem.rootEnglish)}</span>
-                </div>
-                <div class="meaning-item">
-                  <span class="meaning-label">اردو:</span>
-                  <span class="urdu-text">${escapeHTML(rootItem.rootUrdu)}</span>
-                </div>
+              <div class="root-summary-bar">
+                <span>${escapeHTML(rootItem.rootEnglish)}</span>
+                <span style="color: var(--border-color);">|</span>
+                <span class="urdu-summary">${escapeHTML(rootItem.rootUrdu)}</span>
               </div>
             </div>
 
             <div class="examples-container">
-              <div class="examples-header">Derived Forms in Qur'an (${examplesCount})</div>
-              ${rootItem.examples.map(ex => `
-                <div class="derived-item">
-                  <div class="derived-word-header">
-                    <div class="derived-arabic">${escapeHTML(ex.word)}</div>
-                    <div class="surah-ref">${escapeHTML(ex.surahName)} ${escapeHTML(ex.reference)}</div>
-                  </div>
+              <div class="examples-grid">
+                ${rootItem.examples.map(ex => `
+                  <div class="derived-card">
+                    <div>
+                      <div class="derived-word-title">${escapeHTML(ex.word)}</div>
+                      <div class="derived-meaning-en">(${escapeHTML(ex.meaningEnglish)})</div>
+                      <div class="derived-meaning-ur">${escapeHTML(ex.meaningUrdu)}</div>
+                    </div>
 
-                  <div class="meaning-item" style="margin-bottom: 4px;">
-                    <span class="meaning-label">English:</span>
-                    <span>${escapeHTML(ex.meaningEnglish)}</span>
+                    <div class="verse-inline-block">
+                      <div class="verse-arabic-text">${escapeHTML(ex.quranText)}</div>
+                      <div class="verse-translation-en"><span class="verse-meta">[${escapeHTML(ex.reference)}]</span> ${escapeHTML(ex.quranEnglish)}</div>
+                      <div class="verse-translation-ur">${escapeHTML(ex.quranUrdu)}</div>
+                    </div>
                   </div>
-                  <div class="meaning-item">
-                    <span class="meaning-label">اردو:</span>
-                    <span class="urdu-text">${escapeHTML(ex.meaningUrdu)}</span>
-                  </div>
-
-                  <div class="verse-block">
-                    <div class="verse-arabic">${escapeHTML(ex.quranText)}</div>
-                    <div class="verse-trans-en">"${escapeHTML(ex.quranEnglish)}"</div>
-                    <div class="verse-trans-ur">${escapeHTML(ex.quranUrdu)}</div>
-                  </div>
-                </div>
-              `).join('')}
+                `).join('')}
+              </div>
             </div>
           </div>
         `;
