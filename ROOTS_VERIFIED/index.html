@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quranic Root Search</title>
+  <style>
+    :root {
+      --bg-color: #f4ecd8;
+      --card-bg: #f9f3e5;
+      --box-bg: #f2e7d0;
+      --text-color: #333333;
+      --border-color: #8c2a1c;
+      --btn-bg: #8c2a1c;
+      --btn-text: #ffffff;
+      --subtext-color: #666666;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1e1e1e;
+      --card-bg: #2a2a2a;
+      --box-bg: #333333;
+      --text-color: #e0e0e0;
+      --border-color: #d35400;
+      --btn-bg: #d35400;
+      --btn-text: #ffffff;
+      --subtext-color: #aaa;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .main-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header Section */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .app-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--border-color);
+      margin: 0;
+      font-family: Georgia, serif;
+    }
+
+    .theme-toggle-btn {
+      background-color: #e8ded0;
+      color: #000;
+      border: 1px solid #333;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* Search Bar Section */
+    .search-wrapper {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid #c8bba8;
+      border-radius: 8px;
+      background-color: #fdfbf7;
+      outline: none;
+    }
+
+    .clear-btn {
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .count-indicator {
+      font-size: 15px;
+      color: var(--subtext-color);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    /* Root Card Component */
+    .root-card {
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      background-color: var(--card-bg);
+    }
+
+    .root-header {
+      border-bottom: 1px solid #d8caa8;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .root-title-arabic {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--border-color);
+      direction: rtl;
+      margin-bottom: 4px;
+    }
+
+    .root-subtitle {
+      font-size: 16px;
+      color: #555;
+    }
+
+    /* Grid Layout for Examples */
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
+    }
+
+    .example-card {
+      border: 1px solid #d8caa8;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: var(--box-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .word-header {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .word-arabic {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--border-color);
+      direction: rtl;
+    }
+
+    .verse-arabic {
+      font-size: 20px;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.6;
+      margin: 10px 0;
+      font-weight: 600;
+    }
+
+    .verse-reference {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .translation-en {
+      font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .translation-ur {
+      font-size: 15px;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <!-- Top Header -->
+  <div class="header-bar">
+    <h1 class="app-title">Quranic Root Search</h1>
+    <button class="theme-toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+
+  <!-- Search Input Area -->
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="Search Arabic, English, or Urdu..." oninput="filterRoots()">
+    <button class="clear-btn" onclick="clearSearch()">Clear</button>
+  </div>
+
+  <!-- Results Counter -->
+  <div class="count-indicator" id="countIndicator">Showing 0 roots</div>
+
+  <!-- Dynamic Content Display -->
+  <div id="rootsDisplay"></div>
+</div>
+
+<!-- Global Data Initialization -->
+<script>
+  var QURANIC_ROOTS_DATA = [];
+</script>
+
+<!-- External Data Files -->
+<script src="BATCH_1_ROOTS.js"></script>
+<script src="BATCH_2_ROOTS.js"></script>
+<script src="BATCH_3_ROOTS.js"></script>
+<!-- App Functionality -->
+<script>
+  function renderRoots(data) {
+    const container = document.getElementById('rootsDisplay');
+    const countIndicator = document.getElementById('countIndicator');
+    container.innerHTML = '';
+
+    countIndicator.textContent = `Showing ${data.length} root${data.length === 1 ? '' : 's'}`;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding: 40px; font-size: 18px;">No matching root words found.</p>';
+      return;
+    }
+
+    data.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'root-card';
+
+      let examplesHtml = item.examples.map(ex => `
+        <div class="example-card">
+          <div>
+            <div class="word-header">
+              <span class="word-arabic">${ex.word}</span> (${ex.meaningEnglish}) - <span class="urdu-text">${ex.meaningUrdu}</span>
+            </div>
+            <div class="verse-arabic">${ex.quranText}</div>
+          </div>
+          <div>
+            <div class="translation-en"><span class="verse-reference">[${ex.reference}]</span> ${ex.quranEnglish}</div>
+            <div class="translation-ur">${ex.quranUrdu}</div>
+          </div>
+        </div>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="root-header">
+          <div class="root-title-arabic">${item.root}</div>
+          <div class="root-subtitle">${item.rootEnglish} | ${item.rootUrdu}</div>
+        </div>
+        <div class="examples-grid">
+          ${examplesHtml}
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  // Normalizes Arabic/Urdu/English text so that searches match regardless of
+  // diacritics (tashkeel), letter-variant differences, capitalization, or the
+  // spaces that separate the individual root letters (e.g. "أ ب و").
+  function normalizeText(str) {
+    if (!str) return '';
+    return str
+      .toString()
+      .toLowerCase()
+      // Strip Arabic diacritics (fatha, damma, kasra, sukun, tanwin, shadda, etc.) and tatweel
+      .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+      // Unify alef variants (أ إ آ ٱ) to a plain alef
+      .replace(/[إأآٱ]/g, 'ا')
+      // Unify alef maqsura with yaa
+      .replace(/ى/g, 'ي')
+      // Unify taa marbuta with haa
+      .replace(/ة/g, 'ه')
+      // Collapse/remove all whitespace so "أ ب و" matches "ابو"
+      .replace(/\s+/g, '')
+      .trim();
+  }
+
+  // Maps each Arabic root letter to a single Latin "root code" letter, mirroring
+  // the transliteration convention already used in this dataset's internal ids
+  // (e.g. "alif-j-r" / "x-l-q"), so a root like أ ج ر romanizes to "AJR" and
+  // خ ل ق romanizes to "XLQ".
+  const ARABIC_TO_LATIN = {
+    'ا': 'A', 'أ': 'A', 'إ': 'A', 'آ': 'A', 'ء': 'A', 'ٱ': 'A',
+    'ب': 'B', 'ت': 'T', 'ث': 'TH', 'ج': 'J', 'ح': 'H', 'خ': 'X',
+    'د': 'D', 'ذ': 'DH', 'ر': 'R', 'ز': 'Z', 'س': 'S', 'ش': 'SH',
+    'ص': 'S', 'ض': 'D', 'ط': 'T', 'ظ': 'DH', 'ع': 'A', 'غ': 'GH',
+    'ف': 'F', 'ق': 'Q', 'ك': 'K', 'ل': 'L', 'م': 'M', 'ن': 'N',
+    'ه': 'H', 'ة': 'H', 'و': 'W', 'ي': 'Y', 'ى': 'Y'
+  };
+
+  function romanizeRoot(rootArabic) {
+    if (!rootArabic) return '';
+    const clean = rootArabic.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640\s]/g, '');
+    let out = '';
+    for (const ch of clean) out += ARABIC_TO_LATIN[ch] || '';
+    return out;
+  }
+
+  function filterRoots() {
+    const rawQuery = document.getElementById('searchInput').value;
+    const normQuery = normalizeText(rawQuery);
+    // A Latin-letters-only version of the query, for matching root codes like "AJR".
+    const latinQuery = rawQuery.toUpperCase().replace(/[^A-Z]/g, '');
+
+    if (!normQuery && !latinQuery) {
+      renderRoots(QURANIC_ROOTS_DATA);
+      return;
+    }
+
+    const filtered = QURANIC_ROOTS_DATA.filter(item => {
+      const rootCode = romanizeRoot(item.root);
+      const translitMatch = latinQuery.length > 0 && rootCode.includes(latinQuery);
+      const rootMatch = normQuery && normalizeText(item.root).includes(normQuery);
+      const enMatch = normQuery && item.rootEnglish && normalizeText(item.rootEnglish).includes(normQuery);
+      const urMatch = normQuery && item.rootUrdu && normalizeText(item.rootUrdu).includes(normQuery);
+      const rootLevelMatch = rootMatch || enMatch || urMatch || translitMatch;
+
+      // For short queries (1-3 letters) - the length of a root - only match
+      // against the root's own identity (Arabic root, its English/Urdu name,
+      // or its Latin root code). Searching short substrings across every verse
+      // and translation returns dozens of unrelated hits and makes it look
+      // like the search box "does nothing" until the whole root is typed.
+      const effectiveLen = Math.max(normQuery.length, latinQuery.length);
+      if (effectiveLen > 0 && effectiveLen <= 3) {
+        return rootLevelMatch;
+      }
+
+      const exMatch = item.examples && item.examples.some(ex =>
+        normalizeText(ex.word).includes(normQuery) ||
+        (ex.meaningEnglish && normalizeText(ex.meaningEnglish).includes(normQuery)) ||
+        (ex.meaningUrdu && normalizeText(ex.meaningUrdu).includes(normQuery)) ||
+        normalizeText(ex.quranText).includes(normQuery) ||
+        (ex.quranEnglish && normalizeText(ex.quranEnglish).includes(normQuery)) ||
+        (ex.quranUrdu && normalizeText(ex.quranUrdu).includes(normQuery)) ||
+        normalizeText(ex.reference).includes(normQuery)
+      );
+
+      return rootLevelMatch || exMatch;
+    });
+
+    renderRoots(filtered);
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    // Clear the screen itself rather than showing all 40 roots again.
+    const container = document.getElementById('rootsDisplay');
+    const countIndicator = document.getElementById('countIndicator');
+    container.innerHTML = '';
+    countIndicator.textContent = 'Showing 0 roots';
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    if (currentTheme === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }
+
+  window.onload = function() {
+    renderRoots(QURANIC_ROOTS_DATA);
+  };
+</script>
+
+</body>
+</html>
