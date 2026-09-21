@@ -1,0 +1,897 @@
+There are two reasons why your modified HTML is not displaying the data:
+
+---
+
+### The 2 Problems in Your Code:
+
+1. **Double `window.onload` conflict (Major):**
+   * In the middle of your file, you have:
+     ```javascript
+     window.onload = function() {
+       initTheme();
+       loadAllBatches();
+     };
+     ```
+   * But at the bottom of your file, you have a second one:
+     ```javascript
+     window.onload = function() {
+       initTheme();
+       renderRoots(QURANIC_ROOTS_DATA); // <-- This overwrote loadAllBatches()!
+     };
+     ```
+   Because the second `window.onload` overwrote the first one, `loadAllBatches()` was **never executed**, leaving `QURANIC_ROOTS_DATA` empty (`0 roots`).
+
+2. **Opening HTML directly from your computer (`file://` protocol):**
+   * When you double-click an `.html` file from your desktop/folder, your browser URL starts with `file:///C:/...`. Modern web browsers block JavaScript `fetch()` on `file://` URLs for security reasons (CORS policy).
+   * `fetch()` will work automatically once uploaded to **GitHub Pages** or when run on a local web server (like VS Code *Live Server*).
+
+---
+
+### The Clean, Working Solution
+
+Here is the corrected HTML file with the duplicate scripts merged into one clean, working loader that calls `loadAllBatches()` properly:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quranic Root Search</title>
+  <style>
+    /* CSS Box Sizing Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-color: #f4ecd8;
+      --card-bg: #f9f3e5;
+      --box-bg: #f2e7d0;
+      --text-color: #333333;
+      --border-color: #8c2a1c;
+      --btn-bg: #8c2a1c;
+      --btn-text: #ffffff;
+      --subtext-color: #666666;
+      --input-bg: #fdfbf7;
+      --input-border: #c8bba8;
+      --input-text: #333333;
+      --card-border-soft: #d8caa8;
+      --shadow-color: rgba(60, 40, 20, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1e1e1e;
+      --card-bg: #2a2a2a;
+      --box-bg: #333333;
+      --text-color: #e0e0e0;
+      --border-color: #d35400;
+      --btn-bg: #d35400;
+      --btn-text: #ffffff;
+      --subtext-color: #aaaaaa;
+      --input-bg: #252525;
+      --input-border: #444444;
+      --input-text: #e0e0e0;
+      --card-border-soft: #3d3d3d;
+      --shadow-color: rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="emerald"] {
+      --bg-color: #0f2a22;
+      --card-bg: #143a2e;
+      --box-bg: #1a4638;
+      --text-color: #eef5f0;
+      --border-color: #c9a227;
+      --btn-bg: #c9a227;
+      --btn-text: #14231b;
+      --subtext-color: #a9c4b8;
+      --input-bg: #1a4638;
+      --input-border: #2f5d4a;
+      --input-text: #eef5f0;
+      --card-border-soft: #2f5d4a;
+      --shadow-color: rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="lapis"] {
+      --bg-color: #101b3d;
+      --card-bg: #162350;
+      --box-bg: #1c2c63;
+      --text-color: #eef1fb;
+      --border-color: #d4af37;
+      --btn-bg: #d4af37;
+      --btn-text: #101b3d;
+      --subtext-color: #a9b3d9;
+      --input-bg: #1c2c63;
+      --input-border: #2c3d7d;
+      --input-text: #eef1fb;
+      --card-border-soft: #2c3d7d;
+      --shadow-color: rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="rose"] {
+      --bg-color: #fdf1ef;
+      --card-bg: #fff7f5;
+      --box-bg: #fbe6e2;
+      --text-color: #402a28;
+      --border-color: #b5495b;
+      --btn-bg: #b5495b;
+      --btn-text: #ffffff;
+      --subtext-color: #8a6a67;
+      --input-bg: #ffffff;
+      --input-border: #e8c9c4;
+      --input-text: #402a28;
+      --card-border-soft: #e8c9c4;
+      --shadow-color: rgba(150, 60, 60, 0.12);
+    }
+
+    [data-theme="dusk"] {
+      --bg-color: #2b1d14;
+      --card-bg: #3a281c;
+      --box-bg: #45301f;
+      --text-color: #f3e6d8;
+      --border-color: #e08e45;
+      --btn-bg: #e08e45;
+      --btn-text: #2b1d14;
+      --subtext-color: #cbb093;
+      --input-bg: #3a281c;
+      --input-border: #5a3f2a;
+      --input-text: #f3e6d8;
+      --card-border-soft: #5a3f2a;
+      --shadow-color: rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="ivory"] {
+      --bg-color: #faf6ec;
+      --card-bg: #fffdf7;
+      --box-bg: #f5eeda;
+      --text-color: #3a3226;
+      --border-color: #b8860b;
+      --btn-bg: #b8860b;
+      --btn-text: #ffffff;
+      --subtext-color: #7a6f57;
+      --input-bg: #ffffff;
+      --input-border: #e0d3ad;
+      --input-text: #3a3226;
+      --card-border-soft: #e0d3ad;
+      --shadow-color: rgba(120, 90, 20, 0.12);
+    }
+
+    [data-theme="sage"] {
+      --bg-color: #eef5ee;
+      --card-bg: #f7fbf5;
+      --box-bg: #e3efe1;
+      --text-color: #253a26;
+      --border-color: #3f7d4a;
+      --btn-bg: #3f7d4a;
+      --btn-text: #ffffff;
+      --subtext-color: #5f7a60;
+      --input-bg: #ffffff;
+      --input-border: #cfe3cf;
+      --input-text: #253a26;
+      --card-border-soft: #cfe3cf;
+      --shadow-color: rgba(30, 80, 40, 0.10);
+    }
+
+    [data-theme="sky"] {
+      --bg-color: #eef2fa;
+      --card-bg: #f8fafd;
+      --box-bg: #e4ebf7;
+      --text-color: #23304a;
+      --border-color: #2c5aa0;
+      --btn-bg: #2c5aa0;
+      --btn-text: #ffffff;
+      --subtext-color: #5a688a;
+      --input-bg: #ffffff;
+      --input-border: #cbd9ef;
+      --input-text: #23304a;
+      --card-border-soft: #cbd9ef;
+      --shadow-color: rgba(30, 50, 90, 0.10);
+    }
+
+    [data-theme="green"] {
+      --bg-color: #1c6b3f;
+      --card-bg: #217a49;
+      --box-bg: #1a5f38;
+      --text-color: #ffffff;
+      --border-color: #ffffff;
+      --btn-bg: #ffffff;
+      --btn-text: #1c6b3f;
+      --subtext-color: #cfead9;
+      --input-bg: #1a5f38;
+      --input-border: #3f8f63;
+      --input-text: #ffffff;
+      --card-border-soft: #3f8f63;
+      --shadow-color: rgba(0, 0, 0, 0.30);
+    }
+
+    [data-theme="noir"] {
+      --bg-color: #0a0a0a;
+      --card-bg: #151515;
+      --box-bg: #1f1f1f;
+      --text-color: #f5f5f5;
+      --border-color: #2ecc71;
+      --btn-bg: #2ecc71;
+      --btn-text: #0a0a0a;
+      --subtext-color: #9a9a9a;
+      --input-bg: #1f1f1f;
+      --input-border: #333333;
+      --input-text: #f5f5f5;
+      --card-border-soft: #2a2a2a;
+      --shadow-color: rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .main-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Header Section */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .app-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--border-color);
+      margin: 0;
+      font-family: Georgia, serif;
+      letter-spacing: 0.2px;
+    }
+
+    /* ---------- Theme Switcher ---------- */
+    .theme-switcher {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .theme-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--card-border-soft);
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .theme-trigger:hover {
+      border-color: var(--border-color);
+    }
+
+    .theme-trigger:active {
+      transform: scale(0.97);
+    }
+
+    .theme-trigger .swatch-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: linear-gradient(135deg, var(--border-color) 50%, var(--bg-color) 50%);
+      flex-shrink: 0;
+    }
+
+    .theme-trigger .chevron {
+      font-size: 10px;
+      opacity: 0.6;
+      transition: transform 0.2s;
+    }
+
+    .theme-switcher.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .theme-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border-soft);
+      border-radius: 14px;
+      box-shadow: 0 12px 28px var(--shadow-color);
+      padding: 8px;
+      width: 240px;
+      max-width: 82vw;
+      max-height: min(420px, 72vh);
+      overflow-y: auto;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+    }
+
+    .theme-switcher.open .theme-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .theme-menu-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--subtext-color);
+      padding: 8px 10px 6px;
+    }
+
+    .theme-menu-title.section {
+      margin-top: 4px;
+      border-top: 1px solid var(--card-border-soft);
+      padding-top: 10px;
+    }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 9px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-color);
+      transition: background-color 0.15s;
+    }
+
+    .theme-option:hover {
+      background-color: var(--box-bg);
+    }
+
+    .theme-option.active {
+      background-color: var(--box-bg);
+      font-weight: 600;
+    }
+
+    .theme-option .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+    }
+
+    .theme-option .option-label {
+      flex: 1;
+      line-height: 1.25;
+    }
+
+    .theme-option .option-label small {
+      display: block;
+      font-weight: 400;
+      color: var(--subtext-color);
+      font-size: 11px;
+    }
+
+    .theme-option .checkmark {
+      font-size: 13px;
+      opacity: 0;
+      color: var(--border-color);
+    }
+
+    .theme-option.active .checkmark {
+      opacity: 1;
+    }
+
+    .swatch-light  { background: linear-gradient(135deg, #8c2a1c 50%, #f4ecd8 50%); }
+    .swatch-dark   { background: linear-gradient(135deg, #d35400 50%, #1e1e1e 50%); }
+    .swatch-emerald{ background: linear-gradient(135deg, #c9a227 50%, #0f2a22 50%); }
+    .swatch-lapis  { background: linear-gradient(135deg, #d4af37 50%, #101b3d 50%); }
+    .swatch-rose   { background: linear-gradient(135deg, #b5495b 50%, #fdf1ef 50%); }
+    .swatch-dusk   { background: linear-gradient(135deg, #e08e45 50%, #2b1d14 50%); }
+    .swatch-ivory  { background: linear-gradient(135deg, #b8860b 50%, #faf6ec 50%); }
+    .swatch-sage   { background: linear-gradient(135deg, #3f7d4a 50%, #eef5ee 50%); }
+    .swatch-sky    { background: linear-gradient(135deg, #2c5aa0 50%, #eef2fa 50%); }
+    .swatch-green  { background: linear-gradient(135deg, #ffffff 50%, #1c6b3f 50%); }
+    .swatch-noir   { background: linear-gradient(135deg, #2ecc71 50%, #0a0a0a 50%); }
+
+    /* Search Bar Section */
+    .search-wrapper {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      outline: none;
+      min-width: 0;
+      transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-color);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-color) 20%, transparent);
+    }
+
+    .search-input::placeholder {
+      color: var(--subtext-color);
+    }
+
+    .clear-btn {
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: filter 0.15s, transform 0.1s, background-color 0.3s;
+    }
+
+    .clear-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .clear-btn:active {
+      transform: scale(0.97);
+    }
+
+    .count-indicator {
+      font-size: 15px;
+      color: var(--subtext-color);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    /* Root Card Component */
+    .root-card {
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      background-color: var(--card-bg);
+      width: 100%;
+      box-shadow: 0 4px 16px var(--shadow-color);
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .root-header {
+      border-bottom: 1px solid var(--card-border-soft);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .root-title-arabic {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--border-color);
+      direction: rtl;
+      margin-bottom: 4px;
+    }
+
+    .root-subtitle {
+      font-size: 16px;
+      color: var(--subtext-color);
+    }
+
+    /* Grid Layout for Examples */
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      width: 100%;
+    }
+
+    .example-card {
+      border: 1px solid var(--card-border-soft);
+      border-radius: 8px;
+      padding: 15px;
+      background-color: var(--box-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .word-header {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .word-arabic {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--border-color);
+      direction: rtl;
+    }
+
+    .verse-arabic {
+      font-size: 20px;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.6;
+      margin: 10px 0;
+      font-weight: 600;
+    }
+
+    .verse-reference {
+      font-weight: bold;
+      color: var(--border-color);
+    }
+
+    .translation-en {
+      font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .translation-ur {
+      font-size: 15px;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .app-title { font-size: 24px; }
+      .root-card { padding: 12px; margin-bottom: 16px; }
+      .examples-grid { grid-template-columns: 1fr; gap: 12px; }
+      .example-card { padding: 12px; }
+      .clear-btn { padding: 12px 16px; }
+      .theme-trigger span.trigger-label { display: none; }
+      .theme-trigger { padding: 8px 10px; }
+      .theme-menu { right: -6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <!-- Top Header -->
+  <div class="header-bar">
+    <h1 class="app-title">Quranic Root Search</h1>
+
+    <div class="theme-switcher" id="themeSwitcher">
+      <button class="theme-trigger" id="themeTrigger" onclick="toggleThemeMenu()" aria-haspopup="true" aria-expanded="false">
+        <span class="swatch-dot" id="themeTriggerDot"></span>
+        <span class="trigger-label">Theme</span>
+        <span class="chevron">▾</span>
+      </button>
+
+      <div class="theme-menu" id="themeMenu" role="menu">
+        <div class="theme-menu-title">Light</div>
+
+        <button class="theme-option" data-theme-value="light" onclick="setTheme('light')" role="menuitem">
+          <span class="swatch swatch-light"></span>
+          <span class="option-label">Classic Parchment<small>Warm manuscript beige</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="ivory" onclick="setTheme('ivory')" role="menuitem">
+          <span class="swatch swatch-ivory"></span>
+          <span class="option-label">Ivory &amp; Gold<small>Bright ivory, gilded accent</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="sage" onclick="setTheme('sage')" role="menuitem">
+          <span class="swatch swatch-sage"></span>
+          <span class="option-label">Sage Oasis<small>Soft green &amp; forest accent</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="sky" onclick="setTheme('sky')" role="menuitem">
+          <span class="swatch swatch-sky"></span>
+          <span class="option-label">Sky Papyrus<small>Pale blue &amp; navy accent</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="rose" onclick="setTheme('rose')" role="menuitem">
+          <span class="swatch swatch-rose"></span>
+          <span class="option-label">Rosewater<small>Soft blush &amp; maroon</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <div class="theme-menu-title section">Dark</div>
+
+        <button class="theme-option" data-theme-value="dark" onclick="setTheme('dark')" role="menuitem">
+          <span class="swatch swatch-dark"></span>
+          <span class="option-label">Midnight Ink<small>Dark with ember accent</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="emerald" onclick="setTheme('emerald')" role="menuitem">
+          <span class="swatch swatch-emerald"></span>
+          <span class="option-label">Emerald Manuscript<small>Deep green &amp; gold</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="lapis" onclick="setTheme('lapis')" role="menuitem">
+          <span class="swatch swatch-lapis"></span>
+          <span class="option-label">Lapis Nights<small>Indigo &amp; gold</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="dusk" onclick="setTheme('dusk')" role="menuitem">
+          <span class="swatch swatch-dusk"></span>
+          <span class="option-label">Desert Dusk<small>Terracotta &amp; sand</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="green" onclick="setTheme('green')" role="menuitem">
+          <span class="swatch swatch-green"></span>
+          <span class="option-label">Masjid Green<small>Solid green, white text</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+
+        <button class="theme-option" data-theme-value="noir" onclick="setTheme('noir')" role="menuitem">
+          <span class="swatch swatch-noir"></span>
+          <span class="option-label">Onyx Noir<small>True black, white &amp; emerald</small></span>
+          <span class="checkmark">✓</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Input Area -->
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="Search Arabic, English, or Urdu..." oninput="filterRoots()">
+    <button class="clear-btn" onclick="clearSearch()">Clear</button>
+  </div>
+
+  <!-- Results Counter -->
+  <div class="count-indicator" id="countIndicator">Loading roots...</div>
+
+  <!-- Dynamic Content Display -->
+  <div id="rootsDisplay"></div>
+</div>
+
+<!-- App Functionality & Data Loader -->
+<script>
+  var QURANIC_ROOTS_DATA = [];
+
+  // Function to load all JSON batch files
+  async function loadAllBatches() {
+    try {
+      const batchFiles = [
+        'batch_1_roots.json'
+        // 'batch_2_roots.json',
+        // 'batch_3_roots.json'
+      ];
+
+      for (const file of batchFiles) {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error(`Failed to load ${file}`);
+        const data = await response.json();
+        QURANIC_ROOTS_DATA.push(...data);
+      }
+
+      // Display roots on screen
+      renderRoots(QURANIC_ROOTS_DATA);
+    } catch (error) {
+      console.error("Error loading roots data:", error);
+      document.getElementById('countIndicator').textContent = "Error loading data. Make sure files are hosted on GitHub or local server.";
+    }
+  }
+
+  function renderRoots(data) {
+    const container = document.getElementById('rootsDisplay');
+    const countIndicator = document.getElementById('countIndicator');
+    container.innerHTML = '';
+
+    countIndicator.textContent = `Showing ${data.length} root${data.length === 1 ? '' : 's'}`;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding: 40px; font-size: 18px;">No matching root words found.</p>';
+      return;
+    }
+
+    data.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'root-card';
+
+      let examplesHtml = item.examples.map(ex => `
+        <div class="example-card">
+          <div>
+            <div class="word-header">
+              <span class="word-arabic">${ex.word}</span> (${ex.meaningEnglish}) - <span class="urdu-text">${ex.meaningUrdu}</span>
+            </div>
+            <div class="verse-arabic">${ex.quranText}</div>
+          </div>
+          <div>
+            <div class="translation-en"><span class="verse-reference">[${ex.reference}]</span> ${ex.quranEnglish}</div>
+            <div class="translation-ur">${ex.quranUrdu}</div>
+          </div>
+        </div>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="root-header">
+          <div class="root-title-arabic">${item.root}</div>
+          <div class="root-subtitle">${item.rootEnglish} | ${item.rootUrdu}</div>
+        </div>
+        <div class="examples-grid">
+          ${examplesHtml}
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function normalizeText(str) {
+    if (!str) return '';
+    return str
+      .toString()
+      .toLowerCase()
+      .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+      .replace(/[إأآٱ]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ة/g, 'ه')
+      .replace(/\s+/g, '')
+      .trim();
+  }
+
+  const ARABIC_TO_LATIN = {
+    'ا': 'A', 'أ': 'A', 'إ': 'A', 'آ': 'A', 'ء': 'A', 'ٱ': 'A',
+    'ب': 'B', 'ت': 'T', 'ث': 'TH', 'ج': 'J', 'ح': 'H', 'خ': 'KH',
+    'د': 'D', 'ذ': 'DH', 'ر': 'R', 'ز': 'Z', 'س': 'S', 'ش': 'SH',
+    'ص': 'S', 'ض': 'D', 'ط': 'T', 'ظ': 'DH', 'ع': 'A', 'غ': 'GH',
+    'ف': 'F', 'ق': 'Q', 'ك': 'K', 'ل': 'L', 'م': 'M', 'ن': 'N',
+    'ه': 'H', 'ة': 'H', 'و': 'W', 'ي': 'Y', 'ى': 'Y'
+  };
+
+  function romanizeRoot(rootArabic) {
+    if (!rootArabic) return '';
+    const clean = rootArabic.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640\s]/g, '');
+    let out = '';
+    for (const ch of clean) out += ARABIC_TO_LATIN[ch] || '';
+    return out;
+  }
+
+  function filterRoots() {
+    const rawQuery = document.getElementById('searchInput').value;
+    const normQuery = normalizeText(rawQuery);
+    const latinQuery = rawQuery.toUpperCase().replace(/[^A-Z]/g, '');
+
+    if (!normQuery && !latinQuery) {
+      renderRoots(QURANIC_ROOTS_DATA);
+      return;
+    }
+
+    const filtered = QURANIC_ROOTS_DATA.filter(item => {
+      const rootCode = romanizeRoot(item.root);
+      const translitMatch = latinQuery.length > 0 && rootCode.includes(latinQuery);
+      const rootMatch = normQuery && normalizeText(item.root).includes(normQuery);
+      const enMatch = normQuery && item.rootEnglish && normalizeText(item.rootEnglish).includes(normQuery);
+      const urMatch = normQuery && item.rootUrdu && normalizeText(item.rootUrdu).includes(normQuery);
+      const rootLevelMatch = rootMatch || enMatch || urMatch || translitMatch;
+
+      const effectiveLen = Math.max(normQuery.length, latinQuery.length);
+      if (effectiveLen > 0 && effectiveLen <= 3) {
+        return rootLevelMatch;
+      }
+
+      const exMatch = item.examples && item.examples.some(ex =>
+        normalizeText(ex.word).includes(normQuery) ||
+        (ex.meaningEnglish && normalizeText(ex.meaningEnglish).includes(normQuery)) ||
+        (ex.meaningUrdu && normalizeText(ex.meaningUrdu).includes(normQuery)) ||
+        normalizeText(ex.quranText).includes(normQuery) ||
+        (ex.quranEnglish && normalizeText(ex.quranEnglish).includes(normQuery)) ||
+        (ex.quranUrdu && normalizeText(ex.quranUrdu).includes(normQuery)) ||
+        normalizeText(ex.reference).includes(normQuery)
+      );
+
+      return rootLevelMatch || exMatch;
+    });
+
+    renderRoots(filtered);
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    const container = document.getElementById('rootsDisplay');
+    const countIndicator = document.getElementById('countIndicator');
+    container.innerHTML = '';
+    countIndicator.textContent = 'Showing 0 roots';
+  }
+
+  /* ---------- Theme Switcher ---------- */
+  var THEME_STORAGE_KEY = 'qrs-theme';
+
+  function applyTheme(theme) {
+    if (!theme || theme === 'light') {
+      document.documentElement.removeAttribute('data-theme');
+      theme = 'light';
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    document.querySelectorAll('.theme-option').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-theme-value') === theme);
+    });
+
+    var dot = document.getElementById('themeTriggerDot');
+    if (dot) dot.className = 'swatch-dot';
+  }
+
+  function setTheme(theme) {
+    applyTheme(theme);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (e) {}
+    closeThemeMenu();
+  }
+
+  function toggleThemeMenu() {
+    var switcher = document.getElementById('themeSwitcher');
+    var trigger = document.getElementById('themeTrigger');
+    var isOpen = switcher.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  function closeThemeMenu() {
+    var switcher = document.getElementById('themeSwitcher');
+    var trigger = document.getElementById('themeTrigger');
+    switcher.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  document.addEventListener('click', function (e) {
+    var switcher = document.getElementById('themeSwitcher');
+    if (switcher && !switcher.contains(e.target)) closeThemeMenu();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeThemeMenu();
+  });
+
+  function initTheme() {
+    var saved = 'light';
+    try {
+      saved = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
+    } catch (e) {}
+    applyTheme(saved);
+  }
+
+  // Single startup initialization
+  window.onload = function() {
+    initTheme();
+    loadAllBatches();
+  };
+</script>
+
+</body>
+</html>
+```
