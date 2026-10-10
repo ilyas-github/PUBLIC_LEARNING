@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quranic Arabic Roots — Top 100</title>
+<style>
+  :root{
+    --bg:#f7f4ec; --card:#fffdf7; --ink:#22301f; --muted:#6b725f;
+    --green:#1e5c3f; --green2:#2e7d52; --gold:#c19a3f; --line:#e3dcc8;
+    --chip:#eef3e6; --shadow:0 2px 10px rgba(60,50,20,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;}
+  header{background:linear-gradient(135deg,var(--green),#14402b);color:#f5efdd;padding:26px 18px 20px;text-align:center}
+  header h1{margin:0 0 6px;font-size:26px;font-weight:700}
+  header .ar-title{font-size:30px;display:block;margin-bottom:4px}
+  header p{margin:4px 0;color:#d9e4cf;font-size:14px}
+  .ar{font-family:"Amiri Quran","Scheherazade New","Noto Naskh Arabic","Traditional Arabic",serif}
+  .ur{font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Noto Naskh Arabic",serif;direction:rtl}
+  .toolbar{max-width:980px;margin:16px auto 6px;padding:0 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .toolbar input[type=search]{flex:1;min-width:220px;padding:11px 14px;font-size:16px;border:1px solid var(--line);
+    border-radius:10px;background:#fff;box-shadow:var(--shadow)}
+  .btn{padding:10px 16px;border-radius:10px;border:1px solid var(--green);background:#fff;color:var(--green);
+    font-size:15px;cursor:pointer;font-weight:600}
+  .btn.active{background:var(--green);color:#fff}
+  .btn:hover{filter:brightness(1.05)}
+  main{max-width:980px;margin:0 auto;padding:8px 14px 40px}
+  .stats{color:var(--muted);font-size:13.5px;margin:8px 2px 14px}
+  .root-card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 20px;margin-bottom:16px}
+  .root-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--chip);
+    padding-bottom:10px;margin-bottom:8px}
+  .root-letters{font-size:40px;line-height:1.15;color:var(--green)}
+  .root-translit{font-size:19px;font-weight:700;color:var(--gold);letter-spacing:.4px}
+  .root-rank{margin-left:auto;color:var(--muted);font-size:13px;text-align:right}
+  .root-meaning{font-size:17px;margin:2px 0}
+  .root-meaning .ur{font-size:16.5px;line-height:2}
+  .occurs{color:var(--muted);font-size:13px}
+  .derived{border-top:1px dashed var(--line);padding:12px 0 4px}
+  .derived:first-of-type{border-top:none}
+  .word-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .word-ar{font-size:27px;color:var(--ink)}
+  .lemma-ar{font-size:19px;color:var(--muted)}
+  .word-translit{font-weight:700;font-size:16.5px}
+  .pos{font-size:11.5px;background:var(--chip);color:var(--green);border-radius:20px;padding:2px 9px;font-weight:700}
+  .gloss{font-size:15.5px;margin:3px 0}
+  .gloss .ur{line-height:2;font-size:15px}
+  .example{background:#fbf8ef;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:9px}
+  .example .ref{font-size:13px;color:var(--green);font-weight:700;margin-bottom:6px}
+  .ayah-ar{font-size:23px;line-height:2.05;direction:rtl;text-align:right}
+  .ayah-ar mark{background:#f3d98b;border-radius:4px;padding:0 2px}
+  .ayah-ur{direction:rtl;text-align:right;font-size:16.5px;line-height:2.1;color:#37452f;margin-top:6px}
+  .ayah-note{font-size:12px;color:var(--muted);margin-top:6px}
+  /* flashcards */
+  #flash{display:none}
+  .flash-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:34px 24px;text-align:center;cursor:pointer;min-height:300px;display:flex;flex-direction:column;
+    justify-content:center;gap:10px;user-select:none}
+  .flash-root{font-size:64px;color:var(--green);line-height:1.2}
+  .flash-translit{font-size:22px;font-weight:700;color:var(--gold)}
+  .flash-meaning{font-size:20px}
+  .flash-meaning .ur{font-size:19px;line-height:2.1}
+  .flash-derived{font-size:16px;color:var(--ink);line-height:1.9}
+  .flash-derived .ar{font-size:20px}
+  .flash-nav{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .flash-hint{color:var(--muted);font-size:13px;text-align:center;margin-top:8px}
+  .mark-btn.know{border-color:var(--green2);color:var(--green2)}
+  .mark-btn.learn{border-color:#b0653a;color:#b0653a}
+  footer{max-width:980px;margin:0 auto;padding:0 14px 34px;color:var(--muted);font-size:13px;line-height:1.65}
+  footer b{color:var(--green)}
+  .hidden{display:none!important}
+  @media (max-width:560px){ .root-letters{font-size:32px} .flash-root{font-size:48px} .ayah-ar{font-size:20px} }
+</style>
+</head>
+<body>
+<header>
+  <span class="ar ar-title">جُذُورُ القُرْآن</span>
+  <h1>Quranic Arabic Roots — Top 100</h1>
+  <p>Learn the 100 most frequent roots of the Holy Quran, with words taken only from the Quran itself.</p>
+  <p>Every word is cited to its verse and cross-verified between the Quranic Arabic Corpus and the Tanzil text.</p>
+</header>
+
+<div class="toolbar">
+  <input type="search" id="search" placeholder="Search: root (كتب), transliteration (ktb, ilm), meaning (book, کتاب, جاننا)…">
+  <button class="btn active" id="modeBrowse">📖 Browse</button>
+  <button class="btn" id="modeFlash">🃏 Flashcards</button>
+</div>
+
+<main>
+  <div class="stats" id="stats"></div>
+  <section id="browse"></section>
+
+  <section id="flash">
+    <div class="flash-card" id="flashCard" title="Click to flip"></div>
+    <div class="flash-nav">
+      <button class="btn" id="fPrev">← Prev</button>
+      <button class="btn" id="fShuffle">🔀 Shuffle</button>
+      <button class="btn" id="fNext">Next →</button>
+    </div>
+    <div class="flash-nav">
+      <button class="btn mark-btn know" id="fKnow">✓ I know this</button>
+      <button class="btn mark-btn learn" id="fLearn">↻ Still learning</button>
+    </div>
+    <div class="flash-hint" id="flashHint"></div>
+  </section>
+</main>
+
+<footer>
+  <b>Sources &amp; verification.</b> Quran text: Tanzil (Uthmani). Roots, lemmas and word
+  analysis: <i>Quranic Arabic Corpus</i> v0.4 (University of Leeds). Verse Urdu translation:
+  Fateh Muhammad Jalandhari (via Tanzil). English/Urdu word meanings were curated for this
+  tool and cross-checked against published word-by-word references (Shaikh &amp; Khatri, English;
+  Dr. Farhat Hashmi, Urdu). In an automated cross-check of all 77,429 words of the Quran,
+  77,423 (99.99%) matched exactly between the Corpus analysis and the Tanzil text; all 358
+  example words in this app are among the verified matches. See README.md for the full report.
+</footer>
+
+<script src="data.js"></script>
+<script>
+const DATA = window.QURAN_ROOTS_DATA || [];
+const $ = s => document.querySelector(s);
+
+/* --- normalise Arabic for highlight matching (same rules as the build audit) --- */
+function skeleton(t){
+  t = t.replace(/ٔ/g,"ء").replace(/ٕ/g,"ء");
+  let out = "";
+  for (const ch of t){
+    if (ch === "ـ" || ch === "ۥ" || ch === "ۦ") continue;
+    const cp = ch.codePointAt(0);
+    if (cp >= 0x621 && cp <= 0x64A) out += ch;           // Arabic letters only
+  }
+  return out.replace(/ٱ/g,"ا");
+}
+function highlightAyah(ayahText, word){
+  const target = skeleton(word);
+  return ayahText.split(" ").map(tok =>
+    skeleton(tok) === target ? `<mark>${tok}</mark>` : tok
+  ).join(" ");
+}
+
+/* --- browse view --- */
+function rootCard(r){
+  const derived = r.derived.map(d => `
+    <div class="derived">
+      <div class="word-row">
+        <span class="ar word-ar">${d.word}</span>
+        <span class="ar lemma-ar">${d.lemma_ar}</span>
+        <span class="word-translit">${d.translit}</span>
+        <span class="pos">${d.pos}</span>
+        <span class="occurs">occurs ${d.occurrences}× in the Quran</span>
+      </div>
+      <div class="gloss"><b>EN:</b> ${d.gloss_en} &nbsp;•&nbsp; <b>UR:</b>
+        <span class="ur" lang="ur">${d.gloss_ur}</span></div>
+      <div class="example">
+        <div class="ref">📍 Surah ${d.example.surah_name_en} (${d.example.surah_name_ar}) — ${d.example.surah}:${d.example.ayah}, word ${d.example.word_no}</div>
+        <div class="ar ayah-ar">${highlightAyah(d.example.ayah_text, d.word)}</div>
+        <div class="ur ayah-ur" lang="ur">${d.example.ayah_ur}</div>
+        <div class="ayah-note">Verse Urdu translation: Fateh Muhammad Jalandhari (Tanzil)</div>
+      </div>
+    </div>`).join("");
+  return `
+  <article class="root-card">
+    <div class="root-head">
+      <span class="ar root-letters">${r.root}</span>
+      <span class="root-translit">${r.root_translit}</span>
+      <span class="root-rank">#${r.rank} of 100<br><span class="occurs">${r.total_occurrences} occurrences in the Quran</span></span>
+    </div>
+    <div class="root-meaning"><b>Root meaning — EN:</b> ${r.meaning_en}</div>
+    <div class="root-meaning"><b>UR:</b> <span class="ur" lang="ur">${r.meaning_ur}</span></div>
+    ${derived}
+  </article>`;
+}
+
+function renderBrowse(list){
+  $("#browse").innerHTML = list.map(rootCard).join("") ||
+    `<p class="stats">No roots match your search.</p>`;
+  const words = list.reduce((n,r)=>n+r.derived.length,0);
+  $("#stats").textContent = `Showing ${list.length} roots • ${words} Quran-derived words • ranked by frequency in the Quran`;
+}
+
+/* search across Arabic, transliteration, English and Urdu */
+function normLatin(s){ return s.toLowerCase().replace(/[ʾʿ'`\-\.]/g,""); }
+function matches(r, q){
+  if (!q) return true;
+  const ql = normLatin(q), qa = q.trim();
+  const hayLatin = normLatin([r.root_translit, r.meaning_en,
+    ...r.derived.map(d=>d.translit+" "+d.gloss_en)].join(" "));
+  const hayAr = [r.root_joined, r.meaning_ur,
+    ...r.derived.map(d=>d.lemma_ar+" "+d.word+" "+d.gloss_ur)].join(" ");
+  return hayLatin.includes(ql) || hayAr.includes(qa);
+}
+$("#search").addEventListener("input", e=>{
+  renderBrowse(DATA.filter(r=>matches(r, e.target.value)));
+});
+
+/* --- flashcards --- */
+let order = DATA.map((_,i)=>i), fpos = 0, flipped = false;
+let marks = JSON.parse(localStorage.getItem("qr_marks")||"{}");
+function saveMarks(){ localStorage.setItem("qr_marks", JSON.stringify(marks)); }
+function renderFlash(){
+  const r = DATA[order[fpos]];
+  const c = $("#flashCard");
+  if (!flipped){
+    c.innerHTML = `<div class="ar flash-root">${r.root}</div>
+      <div class="flash-translit">${r.root_translit}</div>
+      <div class="flash-hint">What does this root mean? Click to flip.</div>`;
+  } else {
+    const words = r.derived.map(d =>
+      `<div><span class="ar">${d.lemma_ar}</span> <b>${d.translit}</b> — ${d.gloss_en} •
+       <span class="ur" lang="ur">${d.gloss_ur}</span></div>`).join("");
+    c.innerHTML = `<div class="ar flash-root" style="font-size:44px">${r.root}</div>
+      <div class="flash-meaning"><b>${r.meaning_en}</b></div>
+      <div class="flash-meaning"><span class="ur" lang="ur">${r.meaning_ur}</span></div>
+      <div class="flash-derived">${words}</div>`;
+  }
+  const known = Object.values(marks).filter(v=>v==="know").length;
+  $("#flashHint").textContent =
+    `Card ${fpos+1} of ${order.length} • Root #${r.rank} • Known: ${known} • Still learning: ${Object.values(marks).filter(v=>v==="learn").length}`;
+}
+$("#flashCard").addEventListener("click", ()=>{ flipped=!flipped; renderFlash(); });
+$("#fNext").addEventListener("click", ()=>{ fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+$("#fPrev").addEventListener("click", ()=>{ fpos=(fpos-1+order.length)%order.length; flipped=false; renderFlash(); });
+$("#fShuffle").addEventListener("click", ()=>{
+  for (let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  fpos=0; flipped=false; renderFlash();
+});
+$("#fKnow").addEventListener("click", ()=>{ marks[DATA[order[fpos]].rank]="know"; saveMarks();
+  fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+$("#fLearn").addEventListener("click", ()=>{ marks[DATA[order[fpos]].rank]="learn"; saveMarks();
+  fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+
+/* --- mode toggle --- */
+function setMode(flash){
+  $("#browse").classList.toggle("hidden", flash);
+  $("#flash").style.display = flash ? "block" : "none";
+  $("#modeBrowse").classList.toggle("active", !flash);
+  $("#modeFlash").classList.toggle("active", flash);
+  $("#search").disabled = flash;
+  if (flash) renderFlash();
+}
+$("#modeBrowse").addEventListener("click", ()=>setMode(false));
+$("#modeFlash").addEventListener("click", ()=>setMode(true));
+
+renderBrowse(DATA);
+</script>
+</body>
+</html>
