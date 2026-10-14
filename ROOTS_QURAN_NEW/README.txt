@@ -1,12 +1,11 @@
-QURANIC ROOT FINDER — MODULAR 10-ROOT PROTOTYPE
+Quranic Root Finder — corpus-backed BETA
 
-Files:
-  index.html  — main page
-  data.js     — 10 roots and 40 curated examples
-  app.js      — search, cards and theme toggle
-  style.css   — responsive styling and light/dark themes
+Open index.html with data.js, app.js and style.css in the same folder, or upload the folder to GitHub Pages.
 
-Keep all four files together in one folder. Open index.html in your browser.
-On some iOS browsers, direct opening of a multi-file local website may be restricted. If the page is blank or styles missing, serve the folder through a local web server or host as a static website. This build does not fetch JSON and needs no external libraries.
+Source corpus contains 1642 distinct annotated root codes, including proper names and rare roots. Root counts may differ from conventional lexical-root counts.
 
-IMPORTANT: Splitting the files does not independently certify bilingual semantic accuracy. The existing source-level audit was for the same 10 roots and 40 examples. Re-audit after editing data.js.
+This build has mechanically validated exact source references and word positions for 4659 displayed examples. It has NOT independently authenticated meanings for all roots. Missing meanings are deliberate, and no 99% bilingual semantic accuracy is claimed.
+
+The initial 10 roots retain prototype bilingual glosses, pending independent lexical review.
+
+For publication, conduct word-level linguistic review and comply with the licenses in SOURCES_LICENSES.txt.

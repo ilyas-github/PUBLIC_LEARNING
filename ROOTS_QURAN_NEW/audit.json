@@ -1,0 +1,10 @@
+{
+  "sourceMorphology": "Quranic Arabic Corpus v0.4 (user-supplied)",
+  "sourceQuran": "Tanzil Uthmani v1.0.2 (user-supplied)",
+  "roots": 1642,
+  "examples": 4659,
+  "examplesChecked": 4659,
+  "failures": [],
+  "rootsWithFewerThan4DistinctForms": 795,
+  "curatedRoots": 10
+}
