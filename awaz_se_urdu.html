@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b35">
+<title>آواز سے اردو — Urdu Voice Writer</title>
+<style>
+:root{--bg:#f4f7f5;--panel:#fff;--ink:#172522;--muted:#40534e;--accent:#14594d;--accent2:#0b4037;--line:#aebeb8;--focus:#ffbf47;--font:30px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic","Jameel Noori Nastaleeq",Tahoma,Arial,sans-serif;font-size:20px;line-height:1.9}
+header{background:#123b35;color:#fff;padding:22px clamp(16px,4vw,48px)}
+header h1{font-size:clamp(30px,4vw,44px);line-height:1.5;margin:0}
+header p{margin:4px 0 0;font-size:20px}
+main{max-width:1200px;margin:auto;padding:22px clamp(12px,3vw,32px) 44px}
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 3px 12px #193c3510}
+h2{font-size:26px;line-height:1.5;margin:0 0 12px}
+p{margin:8px 0}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+button,.filelabel{font:700 20px/1.5 inherit;font-family:inherit;font-size:20px;font-weight:700;border:2px solid var(--accent);border-radius:12px;padding:12px 18px;min-height:58px;background:var(--accent);color:white;cursor:pointer}
+button.secondary,.filelabel.secondary{background:#fff;color:var(--accent)}
+button.warning{background:#7a2e17;border-color:#7a2e17}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.filelabel:focus-within{outline:4px solid var(--focus);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+label{font-weight:700;display:block;margin-bottom:5px}
+input[type=text],select{font:inherit;border:2px solid #728780;border-radius:10px;padding:10px 12px;background:#fff;color:#172522;max-width:100%}
+textarea{display:block;width:100%;min-height:48vh;resize:vertical;direction:rtl;text-align:right;font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic","Jameel Noori Nastaleeq",Tahoma,Arial,sans-serif;font-size:var(--font);line-height:2.05;padding:22px;border:3px solid #657c74;border-radius:14px;color:#111;background:#fff}
+textarea::placeholder{color:#53645f}
+.small{font-size:17px;color:var(--muted)}
+.status{padding:12px 16px;background:#e6f1ed;border-right:6px solid var(--accent);border-radius:8px;font-weight:700;min-height:54px}
+.status.error{background:#fff0e9;border-color:#9b3215;color:#71250d}
+.range-wrap{display:flex;align-items:center;gap:12px;flex:1;min-width:240px}
+input[type=range]{width:min(320px,100%);min-height:34px}
+.pill{display:inline-block;background:#e3ece8;border-radius:8px;padding:3px 10px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+footer{padding:0 16px 26px;text-align:center;color:#40534e;font-size:16px}
+@media(max-width:600px){.panel{padding:14px}button,.filelabel{width:100%}.controls{align-items:stretch}.range-wrap{width:100%}textarea{min-height:42vh}}
+@media print{
+ body{background:#fff;color:#000;font-size:14pt}
+ header,.no-print,footer{display:none!important}
+ main{max-width:none;padding:0}
+ .panel{border:0;box-shadow:none;padding:0;margin:0}
+ #articleTitle{display:none}
+ #editor{border:0;padding:0;min-height:0;font-size:18pt;line-height:2;overflow:visible;resize:none}
+ #printTitle{display:block!important;font-size:24pt;margin:0 0 18pt}
+}
+#printTitle{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>آواز سے اردو</h1>
+  <p>بولیے، اردو میں لکھیے، سن کر جانچیے، اور اپنا مضمون محفوظ کیجیے۔</p>
+</header>
+<main>
+  <section class="panel no-print" aria-labelledby="startHeading">
+    <h2 id="startHeading">شروع کریں</h2>
+    <p>مائیکروفون دبائیں اور اردو میں بولنا شروع کریں۔ آپ کا متن نیچے بڑے حروف میں نظر آئے گا۔ بہتر نتائج کے لیے جدید Chrome یا Edge استعمال کریں۔</p>
+    <div class="controls">
+      <button id="startBtn">🎙️ بولنا شروع کریں</button>
+      <button id="stopBtn" class="warning" disabled>■ بولنا روکیں</button>
+      <button id="readBtn" class="secondary">🔊 تحریر سنیں</button>
+      <button id="pauseReadBtn" class="secondary">⏸️ آواز روکیں</button>
+      <button id="recordBtn" class="secondary">🔴 اپنی اصل آواز ریکارڈ کریں</button>
+      <button id="stopRecordBtn" class="secondary" disabled>ریکارڈنگ روکیں</button>
+      <button id="clearBtn" class="secondary">تحریر صاف کریں</button>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite">تیار ہے۔ مائیکروفون شروع کرنے کے لیے بٹن دبائیں۔</p>
+    <audio id="voicePlayback" controls style="width:100%;margin-top:12px;display:none" aria-label="آپ کی اصل آواز کی ریکارڈنگ سنیں"></audio>
+    <p class="small">“تحریر سنیں” لکھے ہوئے متن کو کمپیوٹر کی آواز میں پڑھتا ہے۔ “اپنی اصل آواز ریکارڈ کریں” آپ کی آواز ریکارڈ کرتا ہے تاکہ آپ اسے دوبارہ سن سکیں۔ مائیکروفون کی اجازت مانگی جا سکتی ہے۔ بعض براؤزرز میں آواز سے متن بنانے کے لیے انٹرنیٹ درکار ہوتا ہے۔</p>
+  </section>
+
+  <section class="panel no-print" aria-labelledby="displayHeading">
+    <h2 id="displayHeading">آسان مطالعہ کی ترتیبات</h2>
+    <div class="grid">
+      <div>
+        <label for="fontSize">تحریر کا سائز</label>
+        <div class="range-wrap"><input id="fontSize" type="range" min="22" max="56" value="30" step="2" aria-describedby="fontValue"><span id="fontValue" class="pill">30 px</span></div>
+      </div>
+      <div>
+        <label for="contrast">رنگ اور تضاد</label>
+        <select id="contrast">
+          <option value="normal">معیاری</option>
+          <option value="high">زیادہ تضاد: سیاہ اور سفید</option>
+          <option value="cream">کریم پس منظر</option>
+        </select>
+      </div>
+      <div>
+        <label for="voice">پڑھنے کی آواز</label>
+        <select id="voice"><option value="">اردو آواز خود منتخب کریں</option></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="writingHeading">
+    <h2 id="writingHeading">آپ کی تحریر</h2>
+    <label for="articleTitle" class="no-print">مضمون کا عنوان (اختیاری)</label>
+    <input id="articleTitle" class="no-print" type="text" placeholder="مثلاً: تعلیم کی اہمیت" style="width:100%;margin-bottom:14px">
+    <h2 id="printTitle"></h2>
+    <label for="editor" class="no-print">یہاں آپ کا اردو متن ظاہر ہوگا۔ آپ اسے چھو کر یا کی بورڈ سے بھی درست کر سکتے ہیں۔</label>
+    <textarea id="editor" spellcheck="true" lang="ur" aria-label="اردو مضمون لکھنے کی جگہ" placeholder="اپنا مضمون بول کر لکھوانے کے لیے “بولنا شروع کریں” دبائیں۔"></textarea>
+    <p class="small no-print">مشورہ: رموزِ اوقاف، ناموں اور مشکل الفاظ کو سن کر اور پڑھ کر ضرور جانچ لیں۔ آواز سے متن بنانے والا نظام کبھی کبھی الفاظ غلط پہچان سکتا ہے۔</p>
+  </section>
+
+  <section class="panel no-print" aria-labelledby="saveHeading">
+    <h2 id="saveHeading">محفوظ کریں یا برآمد کریں</h2>
+    <div class="controls">
+      <button id="pdfBtn">📄 PDF بنائیں / پرنٹ کریں</button>
+      <button id="docBtn" class="secondary">Word فائل (.doc) محفوظ کریں</button>
+      <button id="txtBtn" class="secondary">سادہ متن (.txt) محفوظ کریں</button>
+      <button id="saveDraftBtn" class="secondary">اسی براؤزر میں مسودہ محفوظ کریں</button>
+      <button id="loadDraftBtn" class="secondary">محفوظ مسودہ واپس لائیں</button>
+    </div>
+    <p class="small">PDF کے لیے پرنٹ ونڈو میں “Save as PDF” منتخب کریں۔ Word فائل .doc فارمیٹ میں ہوگی اور Microsoft Word یا LibreOffice میں کھل سکتی ہے۔</p>
+  </section>
+
+  <section class="panel no-print">
+    <h2>ضروری بات</h2>
+    <p>یہ ویب ایپ آپ کے کمپیوٹر پر چلتی ہے۔ مائیکروفون کی شناخت براؤزر یا اس کے فراہم کردہ speech service کے ذریعے ہو سکتی ہے؛ حساس یا نجی گفتگو کے لیے براؤزر کی رازداری کی ترتیبات دیکھیں۔ مسودہ محفوظ کرنے کا بٹن اسی براؤزر میں مقامی طور پر محفوظ کرتا ہے، یہ بیک اپ کا متبادل نہیں۔</p>
+  </section>
+</main>
+<footer>آواز سے اردو — قابلِ رسائی اردو تحریر نویسی</footer>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const editor = $('editor'), status = $('status');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null, listening = false, finalTranscript = '';
+  let mediaRecorder = null, recordedChunks = [], liveStream = null;
+  function setStatus(message, error=false){ status.textContent=message; status.classList.toggle('error',error); }
+  function updatePrintTitle(){ $('printTitle').textContent = $('articleTitle').value.trim(); }
+  function setListening(on){ listening=on; $('startBtn').disabled=on; $('stopBtn').disabled=!on; }
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'ur-PK';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => { setListening(true); finalTranscript=''; setStatus('سن رہا ہوں… واضح اور قدرے آہستہ بولیں۔'); };
+    recognition.onresult = event => {
+      let interim = '';
+      for (let i=event.resultIndex; i<event.results.length; i++) {
+        const phrase = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += phrase + ' ';
+        else interim += phrase;
+      }
+      // Append each final chunk once; interim preview is shown in status to avoid duplicating text.
+      if (finalTranscript) {
+        const base = editor.dataset.baseText || '';
+        editor.value = base + finalTranscript;
+      }
+      if (interim) setStatus('عارضی پہچانا گیا متن: ' + interim);
+      else setStatus('متن درج ہو رہا ہے۔ بولنا مکمل ہو تو “بولنا روکیں” دبائیں۔');
+    };
+    recognition.onerror = event => {
+      const messages = {
+        'not-allowed':'مائیکروفون کی اجازت نہیں ملی۔ براؤزر کی سائٹ سیٹنگز میں مائیکروفون کی اجازت دیں۔',
+        'no-speech':'آواز سنائی نہیں دی۔ دوبارہ کوشش کریں۔',
+        'audio-capture':'مائیکروفون دستیاب نہیں۔ کنکشن اور اجازت چیک کریں۔',
+        'network':'آواز کی شناخت کے لیے نیٹ ورک مسئلہ پیش آیا۔',
+        'language-not-supported':'اس براؤزر میں اردو کی شناخت دستیاب نہیں۔'
+      };
+      setStatus(messages[event.error] || ('آواز کی شناخت میں مسئلہ: ' + event.error), true);
+    };
+    recognition.onend = () => {
+      if (listening) { setListening(false); setStatus('سننا ختم ہوا۔ متن پڑھ کر جانچ لیں۔'); }
+      editor.dataset.baseText = '';
+    };
+  } else {
+    $('startBtn').disabled = true;
+    setStatus('اس براؤزر میں آواز سے متن بنانے کی سہولت نہیں ملی۔ براہِ کرم تازہ Chrome یا Edge آزمائیں۔', true);
+  }
+  $('startBtn').addEventListener('click', () => {
+    if (!recognition) return;
+    editor.dataset.baseText = editor.value ? editor.value + (/[\\s۔!?]$/.test(editor.value) ? '' : ' ') : '';
+    finalTranscript = '';
+    try { recognition.start(); } catch(e) { setStatus('مائیکروفون پہلے سے چل رہا ہے۔', true); }
+  });
+  $('stopBtn').addEventListener('click', () => { if(recognition && listening) recognition.stop(); setListening(false); setStatus('سننا روک دیا گیا۔ اب تحریر پڑھ کر جانچ لیں۔'); });
+  $('recordBtn').addEventListener('click', async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      setStatus('اس براؤزر میں اصل آواز ریکارڈ کرنے کی سہولت دستیاب نہیں۔ تازہ Chrome یا Edge آزمائیں۔', true); return;
+    }
+    try {
+      liveStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(liveStream);
+      mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, {type: mediaRecorder.mimeType || 'audio/webm'});
+        const audio = $('voicePlayback');
+        audio.src = URL.createObjectURL(blob); audio.style.display = 'block'; audio.load();
+        if (liveStream) liveStream.getTracks().forEach(track => track.stop());
+        liveStream = null;
+        setStatus('اصل آواز ریکارڈ ہو گئی۔ نیچے پلے بٹن دباکر اپنی آواز سنیں۔');
+      };
+      mediaRecorder.start(); $('recordBtn').disabled=true; $('stopRecordBtn').disabled=false;
+      setStatus('آپ کی اصل آواز ریکارڈ ہو رہی ہے۔ مضمون بول لینے پر “ریکارڈنگ روکیں” دبائیں۔');
+    } catch(e) { setStatus('ریکارڈنگ شروع نہیں ہو سکی۔ مائیکروفون کی اجازت چیک کریں۔', true); }
+  });
+  $('stopRecordBtn').addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    $('recordBtn').disabled=false; $('stopRecordBtn').disabled=true;
+  });
+  $('clearBtn').addEventListener('click', () => {
+    if (editor.value && !confirm('کیا آپ واقعی پوری تحریر صاف کرنا چاہتے ہیں؟ پہلے اسے محفوظ کر لیں۔')) return;
+    editor.value=''; editor.dataset.baseText=''; finalTranscript=''; setStatus('تحریر صاف کر دی گئی۔');
+  });
+  $('readBtn').addEventListener('click', () => {
+    if (!('speechSynthesis' in window)) { setStatus('اس براؤزر میں متن پڑھنے کی سہولت دستیاب نہیں۔', true); return; }
+    const text = [ $('articleTitle').value.trim(), editor.value.trim() ].filter(Boolean).join('. ');
+    if (!text) { setStatus('پڑھنے کے لیے پہلے کچھ متن لکھیں یا بولیں۔', true); return; }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ur-PK'; utterance.rate = 0.82;
+    const selected = $('voice').value;
+    const voices = speechSynthesis.getVoices();
+    if (selected) { const v=voices.find(x=>x.name===selected); if(v) utterance.voice=v; }
+    utterance.onstart=()=>setStatus('آپ کی تحریر بلند آواز میں پڑھی جا رہی ہے۔');
+    utterance.onend=()=>setStatus('پڑھنا مکمل ہوا۔ غلط الفاظ درست کر سکتے ہیں۔');
+    utterance.onerror=()=>setStatus('متن پڑھنے کی آواز دستیاب نہیں ہو سکی۔',true);
+    speechSynthesis.speak(utterance);
+  });
+  $('pauseReadBtn').addEventListener('click', () => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); setStatus('پڑھنے کی آواز روک دی گئی۔'); } });
+  const loadVoices = () => {
+    if (!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    const select = $('voice'); const old = select.value;
+    select.innerHTML = '<option value="">اردو آواز خود منتخب کریں</option>';
+    voices.filter(v => /ur|urdu/i.test(v.lang+' '+v.name)).forEach(v => {
+      const opt=document.createElement('option'); opt.value=v.name; opt.textContent=v.name+' ('+v.lang+')'; select.appendChild(opt);
+    });
+    if(old) select.value=old;
+  };
+  if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+  $('fontSize').addEventListener('input', e => {
+    document.documentElement.style.setProperty('--font', e.target.value+'px');
+    $('fontValue').textContent=e.target.value+' px';
+  });
+  $('contrast').addEventListener('change', e => {
+    const root=document.documentElement;
+    if(e.target.value==='high'){root.style.setProperty('--bg','#fff');root.style.setProperty('--panel','#fff');root.style.setProperty('--ink','#000');root.style.setProperty('--muted','#111');root.style.setProperty('--line','#000');}
+    else if(e.target.value==='cream'){root.style.setProperty('--bg','#fff4d8');root.style.setProperty('--panel','#fffaf0');root.style.setProperty('--ink','#211a0e');root.style.setProperty('--muted','#4b3d24');root.style.setProperty('--line','#8b7955');}
+    else {root.style.setProperty('--bg','#f4f7f5');root.style.setProperty('--panel','#fff');root.style.setProperty('--ink','#172522');root.style.setProperty('--muted','#40534e');root.style.setProperty('--line','#aebeb8');}
+  });
+  function getDoc(){ return '<!doctype html><html lang="ur" dir="rtl"><head><meta charset="utf-8"><style>body{direction:rtl;text-align:right;font-family:Tahoma,Arial,sans-serif;font-size:18pt;line-height:2}h1{text-align:right}</style></head><body><h1>'+escapeHtml($('articleTitle').value.trim())+'</h1><div style="white-space:pre-wrap">'+escapeHtml(editor.value)+'</div></body></html>'; }
+  function escapeHtml(s){return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function filename(){let s=$('articleTitle').value.trim().replace(/[\\/:*?"<>|]/g,'').replace(/\\s+/g,'-');return (s||'urdu-article').slice(0,80);}
+  function download(content,type,ext){const blob=new Blob(['\\ufeff',content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename()+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+  $('docBtn').addEventListener('click',()=>{if(!editor.value.trim()){setStatus('پہلے مضمون لکھیں یا بولیں۔',true);return;}download(getDoc(),'application/msword;charset=utf-8','.doc');setStatus('Word فائل تیار کر دی گئی۔');});
+  $('txtBtn').addEventListener('click',()=>{if(!editor.value.trim()){setStatus('پہلے مضمون لکھیں یا بولیں۔',true);return;}download(($('articleTitle').value.trim()?$('articleTitle').value.trim()+'\\n\\n':'')+editor.value,'text/plain;charset=utf-8','.txt');setStatus('متن کی فائل محفوظ کرنے کے لیے تیار ہے۔');});
+  $('pdfBtn').addEventListener('click',()=>{updatePrintTitle();window.print();});
+  $('saveDraftBtn').addEventListener('click',()=>{try{localStorage.setItem('urduVoiceWriterDraft',JSON.stringify({title:$('articleTitle').value,text:editor.value}));setStatus('مسودہ اسی براؤزر میں محفوظ ہو گیا۔');}catch(e){setStatus('مسودہ محفوظ نہیں ہو سکا۔ براہِ کرم فائل برآمد کر لیں۔',true);}});
+  $('loadDraftBtn').addEventListener('click',()=>{try{const d=localStorage.getItem('urduVoiceWriterDraft');if(!d){setStatus('اس براؤزر میں کوئی محفوظ مسودہ نہیں ملا۔',true);return;}if((editor.value||$('articleTitle').value)&&!confirm('موجودہ متن کی جگہ محفوظ مسودہ لانا ہے؟ پہلے موجودہ متن محفوظ کر لیں۔'))return;const x=JSON.parse(d);$('articleTitle').value=x.title||'';editor.value=x.text||'';setStatus('محفوظ مسودہ واپس آ گیا۔');}catch(e){setStatus('محفوظ مسودہ نہیں کھل سکا۔',true);}});
+  $('articleTitle').addEventListener('input',updatePrintTitle);
+  window.addEventListener('beforeunload',()=>{if(listening&&recognition)recognition.stop();});
+})();
+</script>
+</body>
+</html>
