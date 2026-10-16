@@ -27,3 +27,23 @@ GitHub Pages — the same way as the Quran Roots app.
 - Text auto-saves in that browser; 💾 saves a .txt, 📄 saves a Word .doc.
 - Needs Chrome or Edge, a microphone, and internet (the browser's speech
   service does the Urdu recognition, language `ur-PK`).
+
+## Version 4 — what changed
+
+- **Read aloud fixed**: waits for the PC's voices to load, prefers an Urdu →
+  Arabic → Hindi voice, and reads in short sentence chunks (Chrome used to
+  cut long readings off). Press 🔊 again to stop. If the PC has **no** Urdu
+  voice it now says so on screen — Microsoft Edge ships one, or add Urdu in
+  Windows Settings → Time & Language → Speech.
+- **Text size**: A− / A+ buttons plus a slider, with the size shown as a
+  number (24–80). The change is applied with top priority so it cannot be
+  overridden.
+- **Languages**: اردو / English / **Mix** buttons above the mic button.
+  Mix alternates language after each sentence (Urdu sentence → English
+  sentence). Switching is instant, even mid-dictation.
+- **Word export is now a real .docx** with the "Noto Nastaliq Urdu" font
+  named in its styles, RTL paragraphs and wide line spacing. For the font
+  itself to appear in Word, install **Noto Nastaliq Urdu** once on the PC
+  (free: Google Fonts → "Noto Nastaliq Urdu" → Download → right-click the
+  .ttf files → Install). The new **Print / PDF** button always renders true
+  Nastaliq because the page loads the web font itself.

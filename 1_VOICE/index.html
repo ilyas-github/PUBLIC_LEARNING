@@ -34,11 +34,22 @@
   .micbtn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dark)}
   .micbtn.listening{background:var(--red);box-shadow:0 6px 0 #6d0013}
   .micbtn small{display:block;font-size:20px;font-weight:normal}
-  textarea{width:100%;min-height:340px;margin-top:18px;background:var(--paper);
+  .langrow{display:flex;gap:10px;margin-top:14px}
+  .langbtn{flex:1;border:3px solid #8a825f;cursor:pointer;border-radius:16px;padding:10px 4px 16px;
+    font-family:inherit;font-size:25px;line-height:1.8;font-weight:bold;background:#fff;color:#333}
+  .langbtn.active{background:var(--green);border-color:var(--green-dark);color:#fff}
+  .langbtn small{display:block;font-size:14px;font-weight:normal;font-family:Arial,sans-serif}
+  textarea{width:100%;min-height:340px;margin-top:14px;background:var(--paper);
     border:3px solid #8a825f;border-radius:16px;padding:20px 22px;color:var(--ink);
     font-family:inherit;font-size:38px;line-height:2.3;resize:vertical}
   textarea:focus{outline:4px solid var(--blue);outline-offset:2px}
-  #interim{color:#777}
+  .fontrow{display:flex;align-items:center;gap:12px;margin-top:14px;background:#fff;
+    border:2px solid #c9c2a4;border-radius:14px;padding:10px 16px}
+  .fontrow .flabel{font-size:22px;line-height:1.8;font-weight:bold;white-space:nowrap}
+  .fontrow input[type=range]{flex:1;height:44px;accent-color:var(--green);cursor:pointer}
+  .fontrow .fval{font-family:Arial,sans-serif;font-size:22px;font-weight:bold;min-width:52px;text-align:center}
+  .fbtn{border:none;cursor:pointer;border-radius:12px;padding:8px 18px 14px;font-family:inherit;
+    font-size:24px;line-height:1.6;font-weight:bold;color:#fff;background:#4a4a4a;white-space:nowrap}
   .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
   .btn{flex:1 1 200px;border:none;cursor:pointer;border-radius:16px;padding:14px 8px 20px;
     font-family:inherit;font-size:26px;line-height:1.9;font-weight:bold;color:#fff;background:var(--blue)}
@@ -52,12 +63,21 @@
     padding:6px 20px 14px;margin-top:22px;font-size:21px;line-height:2.1}
   .help b{color:var(--green-dark)}
   .en{font-family:Arial,sans-serif;direction:ltr;font-size:15px;color:#555;line-height:1.6}
+  #printArea{display:none}
+  @media print{
+    body{background:#fff}
+    body > .wrap{display:none}
+    #printArea{display:block;font-family:'Noto Nastaliq Urdu',Tahoma,sans-serif;
+      direction:rtl;text-align:right;color:#000;padding:24px}
+    #printArea h2{font-size:30px;line-height:2}
+    #printArea p{line-height:2.3;margin:0 0 14px}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 3</span>
+    <span class="ver">VERSION 4</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -66,9 +86,15 @@
   <div id="warn"></div>
   <div id="status" class="off">تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں</div>
 
+  <div class="langrow" role="group" aria-label="Language">
+    <button class="langbtn" id="langUr">اردو<small>Urdu only</small></button>
+    <button class="langbtn" id="langMix">دونوں Mix<small>Urdu + English, sentence by sentence</small></button>
+    <button class="langbtn" id="langEn">English<small>English only</small></button>
+  </div>
+
   <button id="micBtn" class="micbtn" aria-label="Start or stop dictation">
     🎤 بولنا شروع کریں
-    <small>Press, then speak in Urdu — دبائیں اور اردو میں بولیں</small>
+    <small>Press, then speak — دبائیں اور بولیں</small>
   </button>
 
   <div class="row" style="margin-top:16px">
@@ -81,6 +107,14 @@
     </div>
   </div>
 
+  <div class="fontrow">
+    <span class="flabel">خط کا سائز</span>
+    <button class="fbtn" id="smallerBtn">A−</button>
+    <input type="range" id="fontSlider" min="24" max="80" step="2" value="38" aria-label="Text size">
+    <button class="fbtn" id="biggerBtn">A+</button>
+    <span class="fval" id="fontVal">38</span>
+  </div>
+
   <textarea id="text" dir="rtl" lang="ur" placeholder="آپ کی بات یہاں لکھی جائے گی…"></textarea>
   <p class="en" id="diag" style="text-align:left"></p>
 
@@ -90,27 +124,28 @@
   </div>
 
   <div class="row">
-    <button class="btn gold" id="listenBtn">🔊 سنو<small>Listen — reads the text aloud</small></button>
+    <button class="btn gold" id="listenBtn">🔊 سنو<small>Listen — reads the text aloud (press again to stop)</small></button>
     <button class="btn" id="saveTxtBtn">💾 محفوظ کریں<small>Save as a text file</small></button>
-    <button class="btn" id="saveDocBtn">📄 ورڈ فائل<small>Save as a Word file</small></button>
+    <button class="btn" id="saveDocBtn">📄 ورڈ فائل<small>Save as a real Word file (.docx)</small></button>
   </div>
   <div class="row">
+    <button class="btn grey" id="printBtn">🖨️ پرنٹ / PDF<small>Print or save as PDF (keeps Nastaliq)</small></button>
     <button class="btn grey" id="paraBtn">¶ نیا پیرا<small>New paragraph</small></button>
-    <button class="btn grey" id="undoBtn">↩️ آخری جملہ مٹائیں<small>Remove last sentence</small></button>
     <button class="btn grey" id="copyBtn">📋 کاپی کریں<small>Copy all text</small></button>
   </div>
   <div class="row">
-    <button class="btn grey" id="biggerBtn">A+ بڑا خط<small>Bigger text</small></button>
-    <button class="btn grey" id="smallerBtn">A− چھوٹا خط<small>Smaller text</small></button>
+    <button class="btn grey" id="undoBtn">↩️ آخری جملہ مٹائیں<small>Remove last sentence</small></button>
     <button class="btn darkred" id="clearBtn">🗑️ نیا مضمون<small>Start a new article</small></button>
   </div>
 
   <div class="help">
-    <p style="margin:6px 0"><b>طریقہ:</b> ۱) بڑا سبز بٹن دبائیں۔ ۲) جب براؤزر پوچھے تو <b>Allow / اجازت دیں</b> پر کلک کریں (صرف پہلی بار)۔ ۳) آہستہ اور صاف اردو میں بولیں، جملہ مکمل کر کے تھوڑا رکیں۔ ۴) کام مکمل ہو تو سرخ بٹن دبا کر بند کریں اور <b>محفوظ کریں</b> دبائیں۔</p>
-    <p style="margin:6px 0"><b>خودکار بچت:</b> لکھا ہوا متن خود بخود محفوظ ہوتا رہتا ہے — بجلی جائے یا صفحہ بند ہو جائے تو واپس کھولنے پر متن موجود ہوگا۔</p>
-    <p class="en">Needs: Windows PC, Chrome or Microsoft Edge, a microphone, and internet (the browser's speech service does the Urdu recognition). Text is auto-saved in this browser. Shortcuts: Ctrl+M = start/stop.</p>
+    <p style="margin:6px 0"><b>طریقہ:</b> ۱) زبان چنیں — اردو، English، یا دونوں Mix (ایک جملہ اردو، اگلا انگریزی)۔ ۲) بڑا سبز بٹن دبائیں، پہلی بار مائیک کی <b>اجازت (Allow)</b> دیں۔ ۳) آہستہ اور صاف بولیں۔ ۴) مکمل ہونے پر سرخ بٹن دبائیں اور محفوظ کریں۔</p>
+    <p style="margin:6px 0"><b>ورڈ فائل:</b> اب فائل اصل .docx بنتی ہے جس میں خط کا نام نستعلیق لکھا ہوتا ہے۔ اگر ورڈ میں پھر بھی نستعلیق نہ آئے تو کمپیوٹر پر <b>Noto Nastaliq Urdu</b> خط ایک بار انسٹال کریں (مفت، Google Fonts سے) — یا <b>پرنٹ / PDF</b> استعمال کریں، اس میں نستعلیق ہمیشہ درست آتا ہے۔</p>
+    <p style="margin:6px 0"><b>خودکار بچت:</b> متن خود بخود محفوظ ہوتا رہتا ہے — صفحہ بند ہو جائے تو واپس کھولنے پر موجود ہوگا۔</p>
+    <p class="en">Needs: Windows PC, Chrome or Microsoft Edge, a microphone, and internet (the browser's speech service does the recognition). For read-aloud, an Urdu voice on the PC helps — Edge includes one. Shortcuts: Ctrl+M = start/stop.</p>
   </div>
 </div>
+<div id="printArea"></div>
 
 <script>
 (function(){
@@ -122,6 +157,8 @@
   var countEl = document.getElementById('count');
   var savedEl = document.getElementById('saved');
   var warn = document.getElementById('warn');
+  function showWarn(msg){ warn.style.display = "block"; warn.textContent = msg; }
+  function hideWarn(){ if (!openedAsFile) warn.style.display = "none"; }
 
   /* ---------- audio beeps (offline, WebAudio) ---------- */
   var actx = null;
@@ -136,21 +173,7 @@
     }catch(e){}
   }
 
-  /* ---------- spoken announcements ---------- */
-  function announce(msg){
-    try{
-      var u = new SpeechSynthesisUtterance(msg);
-      var vs = speechSynthesis.getVoices();
-      for (var i=0;i<vs.length;i++){ if (/^ur/i.test(vs[i].lang) || /^hi/i.test(vs[i].lang)){ u.voice = vs[i]; u.lang = vs[i].lang; break; } }
-      u.rate = 0.95; speechSynthesis.cancel(); speechSynthesis.speak(u);
-    }catch(e){}
-  }
-  if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = function(){};
-
   /* ---------- persistence ---------- */
-  var fontSize = parseInt(localStorage.getItem(KEY+"_font")||"38",10);
-  function applyFont(){ ta.style.fontSize = fontSize + "px"; }
-  applyFont();
   ta.value = localStorage.getItem(KEY) || "";
   function wordCount(){
     var t = ta.value.trim();
@@ -169,17 +192,63 @@
   ta.addEventListener('input', autosave);
   wordCount();
 
+  /* ---------- text size: buttons + slider, number shown ---------- */
+  var slider = document.getElementById('fontSlider');
+  var fontVal = document.getElementById('fontVal');
+  var fontSize = parseInt(localStorage.getItem(KEY+"_font")||"38",10);
+  if (!isFinite(fontSize)) fontSize = 38;
+  function setFont(px, silent){
+    fontSize = Math.max(24, Math.min(80, Math.round(px)));
+    ta.style.setProperty('font-size', fontSize + "px", 'important');
+    slider.value = fontSize;
+    fontVal.textContent = fontSize;
+    localStorage.setItem(KEY+"_font", String(fontSize));
+    if (!silent) status.textContent = "خط کا سائز: " + fontSize;
+  }
+  document.getElementById('biggerBtn').addEventListener('click', function(){ setFont(fontSize + 6); beep(990,100); });
+  document.getElementById('smallerBtn').addEventListener('click', function(){ setFont(fontSize - 6); beep(880,100); });
+  slider.addEventListener('input', function(){ setFont(parseInt(slider.value,10), true); });
+  setFont(fontSize, true);
+
   /* ---------- diagnostics + how the page was opened ---------- */
   var diag = document.getElementById('diag');
-  function showWarn(msg){ warn.style.display = "block"; warn.textContent = msg; }
   var openedAsFile = (location.protocol === "file:" || location.protocol === "content:" || location.protocol === "blob:");
   if (openedAsFile){
-    showWarn("⚠️ آپ نے ڈاؤن لوڈ شدہ فائل براہِ راست کھولی ہے۔ Chrome ڈاؤن لوڈ شدہ فائل میں آواز پہچاننے کی سہولت بند کر دیتا ہے — اس لیے مائیک کی اجازت ملنے کے باوجود لکھائی نہیں آتی۔ براہ کرم اس ایپ کا آن لائن (ویب) والا ربط استعمال کریں۔  —  This downloaded copy cannot recognise speech: Chrome blocks the speech service for files opened directly from the disk/phone. Please use the online (web link) version of this app.");
+    showWarn("⚠️ آپ نے ڈاؤن لوڈ شدہ فائل براہِ راست کھولی ہے۔ Chrome ڈاؤن لوڈ شدہ فائل میں آواز پہچاننے کی سہولت بند کر دیتا ہے۔ براہ کرم اس ایپ کا آن لائن (ویب) والا ربط استعمال کریں۔ — This downloaded copy cannot recognise speech: Chrome blocks the speech service for files opened directly. Please use the online (web link) version.");
   }
 
-  /* ---------- speech recognition (Urdu) ---------- */
+  /* ---------- language mode ---------- */
+  var langMode = localStorage.getItem(KEY+"_lang") || "ur";   // ur | en | mix
+  var mixLang = "ur-PK";                                      // current half of Mix
+  var langBtns = { ur: document.getElementById('langUr'), en: document.getElementById('langEn'), mix: document.getElementById('langMix') };
+  function langLabel(){
+    if (langMode === "en") return "English";
+    if (langMode === "ur") return "اردو";
+    return "Mix — ابھی: " + (mixLang === "ur-PK" ? "اردو" : "English");
+  }
+  function recLang(){ return langMode === "en" ? "en-US" : langMode === "ur" ? "ur-PK" : mixLang; }
+  function endMark(){ return recLang() === "en-US" ? "." : "۔"; }
+  function paintLang(){
+    for (var k in langBtns) langBtns[k].classList.toggle('active', k === langMode);
+    ta.dir = (langMode === "en") ? "ltr" : "rtl";
+    ta.style.textAlign = (langMode === "en") ? "left" : "right";
+  }
+  function setLang(mode){
+    langMode = mode; mixLang = "ur-PK";
+    localStorage.setItem(KEY+"_lang", mode);
+    paintLang();
+    status.textContent = "زبان: " + langLabel();
+    if (wantListening && rec){ restartRec(); }
+  }
+  langBtns.ur.addEventListener('click', function(){ setLang("ur"); });
+  langBtns.en.addEventListener('click', function(){ setLang("en"); });
+  langBtns.mix.addEventListener('click', function(){ setLang("mix"); });
+  paintLang();
+
+  /* ---------- speech recognition ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  var rec = null, listening = false, wantListening = false, fatalError = false, finalText = ta.value || "";
+  var rec = null, listening = false, wantListening = false, fatalError = false,
+      finalText = ta.value || "", pendingLangSwap = false, restarting = false;
   diag.textContent = "Check: SpeechRecognition in this browser = " + (SR ? "YES" : "NO")
     + " | Page opened as = " + location.protocol
     + " | Secure context = " + (window.isSecureContext ? "YES" : "NO")
@@ -189,8 +258,7 @@
     "not-allowed": "مائیک کی اجازت نہیں ملی۔ ایڈریس بار کے پاس لاک/مائیک نشان پر کلک کر کے Allow کریں، پھر دوبارہ بٹن دبائیں۔ (Error: not-allowed)",
     "audio-capture": "کوئی مائیک نہیں ملا۔ مائیک جوڑیں اور جانچیں کہ کسی اور ایپ میں چل رہا ہے۔ (Error: audio-capture)",
     "network": "انٹرنیٹ رابطے میں مسئلہ ہے — آواز پہچاننے کے لیے انٹرنیٹ ضروری ہے۔ رابطہ جانچ کر دوبارہ کوشش کریں۔ (Error: network)",
-    "language-not-supported": "یہ براؤزر اردو نہیں پہچان سکتا۔ Google Chrome استعمال کریں۔ (Error: language-not-supported)",
-    "no-speech": "آواز سنائی نہیں دی۔ مائیک کے قریب اور تھوڑا اونچی آواز میں بولیں۔ (Error: no-speech)",
+    "language-not-supported": "یہ براؤزر یہ زبان نہیں پہچان سکتا۔ Google Chrome استعمال کریں۔ (Error: language-not-supported)",
     "aborted": "شناخت رک گئی۔ دوبارہ بٹن دبائیں۔ (Error: aborted)"
   };
   function showError(code){
@@ -198,27 +266,36 @@
     status.className = "off";
     status.textContent = "رک گیا — اوپر سرخ خانے میں وجہ دیکھیں";
   }
+  function startRec(){
+    if (!rec) return;
+    rec.lang = recLang();
+    restarting = false;
+    try{ rec.start(); }catch(e){}
+  }
+  function restartRec(){
+    // stop now; onend restarts with whatever recLang() then says
+    restarting = true;
+    try{ rec.stop(); }catch(e){ restarting = false; startRec(); }
+  }
   if (!SR){
-    warn.style.display = "block";
-    warn.textContent = "یہ براؤزر آواز نہیں پہچان سکتا۔ براہ کرم Google Chrome یا Microsoft Edge میں یہ فائل کھولیں۔";
+    showWarn("یہ براؤزر آواز نہیں پہچان سکتا۔ براہ کرم Google Chrome یا Microsoft Edge میں یہ صفحہ کھولیں۔");
     micBtn.disabled = true; micBtn.style.opacity = .5;
   } else {
     rec = new SR();
-    rec.lang = "ur-PK";
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
-
     rec.onresult = function(ev){
-      var interim = "";
+      var interim = "", gotFinal = false;
       for (var i = ev.resultIndex; i < ev.results.length; i++){
         var r = ev.results[i];
         if (r.isFinal){
+          gotFinal = true;
           var s = r[0].transcript.trim();
           if (s){
             if (finalText && !/[\s\n]$/.test(finalText)) finalText += " ";
             finalText += s;
-            if (!/[۔.!?؟]$/.test(s)) finalText += "۔";
+            if (!/[۔.!?؟]$/.test(s)) finalText += endMark();
             finalText += " ";
           }
         } else {
@@ -228,16 +305,21 @@
       ta.value = finalText + interim;
       ta.scrollTop = ta.scrollHeight;
       autosave();
+      if (gotFinal && langMode === "mix" && wantListening){
+        // next sentence in the other language
+        mixLang = (mixLang === "ur-PK") ? "en-US" : "ur-PK";
+        pendingLangSwap = true;
+        restartRec();
+      }
     };
     rec.onend = function(){
-      // Chrome stops by itself after a pause — restart while the user still wants to dictate,
-      // but never restart after a fatal error (that was v2's silent loop).
-      if (wantListening && !fatalError){ try{ rec.start(); }catch(e){} }
+      if (wantListening && !fatalError){ startRec(); if (listening) setUI(true); }
       else { setUI(false); }
     };
     rec.onerror = function(ev){
       var code = ev.error || "unknown";
-      if (code === "no-speech"){ return; } // brief silence: onend restarts quietly
+      if (code === "no-speech" && !pendingLangSwap){ return; }
+      if (code === "no-speech" && pendingLangSwap){ pendingLangSwap = false; return; }
       fatalError = true; wantListening = false; setUI(false);
       showError(code); beep(220, 300);
     };
@@ -247,15 +329,18 @@
     micBtn.classList.toggle('listening', on);
     micBtn.childNodes[0].textContent = on ? "⏹️ بولنا بند کریں " : "🎤 بولنا شروع کریں ";
     status.className = on ? "on" : "off";
-    status.textContent = on ? "🔴 سن رہے ہیں… بولیں" : "تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں";
+    status.textContent = on ? ("🔴 سن رہے ہیں (" + langLabel() + ")… بولیں")
+                             : "تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں";
   }
   function toggle(){
     if (!rec) return;
+    stopSpeak();
     if (!wantListening){
+      hideWarn();
       finalText = ta.value || "";
-      fatalError = false; warn.style.display = openedAsFile ? "block" : "none";
+      fatalError = false; pendingLangSwap = false; mixLang = (langMode === "en") ? "en-US" : "ur-PK";
       wantListening = true; setUI(true); beep(880,150);
-      try{ rec.start(); }catch(e){}
+      startRec();
     } else {
       wantListening = false; setUI(false); beep(440,180);
       try{ rec.stop(); }catch(e){}
@@ -274,7 +359,7 @@
     var wrap = document.getElementById('micMeterWrap');
     var msg = document.getElementById('micMsg');
     var bar = document.getElementById('micBar');
-    if (micStream){ // stop a running test
+    if (micStream){
       micStream.getTracks().forEach(function(t){ t.stop(); }); micStream = null;
       if (micRAF) cancelAnimationFrame(micRAF);
       wrap.style.display = "none"; return;
@@ -301,9 +386,104 @@
     });
   });
 
-  /* ---------- buttons ---------- */
+  /* ---------- read aloud (robust: voices waited for, text chunked) ---------- */
+  var listenBtn = document.getElementById('listenBtn');
+  var speaking = false, chunks = [], chunkIdx = 0, resumeTimer = null, voiceWarned = false;
+  function getVoicesNow(){
+    try{ return speechSynthesis.getVoices() || []; }catch(e){ return []; }
+  }
+  function pickVoice(){
+    var vs = getVoicesNow(), i, j;
+    var tests = [/^ur/i, /urdu/i, /^ar/i, /arabic/i, /^hi/i, /hindi/i];
+    for (j = 0; j < tests.length; j++)
+      for (i = 0; i < vs.length; i++)
+        if (tests[j].test(vs[i].lang) || tests[j].test(vs[i].name)) return vs[i];
+    return null;
+  }
+  function splitChunks(t){
+    var parts = t.split(/(?<=[۔.!?؟\n])\s*/), out = [], cur = "";
+    parts.forEach(function(p){
+      if (!p) return;
+      if ((cur + " " + p).length > 170 && cur){ out.push(cur); cur = p; }
+      else cur = cur ? cur + " " + p : p;
+      while (cur.length > 190){ out.push(cur.slice(0,190)); cur = cur.slice(190); }
+    });
+    if (cur) out.push(cur);
+    return out;
+  }
+  function setListenUI(){
+    listenBtn.childNodes[0].textContent = speaking ? "⏹️ سننا بند کریں " : "🔊 سنو ";
+  }
+  function endSpeak(){
+    speaking = false; setListenUI();
+    if (resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
+  }
+  function stopSpeak(){
+    if (!('speechSynthesis' in window)) return;
+    try{ speechSynthesis.cancel(); }catch(e){}
+    endSpeak();
+  }
+  function speakNext(){
+    if (!speaking) return;
+    if (chunkIdx >= chunks.length){ endSpeak(); status.textContent = "✓ سنانا مکمل ہوا"; return; }
+    var u = new SpeechSynthesisUtterance(chunks[chunkIdx]);
+    var v = pickVoice();
+    if (v){ u.voice = v; u.lang = v.lang; }
+    else {
+      u.lang = "ur-PK";
+      if (!voiceWarned){
+        voiceWarned = true;
+        showWarn("⚠️ اس کمپیوٹر پر اردو/عربی آواز نہیں ملی، اس لیے سنائی نہیں دے رہا ہوگا۔ حل: Microsoft Edge استعمال کریں (اس میں اردو آواز شامل ہے)، یا Windows Settings → Time & Language → Speech میں اردو آواز شامل کریں۔ — No Urdu/Arabic voice was found on this PC. Try Microsoft Edge, or add an Urdu voice in Windows Settings → Time & Language → Speech.");
+      }
+    }
+    u.rate = 0.92;
+    u.onend = function(){ chunkIdx++; speakNext(); };
+    u.onerror = function(e){
+      if (e.error === "interrupted" || e.error === "canceled"){ return; }
+      chunkIdx++; speakNext();
+    };
+    speechSynthesis.speak(u);
+  }
+  function startSpeak(){
+    var t = ta.value.trim();
+    if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
+    if (wantListening) toggle();               // don't let the mic hear the reading
+    chunks = splitChunks(t); chunkIdx = 0;
+    speaking = true; setListenUI();
+    status.textContent = "🔊 سنایا جا رہا ہے…";
+    try{ speechSynthesis.cancel(); }catch(e){}
+    // Chrome sometimes swallows speech right after cancel(): wait a beat.
+    setTimeout(function(){
+      if (!speaking) return;
+      speakNext();
+      // Chrome long-speech pause bug workaround
+      if (resumeTimer) clearInterval(resumeTimer);
+      resumeTimer = setInterval(function(){
+        if (speaking && speechSynthesis.speaking && !speechSynthesis.paused) { /* keepalive below */ }
+        if (speaking){ try{ speechSynthesis.resume(); }catch(e){} }
+      }, 8000);
+    }, 250);
+  }
+  listenBtn.addEventListener('click', function(){
+    if (!('speechSynthesis' in window)){ showWarn("اس براؤزر میں سنانے کی سہولت نہیں ہے۔ Microsoft Edge آزمائیں۔"); return; }
+    if (speaking){ stopSpeak(); status.textContent = "رک گیا"; return; }
+    if (getVoicesNow().length === 0){
+      // voices often load a moment after the page opens — wait once, then start
+      status.textContent = "آوازیں لوڈ ہو رہی ہیں…";
+      var tries = 0;
+      var iv = setInterval(function(){
+        tries++;
+        if (getVoicesNow().length > 0 || tries > 12){ clearInterval(iv); startSpeak(); }
+      }, 150);
+      if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = function(){ /* list refreshed */ };
+    } else {
+      startSpeak();
+    }
+  });
+
+  /* ---------- save / print ---------- */
   function download(name, content, type){
-    var blob = new Blob([content], {type: type});
+    var blob = content instanceof Blob ? content : new Blob([content], {type: type});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = name;
     document.body.appendChild(a); a.click();
@@ -317,15 +497,99 @@
     download("urdu-article-"+stamp()+".txt", "﻿" + ta.value, "text/plain;charset=utf-8");
     beep(990,150); savedEl.textContent = "فائل محفوظ ہو گئی ✓ (Downloads فولڈر میں)";
   });
+
+  /* real .docx (OOXML in a stored-zip, built in the browser) */
+  var CRC_TABLE = null;
+  function crc32(bytes){
+    if (!CRC_TABLE){
+      CRC_TABLE = [];
+      for (var n = 0; n < 256; n++){
+        var c = n;
+        for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        CRC_TABLE[n] = c >>> 0;
+      }
+    }
+    var crc = 0xFFFFFFFF;
+    for (var i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zipStore(files){
+    var enc = new TextEncoder(), chunksB = [], central = [], offset = 0;
+    function u16(v){ return [v & 255, (v >>> 8) & 255]; }
+    function u32(v){ return [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255]; }
+    files.forEach(function(f){
+      var name = enc.encode(f.name), data = enc.encode(f.data), crc = crc32(data);
+      var local = [].concat(u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(0), u16(0),
+                             u32(crc), u32(data.length), u32(data.length), u16(name.length), u16(0));
+      chunksB.push(new Uint8Array(local), name, data);
+      var cen = [].concat(u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0),
+                          u32(crc), u32(data.length), u32(data.length), u16(name.length),
+                          u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset));
+      central.push(new Uint8Array(cen), name);
+      offset += local.length + name.length + data.length;
+    });
+    var cenSize = central.reduce(function(s, c){ return s + c.length; }, 0);
+    var end = new Uint8Array([].concat(u32(0x06054b50), u16(0), u16(0), u16(files.length),
+                                       u16(files.length), u32(cenSize), u32(offset), u16(0)));
+    return new Blob(chunksB.concat(central, [end]),
+                    {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+  }
+  function xmlEsc(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function buildDocx(text){
+    var FONT = "Noto Nastaliq Urdu";
+    var rPr = '<w:rPr><w:rFonts w:ascii="' + FONT + '" w:hAnsi="' + FONT + '" w:cs="' + FONT + '"/>'
+            + '<w:sz w:val="48"/><w:szCs w:val="48"/><w:lang w:bidi="ur-PK"/></w:rPr>';
+    var paras = text.split(/\n+/).filter(function(p){ return p.trim() !== ""; });
+    if (!paras.length) paras = [""];
+    var body = paras.map(function(p){
+      return '<w:p><w:pPr><w:bidi/><w:jc w:val="right"/>'
+           + '<w:spacing w:line="640" w:lineRule="auto"/>' + rPr + '</w:pPr>'
+           + '<w:r>' + rPr + '<w:t xml:space="preserve">' + xmlEsc(p) + '</w:t></w:r></w:p>';
+    }).join("");
+    var documentXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+      + body
+      + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr>'
+      + '</w:body></w:document>';
+    var stylesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+      + '<w:docDefaults><w:rPrDefault><w:rPr>' + rPr + '</w:rPr></w:rPrDefault>'
+      + '<w:pPrDefault><w:pPr><w:bidi/></w:pPr></w:pPrDefault></w:docDefaults>'
+      + '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/>'
+      + '<w:pPr><w:bidi/><w:jc w:val="right"/></w:pPr>' + rPr + '</w:style></w:styles>';
+    var contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      + '<Default Extension="xml" ContentType="application/xml"/>'
+      + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+      + '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>';
+    var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+    var docRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    return zipStore([
+      {name: "[Content_Types].xml", data: contentTypes},
+      {name: "_rels/.rels", data: rels},
+      {name: "word/document.xml", data: documentXml},
+      {name: "word/styles.xml", data: stylesXml},
+      {name: "word/_rels/document.xml.rels", data: docRels}
+    ]);
+  }
   document.getElementById('saveDocBtn').addEventListener('click', function(){
-    var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"></head><body dir="rtl" lang="ur"><p style="font-family:\'Noto Nastaliq Urdu\',Tahoma;font-size:20pt;line-height:2.2">'
-      + ta.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>') + '</p></body></html>';
-    download("urdu-article-"+stamp()+".doc", "﻿" + html, "application/msword");
-    beep(990,150); savedEl.textContent = "ورڈ فائل محفوظ ہو گئی ✓ (Downloads فولڈر میں)";
+    download("urdu-article-"+stamp()+".docx", buildDocx(ta.value));
+    beep(990,150); savedEl.textContent = "ورڈ فائل (.docx) محفوظ ہو گئی ✓ (Downloads فولڈر میں)";
   });
-  document.getElementById('listenBtn').addEventListener('click', function(){
-    if (!ta.value.trim()){ announce("Koi matn nahi hai."); return; }
-    announce(ta.value.slice(0, 900));
+  document.getElementById('printBtn').addEventListener('click', function(){
+    var area = document.getElementById('printArea');
+    var paras = ta.value.split(/\n+/).filter(function(p){ return p.trim() !== ""; });
+    area.innerHTML = "<h2>اردو مضمون</h2>" + paras.map(function(p){
+      return '<p style="font-size:' + Math.max(18, Math.round(fontSize*0.62)) + 'pt">' + xmlEsc(p) + "</p>";
+    }).join("");
+    window.print();
   });
   document.getElementById('copyBtn').addEventListener('click', function(){
     ta.select();
@@ -342,15 +606,9 @@
     var parts = t.split(/(?<=[۔.!?؟])\s*/);
     if (parts.length){ parts.pop(); }
     finalText = parts.join('').trim();
-    if (finalText && !/[۔.!?؟]$/.test(finalText)) finalText += "۔";
+    if (finalText && !/[۔.!?؟]$/.test(finalText)) finalText += endMark();
     ta.value = finalText ? finalText + " " : "";
     autosave();
-  });
-  document.getElementById('biggerBtn').addEventListener('click', function(){
-    fontSize = Math.min(64, fontSize + 6); applyFont(); localStorage.setItem(KEY+"_font", fontSize);
-  });
-  document.getElementById('smallerBtn').addEventListener('click', function(){
-    fontSize = Math.max(24, fontSize - 6); applyFont(); localStorage.setItem(KEY+"_font", fontSize);
   });
   var clearArmed = false, clearTimer = null;
   document.getElementById('clearBtn').addEventListener('click', function(){
@@ -363,6 +621,7 @@
     }
     clearTimeout(clearTimer); clearArmed = false;
     btn.childNodes[0].textContent = "🗑️ نیا مضمون ";
+    stopSpeak();
     finalText = ""; ta.value = ""; localStorage.setItem(KEY, ""); autosave(); ta.focus();
   });
 
