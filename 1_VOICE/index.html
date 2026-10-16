@@ -77,7 +77,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 6</span>
+    <span class="ver">VERSION 6.3</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -359,16 +359,21 @@
   /* ---------- read aloud (robust: voices waited for, text chunked) ---------- */
   var listenBtn = document.getElementById('listenBtn');
   var speaking = false, chunks = [], chunkIdx = 0, resumeTimer = null, voiceWarned = false;
-  var speakErrors = 0, speakOK = 0, lastSpeakErr = "", useDefaultVoice = false, fallbackTried = false;
+  var speakErrors = 0, speakOK = 0, lastSpeakErr = "", fallbackTried = false;
   function getVoicesNow(){
     try{ return speechSynthesis.getVoices() || []; }catch(e){ return []; }
   }
   function pickVoice(){
+    // v6.2: only a voice actually INSTALLED on this PC (localService) counts.
+    // Remote voices the browser merely lists — Edge "Online (Natural)",
+    // Chrome's Google voices — refused with synthesis-failed or stayed
+    // silent on Urdu script, and they kept the online-voice path from ever
+    // running. Hindi voices are dropped too: they read Devanagari script.
     var vs = getVoicesNow(), i, j;
-    var tests = [/^ur/i, /urdu/i, /^ar/i, /arabic/i, /^hi/i, /hindi/i];
+    var tests = [/^ur/i, /urdu/i, /^ar/i, /arabic/i];
     for (j = 0; j < tests.length; j++)
       for (i = 0; i < vs.length; i++)
-        if (tests[j].test(vs[i].lang) || tests[j].test(vs[i].name)) return vs[i];
+        if (vs[i].localService && (tests[j].test(vs[i].lang) || tests[j].test(vs[i].name))) return vs[i];
     return null;
   }
   function splitChunks(t){
@@ -408,9 +413,9 @@
       return;
     }
     var u = new SpeechSynthesisUtterance(chunks[chunkIdx]);
-    var v = useDefaultVoice ? null : pickVoice();
+    var v = pickVoice();
     if (v){ u.voice = v; u.lang = v.lang; }
-    else if (!useDefaultVoice) {
+    else {
       u.lang = "ur-PK";
       if (!voiceWarned){
         voiceWarned = true;
@@ -422,12 +427,14 @@
     u.onerror = function(e){
       if (e.error === "interrupted" || e.error === "canceled"){ return; }
       lastSpeakErr = e.error || "unknown";
-      // If the chosen Urdu voice itself fails on the first chunk, retry the
-      // whole reading once with the PC's default voice.
+      // v6.2: if the PC voice fails on the first chunk (e.g.
+      // synthesis-failed), switch the whole reading to the online voice.
       if (!fallbackTried && chunkIdx === 0 && speakOK === 0){
-        fallbackTried = true; useDefaultVoice = true;
-        status.textContent = "پہلی آواز نہیں چلی — دوسری آواز سے کوشش…";
-        speakNext(); return;
+        fallbackTried = true;
+        endSpeak();
+        status.textContent = "کمپیوٹر کی آواز نہیں چلی — آن لائن اردو آواز سے سنایا جا رہا ہے…";
+        playGList(chunks, "✓ سنانا مکمل ہوا", onlineFail);
+        return;
       }
       speakErrors++; chunkIdx++; speakNext();
     };
@@ -437,13 +444,30 @@
      Urdu/Arabic voice installed. The PC voice is used whenever one exists;
      this chain runs only when pickVoice() finds nothing suitable. ----- */
   var gAudio = null, gGen = 0;
-  var VOICE_STEPS = "⚠️ اس کمپیوٹر پر اردو آواز انسٹال نہیں ہے اور آن لائن آواز بھی نہیں چلی۔ مستقل حل (ایک بار، مفت): Windows Settings کھولیں ← Time & language ← Speech ← Add voices ← Urdu منتخب کر کے Microsoft Salma انسٹال کریں ← پھر Chrome دوبارہ کھولیں۔ اس کے بعد 🔊 سنو اور 🗣️ آواز جانچیں دونوں میں اردو سنائی دے گا۔ (One-time free fix: Windows Settings \u2192 Time & language \u2192 Speech \u2192 Add voices \u2192 Urdu \u2192 install Microsoft Salma \u2192 restart Chrome.)";
-  function gttsUrl(text){
-    return "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ur&q=" + encodeURIComponent(text);
+  var VOICE_STEPS = "⚠️ آن لائن آواز بھی نہیں چلی اور اس کمپیوٹر پر اردو آواز انسٹال نہیں ہے۔ ممکنہ حل (ایک بار): Windows Settings ← Time & language ← Language & region ← Add a language ← Urdu منتخب کریں ← اگر Speech / Text-to-speech کی سہولت آئے تو وہ بھی انسٹال کریں (Microsoft Salma آواز اسی سے آتی ہے) ← پھر Chrome دوبارہ کھولیں۔ اگر آپ کے Windows میں اردو کے لیے یہ سہولت موجود ہی نہیں تو آن لائن آواز ہی سنانے کا ذریعہ رہے گی — اس کے لیے انٹرنیٹ درکار ہے، جو بول کر لکھنے کے لیے ویسے بھی ضروری ہے۔ (Read-aloud on this PC uses the online Urdu voice. A PC voice — Microsoft Salma — can be added only if your Windows edition offers an Urdu Speech/Text-to-speech feature: Settings, Time & language, Language & region, Add a language, Urdu.)";
+  var GTTS_HOSTS = ["translate.google.com", "translate.googleapis.com"];
+  var lastGErr = "";
+  function gttsUrl(text, host){
+    return "https://" + host + "/translate_tts?ie=UTF-8&client=tw-ob&tl=ur&q=" + encodeURIComponent(text);
+  }
+  function makeGAudio(text, host){
+    // v6.3: Google's voice endpoint answers 404 when the request carries
+    // the page's Referer (e.g. the GitHub Pages address) — proven by direct
+    // test (no Referer -> 200 MP3; any Referer -> 404). So the element is
+    // built in steps with referrerpolicy="no-referrer" set BEFORE src.
+    var a = document.createElement("audio");
+    try{ a.setAttribute("referrerpolicy", "no-referrer"); a.referrerPolicy = "no-referrer"; }catch(e){}
+    a.preload = "auto";
+    a.src = gttsUrl(text, host);
+    return a;
   }
   function stopG(){
     gGen++;
     if (gAudio){ try{ gAudio.pause(); }catch(e){} gAudio = null; }
+  }
+  function onlineFail(){
+    showWarn(VOICE_STEPS + (lastGErr ? " (audio error code: " + lastGErr + ")" : ""));
+    status.textContent = "آن لائن آواز نہیں چلی — اوپر سرخ خانے میں تفصیل دیکھیں";
   }
   function playGList(list, statusDone, onFail){
     var myGen = ++gGen, i = 0;
@@ -451,17 +475,24 @@
     function next(){
       if (!speaking || myGen !== gGen) return;
       if (i >= list.length){ endSpeak(); if (statusDone) status.textContent = statusDone; return; }
-      var a = new Audio(gttsUrl(list[i]));
-      gAudio = a; a._done = false;
-      a.onended = function(){ if (a._done) return; a._done = true; i++; next(); };
-      a.onerror = function(){
-        if (a._done) return; a._done = true;
-        endSpeak(); if (onFail) onFail();
-      };
-      try{
-        var p = a.play();
-        if (p && p.catch) p.catch(function(){ a.onerror(); });
-      }catch(e){ a.onerror(); }
+      var hostIdx = 0;
+      function attempt(){
+        if (!speaking || myGen !== gGen) return;
+        var a = makeGAudio(list[i], GTTS_HOSTS[hostIdx]);
+        gAudio = a; a._done = false;
+        a.onended = function(){ if (a._done) return; a._done = true; i++; next(); };
+        a.onerror = function(){
+          if (a._done) return; a._done = true;
+          lastGErr = (a.error && a.error.code) || "src";
+          if (hostIdx === 0){ hostIdx = 1; attempt(); return; }
+          endSpeak(); if (onFail) onFail();
+        };
+        try{
+          var p = a.play();
+          if (p && p.catch) p.catch(function(){ a.onerror(); });
+        }catch(e){ a.onerror(); }
+      }
+      attempt();
     }
     next();
   }
@@ -470,14 +501,11 @@
     if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
     if (wantListening) toggle();               // don't let the mic hear the reading
     chunks = splitChunks(t); chunkIdx = 0;
-    speakErrors = 0; speakOK = 0; lastSpeakErr = ""; useDefaultVoice = false; fallbackTried = false;
+    speakErrors = 0; speakOK = 0; lastSpeakErr = ""; fallbackTried = false;
     var pv = pickVoice();
     if (!pv){
       status.textContent = "🔊 آن لائن اردو آواز (Google) سے سنایا جا رہا ہے…";
-      playGList(chunks, "✓ سنانا مکمل ہوا", function(){
-        showWarn(VOICE_STEPS);
-        status.textContent = "آن لائن آواز نہیں چلی — اوپر سرخ خانے میں مستقل حل دیکھیں";
-      });
+      playGList(chunks, "✓ سنانا مکمل ہوا", onlineFail);
       return;
     }
     status.textContent = "🔊 آواز: " + pv.name + " (" + pv.lang + ")";
@@ -511,31 +539,41 @@
       startSpeak();
     }
   });
+  function onlineVoiceTest(allCount){
+    status.textContent = "🗣️ جانچ… کمپیوٹر پر اردو آواز نہیں ملی — آن لائن اردو آواز (Google) آزمائی جا رہی ہے — کل آوازیں: " + allCount;
+    var hostIdx = 0;
+    function attempt(){
+      var ga = makeGAudio("السلام علیکم۔ یہ آواز کی جانچ ہے۔", GTTS_HOSTS[hostIdx]);
+      ga._done = false;
+      ga.onended = function(){ if (ga._done) return; ga._done = true; status.textContent = "✓ یہ آن لائن اردو آواز (Google) تھی — سنائی دی تو 🔊 سنو بھی اسی آواز سے چلے گا"; };
+      ga.onerror = function(){
+        if (ga._done) return; ga._done = true;
+        lastGErr = (ga.error && ga.error.code) || "src";
+        if (hostIdx === 0){ hostIdx = 1; attempt(); return; }
+        showWarn(VOICE_STEPS + " (audio error code: " + lastGErr + ")");
+        status.textContent = "آن لائن آواز بھی نہیں چلی — اوپر سرخ خانے میں تفصیل دیکھیں";
+      };
+      try{ var gp = ga.play(); if (gp && gp.catch) gp.catch(function(){ ga.onerror(); }); }catch(e){ ga.onerror(); }
+    }
+    attempt();
+  }
   document.getElementById('voiceTestBtn').addEventListener('click', function(){
     if (!('speechSynthesis' in window)){ showWarn("اس براؤزر میں سنانے کی سہولت نہیں ہے۔"); return; }
     stopSpeak(); hideWarn();
     var v = pickVoice();
     var all = getVoicesNow();
-    if (!v){
-      // no PC voice: test the online Urdu voice (Google) instead
-      status.textContent = "🗣️ جانچ… کمپیوٹر پر اردو آواز نہیں ملی — آن لائن اردو آواز (Google) آزمائی جا رہی ہے — کل آوازیں: " + all.length;
-      var ga = new Audio(gttsUrl("السلام علیکم۔ یہ آواز کی جانچ ہے۔"));
-      ga._done = false;
-      ga.onended = function(){ if (ga._done) return; ga._done = true; status.textContent = "✓ یہ آن لائن اردو آواز (Google) تھی — سنائی دی تو 🔊 سنو بھی اسی آواز سے چلے گا"; };
-      ga.onerror = function(){ if (ga._done) return; ga._done = true; showWarn(VOICE_STEPS); status.textContent = "آن لائن آواز بھی نہیں چلی — اوپر سرخ خانے میں مستقل حل دیکھیں"; };
-      try{ var gp = ga.play(); if (gp && gp.catch) gp.catch(function(){ ga.onerror(); }); }catch(e){ ga.onerror(); }
-      return;
-    }
+    if (!v){ onlineVoiceTest(all.length); return; }
     var u = new SpeechSynthesisUtterance("السلام علیکم۔ یہ آواز کی جانچ ہے۔");
-    if (v){ u.voice = v; u.lang = v.lang; } else { u.lang = "ur-PK"; }
+    u.voice = v; u.lang = v.lang;
     u.rate = 0.92;
-    status.textContent = v
-      ? ("🗣️ جانچ… آواز: " + v.name + " (" + v.lang + ") — کل آوازیں: " + all.length)
-      : ("🗣️ جانچ… اردو/عربی آواز نہیں ملی — کل آوازیں: " + all.length + " (نام مجھے بتائیں)");
+    status.textContent = "🗣️ جانچ… آواز: " + v.name + " (" + v.lang + ") — کل آوازیں: " + all.length;
     u.onerror = function(e){
-      showWarn("⚠️ آواز کی جانچ ناکام — خرابی: " + (e.error || "unknown") + "۔ یہ نام/خرابی مجھے بتا دیں۔ (Voice test error: " + (e.error || "unknown") + ")");
+      if (e.error === "interrupted" || e.error === "canceled"){ return; }
+      // the installed voice refused (e.g. synthesis-failed): try online at once
+      status.textContent = "کمپیوٹر کی آواز نے انکار کیا (" + (e.error || "unknown") + ") — آن لائن آواز آزمائی جا رہی ہے…";
+      onlineVoiceTest(all.length);
     };
-    u.onend = function(){ status.textContent = "✓ آواز کی جانچ مکمل — سنا؟ آواز تھی: " + (v ? (v.name + " (" + v.lang + ")") : "کوئی اردو آواز نہیں"); };
+    u.onend = function(){ status.textContent = "✓ آواز کی جانچ مکمل — سنا؟ آواز تھی: " + v.name + " (" + v.lang + ")"; };
     try{ speechSynthesis.cancel(); }catch(e){}
     setTimeout(function(){ speechSynthesis.speak(u); }, 250);
   });

@@ -71,6 +71,41 @@ GitHub Pages — the same way as the Quran Roots app.
   Urdu/Arabic voice installed, "Listen" and "Voice Test" now automatically
   use Google's online Urdu voice (internet needed, which dictation needs
   anyway). If a PC voice exists, it is used as before.
-- Permanent one-time fix for offline read-aloud on the PC: Windows
-  Settings → Time & language → Speech → Add voices → Urdu → install
-  **Microsoft Salma** → restart Chrome.
+- Permanent one-time fix for offline read-aloud on the PC (v6.1 corrected
+  route — the Speech "Add voices" list only shows languages already on
+  the PC, so Urdu is not there until the language is added): Windows
+  Settings → Time & language → Language & region → Add a language →
+  Urdu → tick **Text-to-speech** → Install → restart Chrome. The Urdu
+  voice (Microsoft Salma) is part of that download.
+
+## Version 6.2 (2026-10-16)
+
+- Read-aloud voice choice fixed after real-PC testing: browsers list
+  *remote* voices (Edge "Online (Natural)" Urdu, Chrome's Google voices)
+  that refuse with `synthesis-failed` or stay silent on Urdu script —
+  and their presence kept the online-voice path from ever running. The
+  app now uses a PC voice only if it is genuinely installed on the PC
+  (localService), otherwise it goes straight to the online Urdu voice.
+  If an installed voice fails mid-reading, the app switches to the
+  online voice automatically. Hindi voices are no longer used for Urdu
+  text (they read Devanagari, not Urdu script).
+- Note from testing on Windows 11 Home: Urdu (Pakistan) language options
+  offer only "Language pack" and "Basic typing" — no Speech feature at
+  all, so no PC Urdu voice can be installed through Settings on that PC.
+  The online voice is therefore the read-aloud path there.
+
+## Version 6.3 (2026-10-16)
+
+- Root cause of the silent online voice found by direct test: Google's
+  voice endpoint returns a proper MP3 with **no Referer**, but **404**
+  for any request carrying a Referer — and a browser automatically sends
+  the page's own address (e.g. the GitHub Pages URL) as Referer for
+  audio. v6.3 builds every voice audio element with
+  `referrerpolicy="no-referrer"` set before the source, retries each
+  chunk once on Google's alternate host, and prints the media error
+  code in the warning box if both fail.
+- The Windows PC-voice question is now closed by three independent
+  checks: Speech "Add voices" (no Urdu), Urdu Language options (only
+  Language pack + Basic typing), and DISM — the capability
+  `Language.TextToSpeech~~~ur-PK~0.0.1.0` returns Error 87 "name was not
+  recognized", i.e. no such package exists for Urdu in Windows at all.
