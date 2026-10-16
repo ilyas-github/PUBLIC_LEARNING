@@ -77,7 +77,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 5</span>
+    <span class="ver">VERSION 6</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -85,12 +85,6 @@
 
   <div id="warn"></div>
   <div id="status" class="off">تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں</div>
-
-  <div class="langrow" role="group" aria-label="Language">
-    <button class="langbtn" id="langUr">اردو<small>Urdu only</small></button>
-    <button class="langbtn" id="langMix">دونوں Mix<small>Urdu base — English words written as spoken</small></button>
-    <button class="langbtn" id="langEn">English<small>English only</small></button>
-  </div>
 
   <button id="micBtn" class="micbtn" aria-label="Start or stop dictation">
     🎤 بولنا شروع کریں
@@ -140,10 +134,10 @@
   </div>
 
   <div class="help">
-    <p style="margin:6px 0"><b>طریقہ:</b> ۱) زبان چنیں — اردو، English، یا دونوں Mix (اردو سیشن؛ انگریزی الفاظ ویسے ہی اردو میں لکھے جائیں گے جیسے بولے جائیں — پورا انگریزی پیرا ہو تو English بٹن دبائیں)۔ ۲) بڑا سبز بٹن دبائیں، پہلی بار مائیک کی <b>اجازت (Allow)</b> دیں۔ ۳) آہستہ اور صاف بولیں۔ ۴) مکمل ہونے پر سرخ بٹن دبائیں اور محفوظ کریں۔ نوٹ: اس وقت Edge میں شناخت کا معروف مسئلہ ہے — <b>Chrome</b> استعمال کریں۔</p>
+    <p style="margin:6px 0"><b>طریقہ:</b> ۱) بڑا سبز بٹن دبائیں، پہلی بار مائیک کی <b>اجازت (Allow)</b> دیں۔ ۲) آہستہ اور صاف بولیں۔ ۳) مکمل ہونے پر سرخ بٹن دبائیں اور محفوظ کریں۔ <b>سنانا:</b> 🔊 سنو دبائیں — اگر کمپیوٹر پر اردو آواز انسٹال ہو تو وہی چلے گی، ورنہ آن لائن اردو آواز (Google) خود بخود چل جائے گی۔ نوٹ: اس وقت Edge میں شناخت کا معروف مسئلہ ہے — <b>Chrome</b> استعمال کریں۔</p>
     <p style="margin:6px 0"><b>ورڈ فائل:</b> اب فائل اصل .docx بنتی ہے جس میں خط کا نام نستعلیق لکھا ہوتا ہے۔ اگر ورڈ میں پھر بھی نستعلیق نہ آئے تو کمپیوٹر پر <b>Noto Nastaliq Urdu</b> خط ایک بار انسٹال کریں (مفت، Google Fonts سے) — یا <b>پرنٹ / PDF</b> استعمال کریں، اس میں نستعلیق ہمیشہ درست آتا ہے۔</p>
     <p style="margin:6px 0"><b>خودکار بچت:</b> متن خود بخود محفوظ ہوتا رہتا ہے — صفحہ بند ہو جائے تو واپس کھولنے پر موجود ہوگا۔</p>
-    <p class="en">Needs: Windows PC, Google Chrome (Edge's speech recognition currently returns a "network" error on many PCs — a known Edge problem, not your internet), a microphone, and internet. Read-aloud uses a voice installed on the PC; the Voice Test button shows which voice was found. Shortcuts: Ctrl+M = start/stop.</p>
+    <p class="en">Needs: Windows PC, Google Chrome (Edge's speech recognition currently returns a "network" error on many PCs — a known Edge problem, not your internet), a microphone, and internet. Read-aloud uses an Urdu voice installed on the PC if there is one; otherwise it automatically uses the online Google Urdu voice. The Voice Test button shows which one will speak. Shortcuts: Ctrl+M = start/stop.</p>
   </div>
 </div>
 <div id="printArea"></div>
@@ -218,33 +212,10 @@
     showWarn("⚠️ آپ نے ڈاؤن لوڈ شدہ فائل براہِ راست کھولی ہے۔ Chrome ڈاؤن لوڈ شدہ فائل میں آواز پہچاننے کی سہولت بند کر دیتا ہے۔ براہ کرم اس ایپ کا آن لائن (ویب) والا ربط استعمال کریں۔ — This downloaded copy cannot recognise speech: Chrome blocks the speech service for files opened directly. Please use the online (web link) version.");
   }
 
-  /* ---------- language mode ---------- */
-  var langMode = localStorage.getItem(KEY+"_lang") || "ur";   // ur | en | mix
-  var mixLang = "ur-PK";                                      // current half of Mix
-  var langBtns = { ur: document.getElementById('langUr'), en: document.getElementById('langEn'), mix: document.getElementById('langMix') };
-  function langLabel(){
-    if (langMode === "en") return "English";
-    if (langMode === "ur") return "اردو";
-    return "Mix (اردو)";
-  }
-  function recLang(){ return langMode === "en" ? "en-US" : "ur-PK"; }
-  function endMark(){ return recLang() === "en-US" ? "." : "۔"; }
-  function paintLang(){
-    for (var k in langBtns) langBtns[k].classList.toggle('active', k === langMode);
-    ta.dir = (langMode === "en") ? "ltr" : "rtl";
-    ta.style.textAlign = (langMode === "en") ? "left" : "right";
-  }
-  function setLang(mode){
-    langMode = mode; mixLang = "ur-PK";
-    localStorage.setItem(KEY+"_lang", mode);
-    paintLang();
-    status.textContent = "زبان: " + langLabel();
-    if (wantListening && rec){ restartRec(); }
-  }
-  langBtns.ur.addEventListener('click', function(){ setLang("ur"); });
-  langBtns.en.addEventListener('click', function(){ setLang("en"); });
-  langBtns.mix.addEventListener('click', function(){ setLang("mix"); });
-  paintLang();
+  /* ---------- language: Urdu only (v6 — Ilyas's decision) ---------- */
+  function langLabel(){ return "اردو"; }
+  function recLang(){ return "ur-PK"; }
+  function endMark(){ return "۔"; }
 
   /* ---------- speech recognition ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -337,7 +308,7 @@
     if (!wantListening){
       hideWarn();
       finalText = ta.value || "";
-      fatalError = false; pendingLangSwap = false; mixLang = (langMode === "en") ? "en-US" : "ur-PK";
+      fatalError = false;
       wantListening = true; setUI(true); beep(880,150);
       startRec();
     } else {
@@ -419,7 +390,8 @@
     if (resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
   }
   function stopSpeak(){
-    if (!('speechSynthesis' in window)) return;
+    stopG();
+    if (!('speechSynthesis' in window)) { endSpeak(); return; }
     try{ speechSynthesis.cancel(); }catch(e){}
     endSpeak();
   }
@@ -442,7 +414,7 @@
       u.lang = "ur-PK";
       if (!voiceWarned){
         voiceWarned = true;
-        showWarn("⚠️ اس کمپیوٹر پر اردو/عربی آواز نہیں ملی، اس لیے سنائی نہیں دے رہا ہوگا۔ حل: Windows Settings → Time & Language → Language میں اردو شامل کریں (Speech سمیت)، پھر Chrome دوبارہ کھولیں۔ — No Urdu/Arabic voice was found on this PC. Add Urdu (with Speech) in Windows Settings → Time & Language → Language, then reopen Chrome.");
+        showWarn(VOICE_STEPS);
       }
     }
     u.rate = 0.92;
@@ -461,6 +433,38 @@
     };
     speechSynthesis.speak(u);
   }
+  /* ----- v6: online Urdu voice fallback (Google), for PCs with no
+     Urdu/Arabic voice installed. The PC voice is used whenever one exists;
+     this chain runs only when pickVoice() finds nothing suitable. ----- */
+  var gAudio = null, gGen = 0;
+  var VOICE_STEPS = "⚠️ اس کمپیوٹر پر اردو آواز انسٹال نہیں ہے اور آن لائن آواز بھی نہیں چلی۔ مستقل حل (ایک بار، مفت): Windows Settings کھولیں ← Time & language ← Speech ← Add voices ← Urdu منتخب کر کے Microsoft Salma انسٹال کریں ← پھر Chrome دوبارہ کھولیں۔ اس کے بعد 🔊 سنو اور 🗣️ آواز جانچیں دونوں میں اردو سنائی دے گا۔ (One-time free fix: Windows Settings \u2192 Time & language \u2192 Speech \u2192 Add voices \u2192 Urdu \u2192 install Microsoft Salma \u2192 restart Chrome.)";
+  function gttsUrl(text){
+    return "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ur&q=" + encodeURIComponent(text);
+  }
+  function stopG(){
+    gGen++;
+    if (gAudio){ try{ gAudio.pause(); }catch(e){} gAudio = null; }
+  }
+  function playGList(list, statusDone, onFail){
+    var myGen = ++gGen, i = 0;
+    speaking = true; setListenUI();
+    function next(){
+      if (!speaking || myGen !== gGen) return;
+      if (i >= list.length){ endSpeak(); if (statusDone) status.textContent = statusDone; return; }
+      var a = new Audio(gttsUrl(list[i]));
+      gAudio = a; a._done = false;
+      a.onended = function(){ if (a._done) return; a._done = true; i++; next(); };
+      a.onerror = function(){
+        if (a._done) return; a._done = true;
+        endSpeak(); if (onFail) onFail();
+      };
+      try{
+        var p = a.play();
+        if (p && p.catch) p.catch(function(){ a.onerror(); });
+      }catch(e){ a.onerror(); }
+    }
+    next();
+  }
   function startSpeak(){
     var t = ta.value.trim();
     if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
@@ -468,7 +472,15 @@
     chunks = splitChunks(t); chunkIdx = 0;
     speakErrors = 0; speakOK = 0; lastSpeakErr = ""; useDefaultVoice = false; fallbackTried = false;
     var pv = pickVoice();
-    status.textContent = pv ? ("🔊 آواز: " + pv.name + " (" + pv.lang + ")") : "🔊 سنایا جا رہا ہے…";
+    if (!pv){
+      status.textContent = "🔊 آن لائن اردو آواز (Google) سے سنایا جا رہا ہے…";
+      playGList(chunks, "✓ سنانا مکمل ہوا", function(){
+        showWarn(VOICE_STEPS);
+        status.textContent = "آن لائن آواز نہیں چلی — اوپر سرخ خانے میں مستقل حل دیکھیں";
+      });
+      return;
+    }
+    status.textContent = "🔊 آواز: " + pv.name + " (" + pv.lang + ")";
     speaking = true; setListenUI();
     try{ speechSynthesis.cancel(); }catch(e){}
     // Chrome sometimes swallows speech right after cancel(): wait a beat.
@@ -504,6 +516,16 @@
     stopSpeak(); hideWarn();
     var v = pickVoice();
     var all = getVoicesNow();
+    if (!v){
+      // no PC voice: test the online Urdu voice (Google) instead
+      status.textContent = "🗣️ جانچ… کمپیوٹر پر اردو آواز نہیں ملی — آن لائن اردو آواز (Google) آزمائی جا رہی ہے — کل آوازیں: " + all.length;
+      var ga = new Audio(gttsUrl("السلام علیکم۔ یہ آواز کی جانچ ہے۔"));
+      ga._done = false;
+      ga.onended = function(){ if (ga._done) return; ga._done = true; status.textContent = "✓ یہ آن لائن اردو آواز (Google) تھی — سنائی دی تو 🔊 سنو بھی اسی آواز سے چلے گا"; };
+      ga.onerror = function(){ if (ga._done) return; ga._done = true; showWarn(VOICE_STEPS); status.textContent = "آن لائن آواز بھی نہیں چلی — اوپر سرخ خانے میں مستقل حل دیکھیں"; };
+      try{ var gp = ga.play(); if (gp && gp.catch) gp.catch(function(){ ga.onerror(); }); }catch(e){ ga.onerror(); }
+      return;
+    }
     var u = new SpeechSynthesisUtterance("السلام علیکم۔ یہ آواز کی جانچ ہے۔");
     if (v){ u.voice = v; u.lang = v.lang; } else { u.lang = "ur-PK"; }
     u.rate = 0.92;

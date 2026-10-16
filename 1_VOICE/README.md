@@ -62,3 +62,15 @@ GitHub Pages — the same way as the Quran Roots app.
 - **Edge note**: Edge's speech recognition has a known "network" error
   problem (reported since Edge 134, while the same pages work in Chrome).
   Use Chrome for this app; it is not your internet connection.
+
+## Version 6 (2026-10-16)
+
+- **Urdu only** — the English / Mix buttons are removed (they were slow and
+  are not needed; Urdu recognition stays).
+- **Read-aloud fixed for PCs with no Urdu voice** — if the PC has no
+  Urdu/Arabic voice installed, "Listen" and "Voice Test" now automatically
+  use Google's online Urdu voice (internet needed, which dictation needs
+  anyway). If a PC voice exists, it is used as before.
+- Permanent one-time fix for offline read-aloud on the PC: Windows
+  Settings → Time & language → Speech → Add voices → Urdu → install
+  **Microsoft Salma** → restart Chrome.
