@@ -77,7 +77,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 4</span>
+    <span class="ver">VERSION 5</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -88,7 +88,7 @@
 
   <div class="langrow" role="group" aria-label="Language">
     <button class="langbtn" id="langUr">اردو<small>Urdu only</small></button>
-    <button class="langbtn" id="langMix">دونوں Mix<small>Urdu + English, sentence by sentence</small></button>
+    <button class="langbtn" id="langMix">دونوں Mix<small>Urdu base — English words written as spoken</small></button>
     <button class="langbtn" id="langEn">English<small>English only</small></button>
   </div>
 
@@ -125,6 +125,7 @@
 
   <div class="row">
     <button class="btn gold" id="listenBtn">🔊 سنو<small>Listen — reads the text aloud (press again to stop)</small></button>
+    <button class="btn gold" id="voiceTestBtn">🗣️ آواز جانچیں<small>Voice test — one short sentence + voice name</small></button>
     <button class="btn" id="saveTxtBtn">💾 محفوظ کریں<small>Save as a text file</small></button>
     <button class="btn" id="saveDocBtn">📄 ورڈ فائل<small>Save as a real Word file (.docx)</small></button>
   </div>
@@ -139,10 +140,10 @@
   </div>
 
   <div class="help">
-    <p style="margin:6px 0"><b>طریقہ:</b> ۱) زبان چنیں — اردو، English، یا دونوں Mix (ایک جملہ اردو، اگلا انگریزی)۔ ۲) بڑا سبز بٹن دبائیں، پہلی بار مائیک کی <b>اجازت (Allow)</b> دیں۔ ۳) آہستہ اور صاف بولیں۔ ۴) مکمل ہونے پر سرخ بٹن دبائیں اور محفوظ کریں۔</p>
+    <p style="margin:6px 0"><b>طریقہ:</b> ۱) زبان چنیں — اردو، English، یا دونوں Mix (اردو سیشن؛ انگریزی الفاظ ویسے ہی اردو میں لکھے جائیں گے جیسے بولے جائیں — پورا انگریزی پیرا ہو تو English بٹن دبائیں)۔ ۲) بڑا سبز بٹن دبائیں، پہلی بار مائیک کی <b>اجازت (Allow)</b> دیں۔ ۳) آہستہ اور صاف بولیں۔ ۴) مکمل ہونے پر سرخ بٹن دبائیں اور محفوظ کریں۔ نوٹ: اس وقت Edge میں شناخت کا معروف مسئلہ ہے — <b>Chrome</b> استعمال کریں۔</p>
     <p style="margin:6px 0"><b>ورڈ فائل:</b> اب فائل اصل .docx بنتی ہے جس میں خط کا نام نستعلیق لکھا ہوتا ہے۔ اگر ورڈ میں پھر بھی نستعلیق نہ آئے تو کمپیوٹر پر <b>Noto Nastaliq Urdu</b> خط ایک بار انسٹال کریں (مفت، Google Fonts سے) — یا <b>پرنٹ / PDF</b> استعمال کریں، اس میں نستعلیق ہمیشہ درست آتا ہے۔</p>
     <p style="margin:6px 0"><b>خودکار بچت:</b> متن خود بخود محفوظ ہوتا رہتا ہے — صفحہ بند ہو جائے تو واپس کھولنے پر موجود ہوگا۔</p>
-    <p class="en">Needs: Windows PC, Chrome or Microsoft Edge, a microphone, and internet (the browser's speech service does the recognition). For read-aloud, an Urdu voice on the PC helps — Edge includes one. Shortcuts: Ctrl+M = start/stop.</p>
+    <p class="en">Needs: Windows PC, Google Chrome (Edge's speech recognition currently returns a "network" error on many PCs — a known Edge problem, not your internet), a microphone, and internet. Read-aloud uses a voice installed on the PC; the Voice Test button shows which voice was found. Shortcuts: Ctrl+M = start/stop.</p>
   </div>
 </div>
 <div id="printArea"></div>
@@ -224,9 +225,9 @@
   function langLabel(){
     if (langMode === "en") return "English";
     if (langMode === "ur") return "اردو";
-    return "Mix — ابھی: " + (mixLang === "ur-PK" ? "اردو" : "English");
+    return "Mix (اردو)";
   }
-  function recLang(){ return langMode === "en" ? "en-US" : langMode === "ur" ? "ur-PK" : mixLang; }
+  function recLang(){ return langMode === "en" ? "en-US" : "ur-PK"; }
   function endMark(){ return recLang() === "en-US" ? "." : "۔"; }
   function paintLang(){
     for (var k in langBtns) langBtns[k].classList.toggle('active', k === langMode);
@@ -305,21 +306,19 @@
       ta.value = finalText + interim;
       ta.scrollTop = ta.scrollHeight;
       autosave();
-      if (gotFinal && langMode === "mix" && wantListening){
-        // next sentence in the other language
-        mixLang = (mixLang === "ur-PK") ? "en-US" : "ur-PK";
-        pendingLangSwap = true;
-        restartRec();
-      }
+      // v5: Mix no longer stops/restarts recognition after every sentence —
+      // that restart was the slowness. One steady Urdu session is kept, and
+      // English words are written in Urdu script as they are spoken.
     };
     rec.onend = function(){
-      if (wantListening && !fatalError){ startRec(); if (listening) setUI(true); }
+      if (wantListening && !fatalError){
+        setTimeout(function(){ if (wantListening && !fatalError){ startRec(); if (listening) setUI(true); } }, 200);
+      }
       else { setUI(false); }
     };
     rec.onerror = function(ev){
       var code = ev.error || "unknown";
-      if (code === "no-speech" && !pendingLangSwap){ return; }
-      if (code === "no-speech" && pendingLangSwap){ pendingLangSwap = false; return; }
+      if (code === "no-speech"){ return; } // brief silence: onend restarts quietly
       fatalError = true; wantListening = false; setUI(false);
       showError(code); beep(220, 300);
     };
@@ -389,6 +388,7 @@
   /* ---------- read aloud (robust: voices waited for, text chunked) ---------- */
   var listenBtn = document.getElementById('listenBtn');
   var speaking = false, chunks = [], chunkIdx = 0, resumeTimer = null, voiceWarned = false;
+  var speakErrors = 0, speakOK = 0, lastSpeakErr = "", useDefaultVoice = false, fallbackTried = false;
   function getVoicesNow(){
     try{ return speechSynthesis.getVoices() || []; }catch(e){ return []; }
   }
@@ -425,22 +425,39 @@
   }
   function speakNext(){
     if (!speaking) return;
-    if (chunkIdx >= chunks.length){ endSpeak(); status.textContent = "✓ سنانا مکمل ہوا"; return; }
+    if (chunkIdx >= chunks.length){
+      endSpeak();
+      if (speakOK === 0 && speakErrors > 0){
+        showWarn("⚠️ آواز چل نہیں سکی۔ خرابی: " + lastSpeakErr + " — یہ کمپیوٹر کی آواز (voice) کا مسئلہ ہے، متن کا نہیں۔ نیچے 🗣️ آواز جانچیں دبائیں اور جو آواز کا نام یا خرابی آئے وہ مجھے بتائیں۔ (Voice error: " + lastSpeakErr + ")");
+        status.textContent = "آواز نہیں چلی — اوپر سرخ خانہ دیکھیں";
+      } else {
+        status.textContent = "✓ سنانا مکمل ہوا";
+      }
+      return;
+    }
     var u = new SpeechSynthesisUtterance(chunks[chunkIdx]);
-    var v = pickVoice();
+    var v = useDefaultVoice ? null : pickVoice();
     if (v){ u.voice = v; u.lang = v.lang; }
-    else {
+    else if (!useDefaultVoice) {
       u.lang = "ur-PK";
       if (!voiceWarned){
         voiceWarned = true;
-        showWarn("⚠️ اس کمپیوٹر پر اردو/عربی آواز نہیں ملی، اس لیے سنائی نہیں دے رہا ہوگا۔ حل: Microsoft Edge استعمال کریں (اس میں اردو آواز شامل ہے)، یا Windows Settings → Time & Language → Speech میں اردو آواز شامل کریں۔ — No Urdu/Arabic voice was found on this PC. Try Microsoft Edge, or add an Urdu voice in Windows Settings → Time & Language → Speech.");
+        showWarn("⚠️ اس کمپیوٹر پر اردو/عربی آواز نہیں ملی، اس لیے سنائی نہیں دے رہا ہوگا۔ حل: Windows Settings → Time & Language → Language میں اردو شامل کریں (Speech سمیت)، پھر Chrome دوبارہ کھولیں۔ — No Urdu/Arabic voice was found on this PC. Add Urdu (with Speech) in Windows Settings → Time & Language → Language, then reopen Chrome.");
       }
     }
     u.rate = 0.92;
-    u.onend = function(){ chunkIdx++; speakNext(); };
+    u.onend = function(){ speakOK++; chunkIdx++; speakNext(); };
     u.onerror = function(e){
       if (e.error === "interrupted" || e.error === "canceled"){ return; }
-      chunkIdx++; speakNext();
+      lastSpeakErr = e.error || "unknown";
+      // If the chosen Urdu voice itself fails on the first chunk, retry the
+      // whole reading once with the PC's default voice.
+      if (!fallbackTried && chunkIdx === 0 && speakOK === 0){
+        fallbackTried = true; useDefaultVoice = true;
+        status.textContent = "پہلی آواز نہیں چلی — دوسری آواز سے کوشش…";
+        speakNext(); return;
+      }
+      speakErrors++; chunkIdx++; speakNext();
     };
     speechSynthesis.speak(u);
   }
@@ -449,8 +466,10 @@
     if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
     if (wantListening) toggle();               // don't let the mic hear the reading
     chunks = splitChunks(t); chunkIdx = 0;
+    speakErrors = 0; speakOK = 0; lastSpeakErr = ""; useDefaultVoice = false; fallbackTried = false;
+    var pv = pickVoice();
+    status.textContent = pv ? ("🔊 آواز: " + pv.name + " (" + pv.lang + ")") : "🔊 سنایا جا رہا ہے…";
     speaking = true; setListenUI();
-    status.textContent = "🔊 سنایا جا رہا ہے…";
     try{ speechSynthesis.cancel(); }catch(e){}
     // Chrome sometimes swallows speech right after cancel(): wait a beat.
     setTimeout(function(){
@@ -479,6 +498,24 @@
     } else {
       startSpeak();
     }
+  });
+  document.getElementById('voiceTestBtn').addEventListener('click', function(){
+    if (!('speechSynthesis' in window)){ showWarn("اس براؤزر میں سنانے کی سہولت نہیں ہے۔"); return; }
+    stopSpeak(); hideWarn();
+    var v = pickVoice();
+    var all = getVoicesNow();
+    var u = new SpeechSynthesisUtterance("السلام علیکم۔ یہ آواز کی جانچ ہے۔");
+    if (v){ u.voice = v; u.lang = v.lang; } else { u.lang = "ur-PK"; }
+    u.rate = 0.92;
+    status.textContent = v
+      ? ("🗣️ جانچ… آواز: " + v.name + " (" + v.lang + ") — کل آوازیں: " + all.length)
+      : ("🗣️ جانچ… اردو/عربی آواز نہیں ملی — کل آوازیں: " + all.length + " (نام مجھے بتائیں)");
+    u.onerror = function(e){
+      showWarn("⚠️ آواز کی جانچ ناکام — خرابی: " + (e.error || "unknown") + "۔ یہ نام/خرابی مجھے بتا دیں۔ (Voice test error: " + (e.error || "unknown") + ")");
+    };
+    u.onend = function(){ status.textContent = "✓ آواز کی جانچ مکمل — سنا؟ آواز تھی: " + (v ? (v.name + " (" + v.lang + ")") : "کوئی اردو آواز نہیں"); };
+    try{ speechSynthesis.cancel(); }catch(e){}
+    setTimeout(function(){ speechSynthesis.speak(u); }, 250);
   });
 
   /* ---------- save / print ---------- */

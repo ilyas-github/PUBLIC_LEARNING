@@ -47,3 +47,18 @@ GitHub Pages — the same way as the Quran Roots app.
   (free: Google Fonts → "Noto Nastaliq Urdu" → Download → right-click the
   .ttf files → Install). The new **Print / PDF** button always renders true
   Nastaliq because the page loads the web font itself.
+
+## Version 5 — what changed
+
+- **Mix slowness fixed**: v4 stopped and restarted recognition after every
+  sentence to swap languages — that restart was the lag. Mix is now one
+  steady Urdu session (English words are written in Urdu script as spoken);
+  use the English button for whole English paragraphs.
+- **Read-aloud diagnosis**: new 🗣️ Voice Test button speaks one sentence
+  and shows the exact voice name found (or that none was found). If the
+  chosen voice fails, reading retries once with the PC default voice; if
+  every voice fails, the red box now shows the real error code instead of
+  silence.
+- **Edge note**: Edge's speech recognition has a known "network" error
+  problem (reported since Edge 134, while the same pages work in Chrome).
+  Use Chrome for this app; it is not your internet connection.
