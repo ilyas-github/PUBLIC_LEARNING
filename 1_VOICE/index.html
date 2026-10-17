@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
 <title>اردو بول کر لکھیں — Urdu Dictation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
@@ -77,7 +78,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 6.3</span>
+    <span class="ver">VERSION 6.4</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -451,10 +452,15 @@
     return "https://" + host + "/translate_tts?ie=UTF-8&client=tw-ob&tl=ur&q=" + encodeURIComponent(text);
   }
   function makeGAudio(text, host){
-    // v6.3: Google's voice endpoint answers 404 when the request carries
-    // the page's Referer (e.g. the GitHub Pages address) — proven by direct
-    // test (no Referer -> 200 MP3; any Referer -> 404). So the element is
-    // built in steps with referrerpolicy="no-referrer" set BEFORE src.
+    // Google's voice endpoint answers 404 when the request carries the
+    // page's Referer (proven by direct test: no Referer -> 200 MP3; any
+    // Referer -> 404). v6.3 set referrerpolicy on the audio element from
+    // JavaScript, but a real Chrome IGNORES that for media loads — the
+    // Referer was still sent (proven by capturing the actual request
+    // headers). v6.4 therefore carries <meta name="referrer"
+    // content="no-referrer"> in the page head, which Chrome DOES honour
+    // for media loads (same header capture: no Referer sent). The element
+    // attribute below is kept as a harmless second layer.
     var a = document.createElement("audio");
     try{ a.setAttribute("referrerpolicy", "no-referrer"); a.referrerPolicy = "no-referrer"; }catch(e){}
     a.preload = "auto";
