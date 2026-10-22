@@ -56,6 +56,7 @@
     font-family:inherit;font-size:26px;line-height:1.9;font-weight:bold;color:#fff;background:var(--blue)}
   .btn:active{transform:translateY(3px)}
   .btn.gold{background:var(--gold)} .btn.grey{background:#4a4a4a} .btn.darkred{background:#7a1020} .btn.fb{background:#1877f2;color:#fff}
+  .langbtn{background:#ddd6bd;color:#222} .langbtn.active{background:#0b6b35;color:#fff}
   .btn small{display:block;font-size:15px;font-weight:normal;font-family:Arial,sans-serif}
   .meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}
   #count{font-size:21px;line-height:2;color:#333}
@@ -78,7 +79,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 6.6</span>
+    <span class="ver">VERSION 7.0</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -86,6 +87,12 @@
 
   <div id="warn"></div>
   <div id="status" class="off">تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں</div>
+
+  <div class="row" id="langRow">
+    <button class="btn langbtn" data-lang="ur">اردو<small>Urdu — بول کر لکھیں</small></button>
+    <button class="btn langbtn" data-lang="en">English<small>Speak &amp; write in English</small></button>
+    <button class="btn langbtn" data-lang="ar">العربية<small>Arabic — تحدث واكتب</small></button>
+  </div>
 
   <button id="micBtn" class="micbtn" aria-label="Start or stop dictation">
     🎤 بولنا شروع کریں
@@ -219,11 +226,40 @@
   }
 
   /* ---------- language: Urdu only (v6 — Ilyas's decision) ---------- */
-  function langLabel(){ return "اردو"; }
-  function recLang(){ return "ur-PK"; }
+  var LANGS = {
+    ur: { rec:"ur-PK", gtl:"ur", dir:"rtl", label:"اردو", mark:"۔",
+          term:/[۔.!?؟]$/, split:/(?<=[۔.!?؟])\s*/,
+          taFont:"'Noto Nastaliq Urdu', serif",
+          ph:"آپ کی بات یہاں لکھی جائے گی…",
+          test:"السلام علیکم۔ یہ آواز کی جانچ ہے۔",
+          docFont:"Noto Nastaliq Urdu", docLang:"ur-PK", bidi:true,
+          head:"اردو مضمون", fileTag:"urdu",
+          voices:[/^ur/i, /urdu/i, /^ar/i, /arabic/i] },
+    en: { rec:"en-US", gtl:"en", dir:"ltr", label:"English", mark:".",
+          term:/[.!?]$/, split:/(?<=[.!?])\s+/,
+          taFont:"Georgia, 'Times New Roman', serif",
+          ph:"Your spoken words will appear here…",
+          test:"Hello. This is a voice test. If you can hear these words clearly, the voice is working.",
+          docFont:"Georgia", docLang:"en-US", bidi:false,
+          head:"English Article", fileTag:"english",
+          voices:[/^en/i, /english/i] },
+    ar: { rec:"ar-SA", gtl:"ar", dir:"rtl", label:"العربية", mark:".",
+          term:/[.!?؟]$/, split:/(?<=[.!?؟])\s*/,
+          taFont:"'Noto Naskh Arabic', serif",
+          ph:"ستظهر كلماتك المنطوقة هنا…",
+          test:"السلام عليكم. هذا اختبار للصوت. إذا سمعت هذه الكلمات، فالصوت يعمل.",
+          docFont:"Noto Naskh Arabic", docLang:"ar-SA", bidi:true,
+          head:"مقال بالعربية", fileTag:"arabic",
+          voices:[/^ar/i, /arabic/i] }
+  };
+  var curLang = "ur";
+  try{ var _sl = localStorage.getItem("ud_lang"); if (_sl && LANGS[_sl]) curLang = _sl; }catch(e){}
+  function L(){ return LANGS[curLang]; }
+  function langLabel(){ return L().label; }
+  function recLang(){ return L().rec; }
   var autoStop = true;
   try{ autoStop = localStorage.getItem("ud_autostop") !== "off"; }catch(e){}
-  function endMark(){ return autoStop ? "۔" : ""; }
+  function endMark(){ return autoStop ? L().mark : ""; }
 
   /* ---------- speech recognition ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -275,7 +311,7 @@
           if (s){
             if (finalText && !/[\s\n]$/.test(finalText)) finalText += " ";
             finalText += s;
-            if (!/[۔.!?؟]$/.test(s)) finalText += endMark();
+            if (!L().term.test(s)) finalText += endMark();
             finalText += " ";
           }
         } else {
@@ -378,7 +414,7 @@
     // silent on Urdu script, and they kept the online-voice path from ever
     // running. Hindi voices are dropped too: they read Devanagari script.
     var vs = getVoicesNow(), i, j;
-    var tests = [/^ur/i, /urdu/i, /^ar/i, /arabic/i];
+    var tests = L().voices;
     for (j = 0; j < tests.length; j++)
       for (i = 0; i < vs.length; i++)
         if (vs[i].localService && (tests[j].test(vs[i].lang) || tests[j].test(vs[i].name))) return vs[i];
@@ -456,7 +492,7 @@
   var GTTS_HOSTS = ["translate.google.com", "translate.googleapis.com"];
   var lastGErr = "";
   function gttsUrl(text, host){
-    return "https://" + host + "/translate_tts?ie=UTF-8&client=tw-ob&tl=ur&q=" + encodeURIComponent(text);
+    return "https://" + host + "/translate_tts?ie=UTF-8&client=tw-ob&tl=" + L().gtl + "&q=" + encodeURIComponent(text);
   }
   function makeGAudio(text, host){
     // Google's voice endpoint answers 404 when the request carries the
@@ -556,7 +592,7 @@
     status.textContent = "🗣️ جانچ… کمپیوٹر پر اردو آواز نہیں ملی — آن لائن اردو آواز (Google) آزمائی جا رہی ہے — کل آوازیں: " + allCount;
     var hostIdx = 0;
     function attempt(){
-      var ga = makeGAudio("السلام علیکم۔ یہ آواز کی جانچ ہے۔", GTTS_HOSTS[hostIdx]);
+      var ga = makeGAudio(L().test, GTTS_HOSTS[hostIdx]);
       ga._done = false;
       ga.onended = function(){ if (ga._done) return; ga._done = true; status.textContent = "✓ یہ آن لائن اردو آواز (Google) تھی — سنائی دی تو 🔊 سنو بھی اسی آواز سے چلے گا"; };
       ga.onerror = function(){
@@ -576,7 +612,7 @@
     var v = pickVoice();
     var all = getVoicesNow();
     if (!v){ onlineVoiceTest(all.length); return; }
-    var u = new SpeechSynthesisUtterance("السلام علیکم۔ یہ آواز کی جانچ ہے۔");
+    var u = new SpeechSynthesisUtterance(L().test);
     u.voice = v; u.lang = v.lang;
     u.rate = 0.92;
     status.textContent = "🗣️ جانچ… آواز: " + v.name + " (" + v.lang + ") — کل آوازیں: " + all.length;
@@ -648,13 +684,16 @@
     return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
   function buildDocx(text){
-    var FONT = "Noto Nastaliq Urdu";
+    var lg = L();
+    var FONT = lg.docFont;
+    var BIDI = lg.bidi ? "<w:bidi/>" : "";
+    var JC = lg.bidi ? "right" : "left";
     var rPr = '<w:rPr><w:rFonts w:ascii="' + FONT + '" w:hAnsi="' + FONT + '" w:cs="' + FONT + '"/>'
-            + '<w:sz w:val="48"/><w:szCs w:val="48"/><w:lang w:bidi="ur-PK"/></w:rPr>';
+            + '<w:sz w:val="48"/><w:szCs w:val="48"/><w:lang w:bidi="' + lg.docLang + '"/></w:rPr>';
     var paras = text.split(/\n+/).filter(function(p){ return p.trim() !== ""; });
     if (!paras.length) paras = [""];
     var body = paras.map(function(p){
-      return '<w:p><w:pPr><w:bidi/><w:jc w:val="right"/>'
+      return '<w:p><w:pPr>' + BIDI + '<w:jc w:val="' + JC + '"/>'
            + '<w:spacing w:line="640" w:lineRule="auto"/>' + rPr + '</w:pPr>'
            + '<w:r>' + rPr + '<w:t xml:space="preserve">' + xmlEsc(p) + '</w:t></w:r></w:p>';
     }).join("");
@@ -666,9 +705,9 @@
     var stylesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
       + '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
       + '<w:docDefaults><w:rPrDefault><w:rPr>' + rPr + '</w:rPr></w:rPrDefault>'
-      + '<w:pPrDefault><w:pPr><w:bidi/></w:pPr></w:pPrDefault></w:docDefaults>'
+      + '<w:pPrDefault><w:pPr>' + BIDI + '</w:pPr></w:pPrDefault></w:docDefaults>'
       + '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/>'
-      + '<w:pPr><w:bidi/><w:jc w:val="right"/></w:pPr>' + rPr + '</w:style></w:styles>';
+      + '<w:pPr>' + BIDI + '<w:jc w:val="' + JC + '"/></w:pPr>' + rPr + '</w:style></w:styles>';
     var contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
       + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
       + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
@@ -690,17 +729,41 @@
     ]);
   }
   document.getElementById('saveDocBtn').addEventListener('click', function(){
-    download("urdu-article-"+stamp()+".docx", buildDocx(ta.value));
+    download(L().fileTag + "-article-" + stamp() + ".docx", buildDocx(ta.value));
     beep(990,150); savedEl.textContent = "ورڈ فائل (.docx) محفوظ ہو گئی ✓ (Downloads فولڈر میں)";
   });
   document.getElementById('printBtn').addEventListener('click', function(){
     var area = document.getElementById('printArea');
     var paras = ta.value.split(/\n+/).filter(function(p){ return p.trim() !== ""; });
-    area.innerHTML = "<h2>اردو مضمون</h2>" + paras.map(function(p){
+    area.style.direction = L().dir; area.style.textAlign = L().bidi ? "right" : "left"; area.style.fontFamily = L().taFont;
+    area.innerHTML = "<h2>" + L().head + "</h2>" + paras.map(function(p){
       return '<p style="font-size:' + Math.max(18, Math.round(fontSize*0.62)) + 'pt">' + xmlEsc(p) + "</p>";
     }).join("");
     window.print();
   });
+  function applyLang(){
+    var l = L();
+    ta.dir = l.dir; ta.lang = l.rec; ta.style.fontFamily = l.taFont; ta.placeholder = l.ph;
+    var bs = document.querySelectorAll('.langbtn'), i;
+    for (i = 0; i < bs.length; i++) bs[i].classList.toggle('active', bs[i].getAttribute('data-lang') === curLang);
+  }
+  function setLang(code){
+    if (!LANGS[code] || code === curLang){ applyLang(); return; }
+    stopSpeak();
+    if (wantListening) toggle();
+    curLang = code;
+    try{ localStorage.setItem("ud_lang", code); }catch(e){}
+    finalText = ta.value || "";
+    applyLang(); hideWarn();
+    status.textContent = "زبان: " + L().label + " — اب اسی زبان میں بولیں یا لکھیں (Language: " + L().label + ")";
+    beep(990, 120);
+  }
+  (function(){
+    var bs = document.querySelectorAll('.langbtn'), i;
+    for (i = 0; i < bs.length; i++) (function(b){ b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); }); })(bs[i]);
+    applyLang();
+  })();
+
   var stopBtn = document.getElementById('stopBtn');
   function paintStopBtn(){
     stopBtn.childNodes[0].textContent = autoStop ? "۔ خودکار وقف: آن " : "۔ خودکار وقف: بند ";
@@ -742,10 +805,10 @@
   });
   document.getElementById('undoBtn').addEventListener('click', function(){
     var t = ta.value.replace(/\s+$/,'');
-    var parts = t.split(/(?<=[۔.!?؟])\s*/);
+    var parts = t.split(L().split);
     if (parts.length){ parts.pop(); }
     finalText = parts.join('').trim();
-    if (finalText && !/[۔.!?؟]$/.test(finalText)) finalText += endMark();
+    if (finalText && !L().term.test(finalText)) finalText += endMark();
     ta.value = finalText ? finalText + " " : "";
     autosave();
   });
