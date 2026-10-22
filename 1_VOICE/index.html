@@ -78,7 +78,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 6.5</span>
+    <span class="ver">VERSION 6.6</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -112,6 +112,7 @@
 
   <textarea id="text" dir="rtl" lang="ur" placeholder="آپ کی بات یہاں لکھی جائے گی…"></textarea>
   <p class="en" id="diag" style="text-align:left"></p>
+  <p style="text-align:center;font-size:19px;margin:6px 0 0">✏️ الفاظ درست کرنے کے لیے: پہلے بولنا بند کریں، پھر یہاں کلک کر کے لکھیں — پھر دوبارہ مائیک بٹن دبا کر جاری رکھیں۔ <span class="en">(To edit words: stop dictation first, click the text and type your correction, then press the mic button to continue.)</span></p>
 
   <div class="meta">
     <span id="count">الفاظ: 0</span>
@@ -131,6 +132,7 @@
     <button class="btn grey" id="printBtn">🖨️ پرنٹ / PDF<small>Print or save as PDF (keeps Nastaliq)</small></button>
     <button class="btn grey" id="paraBtn">¶ نیا پیرا<small>New paragraph</small></button>
     <button class="btn grey" id="copyBtn">📋 کاپی کریں<small>Copy all text</small></button>
+    <button class="btn grey" id="stopBtn">۔ خودکار وقف: آن<small>Auto full stop (۔) after each spoken piece — tap to switch off</small></button>
   </div>
   <div class="row">
     <button class="btn grey" id="undoBtn">↩️ آخری جملہ مٹائیں<small>Remove last sentence</small></button>
@@ -188,7 +190,7 @@
     }, 400);
     wordCount();
   }
-  ta.addEventListener('input', autosave);
+  ta.addEventListener('input', function(){ autosave(); if (!wantListening) finalText = ta.value; });
   wordCount();
 
   /* ---------- text size: buttons + slider, number shown ---------- */
@@ -219,7 +221,9 @@
   /* ---------- language: Urdu only (v6 — Ilyas's decision) ---------- */
   function langLabel(){ return "اردو"; }
   function recLang(){ return "ur-PK"; }
-  function endMark(){ return "۔"; }
+  var autoStop = true;
+  try{ autoStop = localStorage.getItem("ud_autostop") !== "off"; }catch(e){}
+  function endMark(){ return autoStop ? "۔" : ""; }
 
   /* ---------- speech recognition ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -697,6 +701,20 @@
     }).join("");
     window.print();
   });
+  var stopBtn = document.getElementById('stopBtn');
+  function paintStopBtn(){
+    stopBtn.childNodes[0].textContent = autoStop ? "۔ خودکار وقف: آن " : "۔ خودکار وقف: بند ";
+    stopBtn.querySelector('small').textContent = autoStop
+      ? "Auto full stop (۔) after each spoken piece — tap to switch off"
+      : "No automatic (۔) — your speech continues plain — tap to switch on";
+  }
+  paintStopBtn();
+  stopBtn.addEventListener('click', function(){
+    autoStop = !autoStop;
+    try{ localStorage.setItem("ud_autostop", autoStop ? "on" : "off"); }catch(e){}
+    paintStopBtn(); beep(autoStop ? 880 : 440, 120);
+  });
+
   document.getElementById('fbBtn').addEventListener('click', function(){
     var t = ta.value.trim();
     if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
