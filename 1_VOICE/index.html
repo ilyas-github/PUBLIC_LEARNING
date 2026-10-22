@@ -55,7 +55,7 @@
   .btn{flex:1 1 200px;border:none;cursor:pointer;border-radius:16px;padding:14px 8px 20px;
     font-family:inherit;font-size:26px;line-height:1.9;font-weight:bold;color:#fff;background:var(--blue)}
   .btn:active{transform:translateY(3px)}
-  .btn.gold{background:var(--gold)} .btn.grey{background:#4a4a4a} .btn.darkred{background:#7a1020}
+  .btn.gold{background:var(--gold)} .btn.grey{background:#4a4a4a} .btn.darkred{background:#7a1020} .btn.fb{background:#1877f2;color:#fff}
   .btn small{display:block;font-size:15px;font-weight:normal;font-family:Arial,sans-serif}
   .meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}
   #count{font-size:21px;line-height:2;color:#333}
@@ -78,7 +78,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="ver">VERSION 6.4</span>
+    <span class="ver">VERSION 6.5</span>
     <h1>اردو بول کر لکھیں</h1>
     <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
     <p class="dedication">ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></p>
@@ -123,6 +123,9 @@
     <button class="btn gold" id="voiceTestBtn">🗣️ آواز جانچیں<small>Voice test — one short sentence + voice name</small></button>
     <button class="btn" id="saveTxtBtn">💾 محفوظ کریں<small>Save as a text file</small></button>
     <button class="btn" id="saveDocBtn">📄 ورڈ فائل<small>Save as a real Word file (.docx)</small></button>
+  </div>
+  <div class="row">
+    <button class="btn fb" id="fbBtn">📘 Facebook پر شائع کریں<small>Publish on Facebook — copies your article &amp; opens Facebook</small></button>
   </div>
   <div class="row">
     <button class="btn grey" id="printBtn">🖨️ پرنٹ / PDF<small>Print or save as PDF (keeps Nastaliq)</small></button>
@@ -694,6 +697,21 @@
     }).join("");
     window.print();
   });
+  document.getElementById('fbBtn').addEventListener('click', function(){
+    var t = ta.value.trim();
+    if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
+    if (wantListening) toggle();               // stop the mic first
+    function openFb(){
+      status.innerHTML = "✓ مضمون کاپی ہو گیا اور Facebook کھل رہا ہے۔<br>اب یہ تین قدم: (1) اوپر والے خانے &quot;What's on your mind?&quot; پر کلک کریں (2) Ctrl+V دبا کر مضمون چپکائیں (3) Post بٹن دبائیں۔<br><span class='en'>(Article copied &amp; Facebook opening. Then: click the &quot;What's on your mind?&quot; box, press Ctrl+V to paste, then press Post.)</span>";
+      window.open("https://www.facebook.com/", "_blank");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(openFb, function(){ ta.select(); try{ document.execCommand('copy'); }catch(e){} openFb(); });
+    } else {
+      ta.select(); try{ document.execCommand('copy'); }catch(e){} openFb();
+    }
+  });
+
   document.getElementById('copyBtn').addEventListener('click', function(){
     ta.select();
     if (navigator.clipboard) navigator.clipboard.writeText(ta.value);
