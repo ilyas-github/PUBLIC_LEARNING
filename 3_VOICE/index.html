@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  /* apply saved theme before first paint (no flash) */
+  (function(){ var ok = ["light","parchment","dark","midnight"];
+    var t = null;
+    try { t = localStorage.getItem("qr_theme"); } catch(e) {}
+    if (ok.indexOf(t) < 0) t = (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+    document.documentElement.dataset.theme = t; })();
+</script>
+<title>Quranic Arabic Roots — All 1642 Roots</title>
+<style>
+  :root{
+    --bg:#f7f4ec; --card:#fffdf7; --ink:#22301f; --muted:#6b725f;
+    --green:#1e5c3f; --green2:#2e7d52; --gold:#c19a3f; --line:#e3dcc8;
+    --chip:#eef3e6; --shadow:0 2px 10px rgba(60,50,20,.08);
+    --example-bg:#fbf8ef; --soft:#37452f;
+    --header1:#1e5c3f; --header2:#14402b;
+  }
+  :root[data-theme="parchment"]{
+    --bg:#f3ead8; --card:#fbf5e6; --ink:#3a3122; --muted:#8a7550;
+    --green:#7c5a24; --green2:#9a7433; --gold:#b8862f; --line:#e2d3ac;
+    --chip:#f0e5c8; --shadow:0 2px 10px rgba(90,70,20,.12);
+    --example-bg:#f8f1de; --soft:#5a4a26;
+    --header1:#7c5a24; --header2:#54401a;
+  }
+  :root[data-theme="dark"]{
+    --bg:#12160f; --card:#1c2216; --ink:#e9e5d3; --muted:#a3a890;
+    --green:#8fce9f; --green2:#57b67e; --gold:#d9b45c; --line:#39412c;
+    --chip:#28331f; --shadow:0 2px 10px rgba(0,0,0,.45);
+    --example-bg:#171d12; --soft:#c9dcb4;
+    --header1:#1a3d2a; --header2:#0f2417;
+  }
+  :root[data-theme="midnight"]{
+    --bg:#0b1220; --card:#131c2e; --ink:#e3e9f4; --muted:#93a3bb;
+    --green:#6fd3c9; --green2:#41b3a7; --gold:#d9b45c; --line:#26334d;
+    --chip:#1a2740; --shadow:0 2px 10px rgba(0,0,0,.5);
+    --example-bg:#0e1626; --soft:#b8d8d2;
+    --header1:#12455c; --header2:#0a2438;
+  }
+  :root[data-theme="dark"] .btn.active, :root[data-theme="midnight"] .btn.active{background:var(--green);color:#101812}
+  :root[data-theme="dark"] .root-head, :root[data-theme="midnight"] .root-head{border-bottom-color:var(--line)}
+  .themes{display:inline-flex;align-items:center;gap:7px;margin-left:4px}
+  .sw{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0;
+    background:linear-gradient(135deg,var(--s1) 50%,var(--s2) 50%)}
+  .sw.active{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+  .theme-name{font-size:12.5px;color:var(--muted);min-width:74px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;}
+  header{background:linear-gradient(135deg,var(--header1),var(--header2));color:#f5efdd;padding:26px 18px 20px;text-align:center}
+  header h1{margin:0 0 6px;font-size:26px;font-weight:700}
+  header .ar-title{font-size:30px;display:block;margin-bottom:4px}
+  header p{margin:4px 0;color:#d9e4cf;font-size:14px}
+  .ar{font-family:"Amiri Quran","Scheherazade New","Noto Naskh Arabic","Traditional Arabic",serif}
+  .ur{font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Noto Naskh Arabic",serif;direction:rtl}
+  .toolbar{max-width:980px;margin:16px auto 6px;padding:0 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .toolbar input[type=search]{flex:1;min-width:220px;padding:11px 14px;font-size:16px;border:1px solid var(--line);
+    border-radius:10px;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+  .btn{padding:10px 16px;border-radius:10px;border:1px solid var(--green);background:var(--card);color:var(--green);
+    font-size:15px;cursor:pointer;font-weight:600}
+  .btn.active{background:var(--green);color:#fff}
+  .btn:hover{filter:brightness(1.05)}
+  .btn.listening{background:#b91c1c;border-color:#b91c1c;color:#fff}
+  .voice-lang{padding:10px 8px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);font-size:14px;cursor:pointer}
+  .voice-note{font-size:13px;color:var(--muted)}
+  main{max-width:980px;margin:0 auto;padding:8px 14px 40px}
+  .stats{color:var(--muted);font-size:13.5px;margin:8px 2px 14px}
+  .root-card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 20px;margin-bottom:16px}
+  .root-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--chip);
+    padding-bottom:10px;margin-bottom:8px}
+  .root-letters{font-size:40px;line-height:1.15;color:var(--green)}
+  .root-translit{font-size:19px;font-weight:700;color:var(--gold);letter-spacing:.4px}
+  .root-rank{margin-left:auto;color:var(--muted);font-size:13px;text-align:right}
+  .root-meaning{font-size:17px;margin:2px 0}
+  .root-meaning .ur{font-size:16.5px;line-height:2}
+  .occurs{color:var(--muted);font-size:13px}
+  .derived{border-top:1px dashed var(--line);padding:12px 0 4px}
+  .derived:first-of-type{border-top:none}
+  .word-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .word-ar{font-size:27px;color:var(--ink)}
+  .lemma-ar{font-size:19px;color:var(--muted)}
+  .word-translit{font-weight:700;font-size:16.5px}
+  .pos{font-size:11.5px;background:var(--chip);color:var(--green);border-radius:20px;padding:2px 9px;font-weight:700}
+  .gloss{font-size:15.5px;margin:3px 0}
+  .gloss .ur{line-height:2;font-size:15px}
+  .gloss-ur{margin-top:6px}
+  .meaning-ur{margin-top:5px}
+  .example{background:var(--example-bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:9px}
+  .example .ref{font-size:13px;color:var(--green);font-weight:700;margin-bottom:6px}
+  .ayah-ar{font-size:23px;line-height:2.05;direction:rtl;text-align:right}
+  .ayah-ar mark{background:#f3d98b;color:#22301f;border-radius:4px;padding:0 2px}
+  .ayah-ur{direction:rtl;text-align:right;font-size:16.5px;line-height:2.1;color:var(--soft);margin-top:6px}
+  /* flashcards */
+  #flash{display:none}
+  .flash-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:34px 24px;text-align:center;cursor:pointer;min-height:300px;display:flex;flex-direction:column;
+    justify-content:center;gap:10px;user-select:none}
+  .flash-root{font-size:64px;color:var(--green);line-height:1.2}
+  .flash-translit{font-size:22px;font-weight:700;color:var(--gold)}
+  .flash-meaning{font-size:20px}
+  .flash-meaning .ur{font-size:19px;line-height:2.1}
+  .flash-derived{font-size:16px;color:var(--ink);line-height:1.9}
+  .flash-derived .ar{font-size:20px}
+  .flash-nav{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .flash-hint{color:var(--muted);font-size:13px;text-align:center;margin-top:8px}
+  .mark-btn.know{border-color:var(--green2);color:var(--green2)}
+  .mark-btn.learn{border-color:#b0653a;color:#b0653a}
+  footer{max-width:980px;margin:0 auto;padding:0 14px 34px;color:var(--muted);font-size:13px;line-height:1.65}
+  footer b{color:var(--green)}
+  footer a{color:var(--green);text-decoration:underline}
+  .hidden{display:none!important}
+  @media (max-width:560px){ .root-letters{font-size:32px} .flash-root{font-size:48px} .ayah-ar{font-size:20px} }
+</style>
+</head>
+<body>
+<header>
+  <span class="ar ar-title">جُذُورُ القُرْآن</span>
+  <h1>Quranic Arabic Roots — All 1642 Roots</h1>
+  <p>Learn all 1642 roots of the Holy Quran, with words taken only from the Quran itself.</p>
+  <p>Every word is cited to its verse and cross-verified between the Quranic Arabic Corpus and the Tanzil text.</p>
+</header>
+
+<div class="toolbar">
+  <input type="search" id="search" placeholder="Search: root (كتب), transliteration (ktb, ilm), meaning (book, کتاب, جاننا)…">
+  <button class="btn" id="voiceBtn" title="Voice search (Chrome, needs internet)">🎤 Voice search</button>
+  <select class="voice-lang" id="voiceLang" title="Voice search language">
+    <option value="ar-SA">Voice: Arabic</option>
+    <option value="en-US">Voice: English</option>
+  </select>
+  <span class="voice-note" id="voiceNote"></span>
+  <button class="btn active" id="modeBrowse">📖 Browse</button>
+  <button class="btn" id="modeFlash">🃏 Flashcards</button>
+  <div class="themes" role="group" aria-label="Colour theme">
+    <button class="sw" data-t="light" title="Classic Light" style="--s1:#fffdf7;--s2:#1e5c3f"></button>
+    <button class="sw" data-t="parchment" title="Parchment (light)" style="--s1:#fbf5e6;--s2:#b8862f"></button>
+    <button class="sw" data-t="dark" title="Classic Dark" style="--s1:#1c2216;--s2:#8fce9f"></button>
+    <button class="sw" data-t="midnight" title="Midnight (dark)" style="--s1:#131c2e;--s2:#6fd3c9"></button>
+    <span class="theme-name" id="themeName"></span>
+  </div>
+</div>
+
+<main>
+  <div class="stats" id="stats"></div>
+  <section id="browse"></section>
+  <div id="moreWrap" style="text-align:center;margin:14px 0 22px">
+    <button class="btn" id="moreBtn">Show more roots</button>
+  </div>
+
+  <section id="flash">
+    <div class="flash-card" id="flashCard" title="Click to flip"></div>
+    <div class="flash-nav">
+      <button class="btn" id="fPrev">← Prev</button>
+      <button class="btn" id="fShuffle">🔀 Shuffle</button>
+      <button class="btn" id="fNext">Next →</button>
+    </div>
+    <div class="flash-nav">
+      <button class="btn mark-btn know" id="fKnow">✓ I know this</button>
+      <button class="btn mark-btn learn" id="fLearn">↻ Still learning</button>
+    </div>
+    <div class="flash-hint" id="flashHint"></div>
+  </section>
+</main>
+
+<footer>
+  <b>Sources &amp; verification.</b> Quran text: Tanzil (Uthmani). Roots, lemmas and word
+  analysis: <i>Quranic Arabic Corpus</i> v0.4 (University of Leeds). Verse Urdu translation:
+  Fateh Muhammad Jalandhari (via Tanzil). English/Urdu word meanings were curated for this
+  tool and cross-checked against published word-by-word references (Shaikh &amp; Khatri, English;
+  Dr. Farhat Hashmi, Urdu). In an automated cross-check of all 77,429 words of the Quran,
+  77,423 (99.99%) matched exactly between the Corpus analysis and the Tanzil text; 3621 of the
+  3622 example words in this app are direct verified matches (one, at 12:39, is a manually
+  adjudicated spelling variant — see VERIFICATION.md). See README.md for the full report.
+  <p style="margin-top:8px">Documents:
+  <a href="VERIFICATION.md" target="_blank" rel="noopener">Verification report</a> ·
+  <a href="AUDIT_PASS.md" target="_blank" rel="noopener">Audit report</a></p>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const DATA = window.QURAN_ROOTS_DATA || [];
+const $ = s => document.querySelector(s);
+
+/* --- normalise Arabic for highlight matching (same rules as the build audit) --- */
+function skeleton(t){
+  t = t.replace(/ٔ/g,"ء").replace(/ٕ/g,"ء");
+  let out = "";
+  for (const ch of t){
+    if (ch === "ـ" || ch === "ۥ" || ch === "ۦ") continue;
+    const cp = ch.codePointAt(0);
+    if (cp >= 0x621 && cp <= 0x64A) out += ch;           // Arabic letters only
+  }
+  return out.replace(/ٱ/g,"ا");
+}
+/* Highlight exactly the example word, by its Corpus word position.
+   Standalone marks (۞ ۩ and the waqf marks) are tokens in the printed
+   text but are not counted as words by the Corpus, so they are skipped. */
+function highlightAyah(ayahText, wordNo){
+  let n = 0, done = false;
+  return ayahText.split(" ").map(tok => {
+    if (done || skeleton(tok) === "") return tok;
+    n++;
+    if (n === wordNo){ done = true; return `<mark>${tok}</mark>`; }
+    return tok;
+  }).join(" ");
+}
+
+/* --- browse view --- */
+function rootCard(r){
+  const derived = r.derived.map(d => `
+    <div class="derived">
+      <div class="word-row">
+        <span class="ar word-ar">${d.word}</span>
+        <span class="ar lemma-ar">${d.lemma_ar}</span>
+        <span class="word-translit">${d.translit}</span>
+        <span class="pos">${d.pos}</span>
+        <span class="occurs">lemma occurs ${d.occurrences}× in the Quran</span>
+      </div>
+      <div class="gloss"><div>${d.gloss_en}</div>
+        <div class="ur gloss-ur" lang="ur">${d.gloss_ur}</div></div>
+      <div class="example">
+        <div class="ref">📍 Surah ${d.example.surah_name_en} (${d.example.surah_name_ar}) — ${d.example.surah}:${d.example.ayah}, word ${d.example.word_no}</div>
+        <div class="ar ayah-ar">${highlightAyah(d.example.ayah_text, d.example.word_no)}</div>
+        <div class="ur ayah-ur" lang="ur">${d.example.ayah_ur}</div>
+      </div>
+    </div>`).join("");
+  return `
+  <article class="root-card">
+    <div class="root-head">
+      <span class="ar root-letters">${r.root}</span>
+      <span class="root-translit">${r.root_translit}</span>
+      <span class="root-rank">#${r.rank} of 1642<br><span class="occurs">${r.total_occurrences} occurrences in the Quran</span></span>
+    </div>
+    <div class="root-meaning"><b>Root meaning:</b> ${r.meaning_en}</div>
+    <div class="root-meaning meaning-ur"><span class="ur" lang="ur">${r.meaning_ur}</span></div>
+    ${derived}
+  </article>`;
+}
+
+/* Render incrementally: 100 root cards at a time keeps phones fast. */
+const PAGE = 100;
+let browseList = DATA, shown = PAGE;
+function renderBrowse(list){
+  browseList = list; shown = PAGE; drawBrowse();
+}
+function drawBrowse(){
+  const part = browseList.slice(0, shown);
+  $("#browse").innerHTML = part.map(rootCard).join("") ||
+    `<p class="stats">No roots match your search.</p>`;
+  const words = browseList.reduce((n,r)=>n+r.derived.length,0);
+  $("#stats").textContent = `Showing ${part.length} of ${browseList.length} roots • ${words} Quran-derived words • ranked by frequency in the Quran`;
+  $("#moreWrap").style.display = shown < browseList.length ? "" : "none";
+}
+$("#moreBtn").addEventListener("click", ()=>{ shown += PAGE; drawBrowse(); });
+
+/* search across Arabic, transliteration, English and Urdu.
+   Arabic is normalised on both sides: diacritics stripped and hamza
+   forms unified, so امن, أمن and آمن all find the same roots. */
+function normLatin(s){ return s.toLowerCase().replace(/[ʾʿ'`\-\.]/g,""); }
+function normAr(s){
+  return s.replace(/[ً-ٟۖ-ۭـ]/g,"")
+          .replace(/ٰ/g,"ا")
+          .replace(/[أإآٱ]/g,"ا").replace(/ؤ/g,"و")
+          .replace(/ئ/g,"ي").replace(/ى/g,"ي").replace(/ة/g,"ه");
+}
+function matches(r, q){
+  if (!q) return true;
+  const ql = normLatin(q), qa = normAr(q.trim());
+  const hayLatin = normLatin([r.root_translit, r.meaning_en,
+    ...r.derived.map(d=>d.translit+" "+d.gloss_en)].join(" "));
+  const hayAr = normAr([r.root, r.root_joined, r.meaning_ur,
+    ...r.derived.map(d=>d.lemma_ar+" "+d.word+" "+d.gloss_ur)].join(" "));
+  return hayLatin.includes(ql) || (qa !== "" && hayAr.includes(qa));
+}
+$("#search").addEventListener("input", e=>{
+  renderBrowse(DATA.filter(r=>matches(r, e.target.value)));
+});
+
+/* --- voice search (speech input only; this is not the removed audio
+   pronunciation feature). One tap, one spoken word: the transcript is
+   put into the search box and the same filter above runs. Spoken Arabic
+   arrives without diacritics, which normAr already handles. --- */
+(function(){
+  const btn = $("#voiceBtn"), note = $("#voiceNote"), langSel = $("#voiceLang");
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR){
+    btn.disabled = true;
+    btn.title = "Voice search needs Google Chrome";
+    note.textContent = "Voice search needs Chrome.";
+    return;
+  }
+  const rec = new SR();
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  let listening = false;
+  btn.addEventListener("click", ()=>{
+    if (listening){ try{ rec.stop(); }catch(e){} return; }
+    rec.lang = langSel.value;
+    note.textContent = "Listening… speak one word.";
+    try{ rec.start(); }catch(e){ note.textContent = "Voice search could not start."; }
+  });
+  rec.onstart = ()=>{ listening = true; btn.classList.add("listening"); btn.textContent = "⏹ Stop"; };
+  rec.onend = ()=>{ listening = false; btn.classList.remove("listening"); btn.textContent = "🎤 Voice search"; };
+  rec.onresult = ev=>{
+    let q = ev.results[0][0].transcript.trim().replace(/[۔.!?؟\s]+$/, "");
+    if (!q) return;
+    const box = $("#search");
+    box.value = q;
+    box.dispatchEvent(new Event("input", {bubbles:true}));
+    note.textContent = "Heard: " + q;
+  };
+  rec.onerror = ev=>{
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed"){
+      note.textContent = "Microphone blocked — allow the mic for this page and try again.";
+    } else if (ev.error === "network"){
+      note.textContent = "Voice search needs an internet connection (Chrome). Typed search still works offline.";
+    } else if (ev.error === "no-speech"){
+      note.textContent = "Nothing heard — tap Voice search and speak again.";
+    } else {
+      note.textContent = "Voice search did not work (" + (ev.error || "unknown") + "). Typed search still works.";
+    }
+  };
+})();
+
+/* --- flashcards --- */
+let order = DATA.map((_,i)=>i), fpos = 0, flipped = false;
+/* Storage may be blocked (private mode, file settings): never let that
+   stop the app — fall back to in-memory state. */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k, v); } catch(e){} }
+};
+let marks = {};
+try { marks = JSON.parse(store.get("qr_marks")||"{}"); } catch(e){ marks = {}; }
+function saveMarks(){ store.set("qr_marks", JSON.stringify(marks)); }
+function renderFlash(){
+  const r = DATA[order[fpos]];
+  const c = $("#flashCard");
+  if (!flipped){
+    c.innerHTML = `<div class="ar flash-root">${r.root}</div>
+      <div class="flash-translit">${r.root_translit}</div>
+      <div class="flash-hint">What does this root mean? Click to flip.</div>`;
+  } else {
+    const words = r.derived.map(d =>
+      `<div><span class="ar">${d.lemma_ar}</span> <b>${d.translit}</b> — ${d.gloss_en} •
+       <span class="ur" lang="ur">${d.gloss_ur}</span></div>`).join("");
+    c.innerHTML = `<div class="ar flash-root" style="font-size:44px">${r.root}</div>
+      <div class="flash-meaning"><b>${r.meaning_en}</b></div>
+      <div class="flash-meaning"><span class="ur" lang="ur">${r.meaning_ur}</span></div>
+      <div class="flash-derived">${words}</div>`;
+  }
+  const known = Object.values(marks).filter(v=>v==="know").length;
+  $("#flashHint").textContent =
+    `Card ${fpos+1} of ${order.length} • Root #${r.rank} • Known: ${known} • Still learning: ${Object.values(marks).filter(v=>v==="learn").length}`;
+}
+$("#flashCard").addEventListener("click", ()=>{ flipped=!flipped; renderFlash(); });
+$("#fNext").addEventListener("click", ()=>{ fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+$("#fPrev").addEventListener("click", ()=>{ fpos=(fpos-1+order.length)%order.length; flipped=false; renderFlash(); });
+$("#fShuffle").addEventListener("click", ()=>{
+  for (let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  fpos=0; flipped=false; renderFlash();
+});
+$("#fKnow").addEventListener("click", ()=>{ marks[DATA[order[fpos]].rank]="know"; saveMarks();
+  fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+$("#fLearn").addEventListener("click", ()=>{ marks[DATA[order[fpos]].rank]="learn"; saveMarks();
+  fpos=(fpos+1)%order.length; flipped=false; renderFlash(); });
+
+/* --- mode toggle --- */
+function setMode(flash){
+  $("#browse").classList.toggle("hidden", flash);
+  $("#moreWrap").style.display = flash ? "none" : (shown < browseList.length ? "" : "none");
+  $("#flash").style.display = flash ? "block" : "none";
+  $("#modeBrowse").classList.toggle("active", !flash);
+  $("#modeFlash").classList.toggle("active", flash);
+  $("#search").disabled = flash;
+  if (flash) renderFlash();
+}
+$("#modeBrowse").addEventListener("click", ()=>setMode(false));
+$("#modeFlash").addEventListener("click", ()=>setMode(true));
+
+/* --- colour themes: 2 light + 2 dark --- */
+const THEME_NAMES = {light:"Classic Light", parchment:"Parchment", dark:"Classic Dark", midnight:"Midnight"};
+function setTheme(t){
+  if (!THEME_NAMES[t]) t = "light";
+  document.documentElement.dataset.theme = t;
+  store.set("qr_theme", t);
+  document.querySelectorAll(".sw").forEach(b=>b.classList.toggle("active", b.dataset.t === t));
+  $("#themeName").textContent = THEME_NAMES[t];
+}
+document.querySelectorAll(".sw").forEach(b=>b.addEventListener("click", ()=>setTheme(b.dataset.t)));
+setTheme(document.documentElement.dataset.theme || "light");
+
+renderBrowse(DATA);
+</script>
+</body>
+</html>
