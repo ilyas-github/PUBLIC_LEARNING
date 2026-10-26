@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>اردو بول کر لکھیں — Urdu Dictation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111111; --paper:#fffdf5; --green:#0b6b35; --green-dark:#084d26;
+    --red:#b00020; --gold:#b8860b; --blue:#123a8f; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#ece7d8;color:var(--ink);
+    font-family:'Noto Nastaliq Urdu','Jameel Noori Nastaleeq',Tahoma,sans-serif;}
+  .wrap{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+  header{text-align:center;padding:10px 6px 2px}
+  h1{font-size:40px;line-height:2;margin:4px 0 0;color:var(--green-dark)}
+  .sub{font-size:20px;line-height:2;color:#333;margin:0}
+  .dedication{background:#fdf3d8;border:2px solid var(--gold);border-radius:14px;
+    font-size:26px;line-height:2.1;color:#4a3400;margin:14px 0 4px;padding:8px 18px 14px}
+  .dedication .en{font-size:14px}
+  .ver{display:inline-block;background:var(--gold);color:#fff;font-family:Arial,sans-serif;
+    font-size:14px;font-weight:bold;padding:3px 12px;border-radius:20px;direction:ltr}
+  #warn{display:none;background:#ffe3e3;border:3px solid var(--red);color:#5d000d;
+    font-size:22px;line-height:1.9;padding:12px 16px;border-radius:14px;margin:14px 0;text-align:center}
+  #status{text-align:center;font-size:28px;line-height:2;min-height:64px;margin:10px 0 4px;font-weight:bold}
+  #status.on{color:var(--red)}
+  #status.off{color:var(--green-dark)}
+  .micbtn{display:block;width:100%;border:none;cursor:pointer;border-radius:22px;
+    padding:22px 10px 30px;font-family:inherit;font-size:44px;line-height:1.9;font-weight:bold;
+    background:var(--green);color:#fff;box-shadow:0 6px 0 var(--green-dark)}
+  .micbtn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dark)}
+  .micbtn.listening{background:var(--red);box-shadow:0 6px 0 #6d0013}
+  .micbtn small{display:block;font-size:20px;font-weight:normal}
+  .langrow{display:flex;gap:10px;margin-top:14px}
+  .langbtn{flex:1;border:3px solid #8a825f;cursor:pointer;border-radius:16px;padding:10px 4px 16px;
+    font-family:inherit;font-size:25px;line-height:1.8;font-weight:bold;background:#fff;color:#333}
+  .langbtn.active{background:var(--green);border-color:var(--green-dark);color:#fff}
+  .langbtn small{display:block;font-size:14px;font-weight:normal;font-family:Arial,sans-serif}
+  textarea{width:100%;min-height:340px;margin-top:14px;background:var(--paper);
+    border:3px solid #8a825f;border-radius:16px;padding:20px 22px;color:var(--ink);
+    font-family:inherit;font-size:38px;line-height:2.3;resize:vertical}
+  textarea:focus{outline:4px solid var(--blue);outline-offset:2px}
+  .fontrow{display:flex;align-items:center;gap:12px;margin-top:14px;background:#fff;
+    border:2px solid #c9c2a4;border-radius:14px;padding:10px 16px}
+  .fontrow .flabel{font-size:22px;line-height:1.8;font-weight:bold;white-space:nowrap}
+  .fontrow input[type=range]{flex:1;height:44px;accent-color:var(--green);cursor:pointer}
+  .fontrow .fval{font-family:Arial,sans-serif;font-size:22px;font-weight:bold;min-width:52px;text-align:center}
+  .fbtn{border:none;cursor:pointer;border-radius:12px;padding:8px 18px 14px;font-family:inherit;
+    font-size:24px;line-height:1.6;font-weight:bold;color:#fff;background:#4a4a4a;white-space:nowrap}
+  .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .btn{flex:1 1 200px;border:none;cursor:pointer;border-radius:16px;padding:14px 8px 20px;
+    font-family:inherit;font-size:26px;line-height:1.9;font-weight:bold;color:#fff;background:var(--blue)}
+  .btn:active{transform:translateY(3px)}
+  .btn.gold{background:var(--gold)} .btn.grey{background:#4a4a4a} .btn.darkred{background:#7a1020} .btn.fb{background:#1877f2;color:#fff}
+  .langbtn{background:#ddd6bd;color:#222} .langbtn.active{background:#0b6b35;color:#fff}
+  .btn small{display:block;font-size:15px;font-weight:normal;font-family:Arial,sans-serif}
+  .meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px}
+  #count{font-size:21px;line-height:2;color:#333}
+  #saved{font-size:19px;line-height:2;color:var(--green-dark)}
+  .help{background:var(--card);border:2px solid #c9c2a4;border-radius:14px;
+    padding:6px 20px 14px;margin-top:22px;font-size:21px;line-height:2.1}
+  .help b{color:var(--green-dark)}
+  .en{font-family:Arial,sans-serif;direction:ltr;font-size:15px;color:#555;line-height:1.6}
+
+  .wrap{display:flex;flex-direction:column}
+  .wrap>*{order:9}
+  .wrap>header{order:0} #warn{order:1} #status{order:2;min-height:44px;font-size:24px;margin:4px 0}
+  #topRow{order:3;display:flex;gap:10px;position:sticky;top:0;z-index:5;padding:4px 0;background:#ece7d8}
+  #topRow .micbtn{flex:1;width:auto;font-size:26px;padding:12px 6px 16px;position:static}
+  #topRow .btn{flex:1;font-size:26px;margin:0;border-radius:22px}
+  #text{order:4;min-height:260px;height:46vh}
+  .meta{order:5} .fontrow{order:6} .row{order:7} 
+  h1{font-size:30px;line-height:1.7}
+  summary{cursor:pointer}
+  body.hc{background:#000;color:#ff0}
+  body.hc h1,body.hc .sub,body.hc #count,body.hc #saved,body.hc #status.on,body.hc #status.off,body.hc .help b{color:#ff0}
+  body.hc textarea{background:#000;color:#ff0;border-color:#ff0}
+  body.hc .btn,body.hc .fbtn,body.hc .langbtn,body.hc .micbtn,body.hc .fontrow,body.hc .help,body.hc .dedication{background:#111;color:#ff0;border:3px solid #ff0;box-shadow:none}
+  body.hc .en{color:#ddd}
+  body.hc #topRow{background:#000}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="ver">VERSION 8.3 (Multi-Language Cloud Audio)</span>
+    <h1>اردو بول کر لکھیں</h1>
+    <p class="sub">بولیں — لکھا ہوا متن خود بخود آ جائے گا</p>
+    <details class="dedication"><summary style="cursor:pointer;font-size:22px">🌹 پیغام / Message</summary>ایک پیارے دوست کے لیے، محبت کے ساتھ بنایا گیا — آپ بس بولیں، آپ کے مضامین خود لکھے جائیں گے۔ لکھتے رہیے، آپ کے الفاظ قیمتی ہیں۔ 🌹<br><span class="en">Made with love for a dear friend — just speak, and your articles will write themselves. Keep writing; your words matter.</span></details>
+  </header>
+
+  <div id="warn" role="alert"></div>
+  <div id="status" class="off" aria-live="polite">تیار ہے — نیچے بڑا بٹن دبائیں اور بولنا شروع کریں</div>
+
+  <div id="topRow">
+    <button id="micBtn" class="micbtn" aria-label="Start or stop dictation">
+      🎤 بولنا شروع کریں
+      <small>Press, then speak — دبائیں اور بولیں</small>
+    </button>
+    <button class="btn gold" id="listenBtn">🔊 سنو<small>Listen — reads text aloud naturally</small></button>
+  </div>
+
+  <div class="row" id="langRow">
+    <button class="btn langbtn" data-lang="ur">اردو<small>Urdu</small></button>
+    <button class="btn langbtn" data-lang="en">English<small>English</small></button>
+    <button class="btn langbtn" data-lang="ar">العربية<small>Arabic</small></button>
+  </div>
+
+  <div class="fontrow">
+    <span class="flabel">خط کا سائز</span>
+    <button class="fbtn" id="smallerBtn">A−</button>
+    <input type="range" id="fontSlider" min="24" max="80" step="2" value="38" aria-label="Text size">
+    <button class="fbtn" id="biggerBtn">A+</button>
+    <span class="fval" id="fontVal">38</span>
+  </div>
+
+  <textarea id="text" dir="rtl" lang="ur" placeholder="آپ کی بات یہاں لکھی جائے گی…"></textarea>
+  <p class="en" id="diag" style="text-align:left"></p>
+
+  <div class="meta">
+    <span id="count">الفاظ: 0</span>
+    <span id="saved"></span>
+  </div>
+
+  <div class="row">
+    <button class="btn" id="saveTxtBtn">💾 محفوظ کریں<small>Save as text file</small></button>
+    <button class="btn" id="saveDocBtn">📄 ورڈ فائل<small>Save as Word file (.docx)</small></button>
+    <button class="btn grey" id="copyBtn">📋 کاپی کریں<small>Copy text</small></button>
+    <button class="btn grey" id="themeBtn">🌓 نظر کا انداز<small>High contrast mode</small></button>
+  </div>
+  <div class="row">
+    <button class="btn darkred" id="clearBtn">🗑️ نیا مضمون<small>Start new article</small></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  function lsGet(k,d){ try{ var v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var KEY = "urdu_dictation_v3";
+  var ta = document.getElementById('text');
+  var micBtn = document.getElementById('micBtn');
+  var status = document.getElementById('status');
+  var countEl = document.getElementById('count');
+  var savedEl = document.getElementById('saved');
+  var warn = document.getElementById('warn');
+  function showWarn(msg){ warn.style.display = "block"; warn.textContent = msg; }
+  function hideWarn(){ warn.style.display = "none"; }
+
+  function beep(freq, ms){
+    try{
+      var actx = new (window.AudioContext||window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.frequency.value = freq; o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(0.18, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + ms/1000);
+      o.start(); o.stop(actx.currentTime + ms/1000);
+    }catch(e){}
+  }
+
+  ta.value = lsGet(KEY, "");
+  function wordCount(){
+    var t = ta.value.trim();
+    countEl.textContent = "الفاظ: " + (t ? t.split(/\s+/).length : 0);
+  }
+  var saveTimer = null;
+  function autosave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      lsSet(KEY, ta.value);
+      savedEl.textContent = "محفوظ ہو گیا ✓";
+      setTimeout(function(){ savedEl.textContent=""; }, 2500);
+    }, 400);
+    wordCount();
+  }
+  ta.addEventListener('input', function(){ autosave(); });
+  wordCount();
+
+  var slider = document.getElementById('fontSlider');
+  var fontVal = document.getElementById('fontVal');
+  var fontSize = parseInt(lsGet(KEY+"_font","38"),10);
+  function setFont(px){
+    fontSize = Math.max(24, Math.min(80, Math.round(px)));
+    ta.style.setProperty('font-size', fontSize + "px", 'important');
+    slider.value = fontSize;
+    fontVal.textContent = fontSize;
+    lsSet(KEY+"_font", String(fontSize));
+  }
+  document.getElementById('biggerBtn').addEventListener('click', function(){ setFont(fontSize + 6); beep(990,100); });
+  document.getElementById('smallerBtn').addEventListener('click', function(){ setFont(fontSize - 6); beep(880,100); });
+  slider.addEventListener('input', function(){ setFont(parseInt(slider.value,10)); });
+  setFont(fontSize);
+
+  var LANGS = {
+    ur: { rec:"ur-PK", gtl:"ur", dir:"rtl", label:"اردو", ph:"آپ کی بات یہاں لکھی جائے گی…" },
+    en: { rec:"en-US", gtl:"en", dir:"ltr", label:"English", ph:"Your spoken words will appear here…" },
+    ar: { rec:"ar-SA", gtl:"ar", dir:"rtl", label:"العربية", ph:"ستظهر كلماتك المنطوقة هنا…" }
+  };
+  var curLang = lsGet("ud_lang", "ur");
+  function L(){ return LANGS[curLang] || LANGS.ur; }
+
+  function applyLang(){
+    var l = L();
+    ta.dir = l.dir; ta.lang = l.rec; ta.placeholder = l.ph;
+    var bs = document.querySelectorAll('.langbtn');
+    for (var i = 0; i < bs.length; i++) {
+      bs[i].classList.toggle('active', bs[i].getAttribute('data-lang') === curLang);
+    }
+  }
+
+  var bs = document.querySelectorAll('.langbtn');
+  for (var i = 0; i < bs.length; i++) {
+    bs[i].addEventListener('click', function(){
+      curLang = this.getAttribute('data-lang');
+      lsSet("ud_lang", curLang);
+      applyLang();
+      status.textContent = "زبان تبدیل ہو گئی: " + L().label;
+      beep(990, 100);
+    });
+  }
+  applyLang();
+
+  // Speech Recognition
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null, wantListening = false, finalText = ta.value || "";
+  
+  if (SR){
+    rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.onresult = function(ev){
+      rec.lang = L().rec;
+      var interim = "";
+      for (var i = ev.resultIndex; i < ev.results.length; i++){
+        var r = ev.results[i];
+        if (r.isFinal){
+          var s = r[0].transcript.trim();
+          if (s) finalText += (finalText ? " " : "") + s + (curLang === 'en' ? "." : "۔");
+        } else {
+          interim += r[0].transcript;
+        }
+      }
+      ta.value = finalText + (interim ? " " + interim : "");
+      autosave();
+    };
+    rec.onend = function(){
+      if (wantListening) { try{ rec.start(); }catch(e){} }
+    };
+  }
+
+  function toggleMic(){
+    if (!rec) return;
+    if (!wantListening){
+      wantListening = true;
+      rec.lang = L().rec;
+      micBtn.classList.add('listening');
+      micBtn.childNodes[0].textContent = "⏹️ بولنا بند کریں ";
+      status.className = "on";
+      status.textContent = "🔴 سن رہے ہیں (" + L().label + ")… بولیں";
+      try{ rec.start(); }catch(e){}
+      beep(880,150);
+    } else {
+      wantListening = false;
+      micBtn.classList.remove('listening');
+      micBtn.childNodes[0].textContent = "🎤 بولنا شروع کریں ";
+      status.className = "off";
+      status.textContent = "تیار ہے — نیچے بڑا بٹن دبائیں";
+      try{ rec.stop(); }catch(e){}
+      beep(440,180);
+    }
+  }
+  micBtn.addEventListener('click', toggleMic);
+
+  // Read Aloud supporting Urdu, Arabic, and English
+  var listenBtn = document.getElementById('listenBtn');
+  var currentAudio = null;
+
+  function stopAudio(){
+    if (currentAudio){
+      currentAudio.pause();
+      currentAudio = null;
+    }
+  }
+
+  listenBtn.addEventListener('click', function(){
+    var t = ta.value.trim();
+    if (!t){ showWarn("پہلے کچھ لکھوائیں — متن خالی ہے۔"); return; }
+    
+    if (currentAudio && !currentAudio.paused){
+      stopAudio();
+      status.textContent = "سننا روک دیا گیا";
+      return;
+    }
+
+    if (wantListening) toggleMic(); 
+    status.textContent = "🔊 قدرتی آواز میں سنایا جا رہا ہے…";
+
+    var encodedText = encodeURIComponent(t.slice(0, 200)); 
+    var audioUrl = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=" + L().gtl + "&q=" + encodedText;
+
+    currentAudio = new Audio(audioUrl);
+    currentAudio.play().then(function(){
+      status.textContent = "🔊 سنا جا رہا ہے…";
+    }).catch(function(err){
+      showWarn("آواز چلانے میں انٹرنیٹ کا مسئلہ پیش آیا۔");
+      status.textContent = "خرابی";
+    });
+
+    currentAudio.onended = function(){
+      status.textContent = "✓ سنانا مکمل ہوا";
+    };
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    ta.select();
+    navigator.clipboard.writeText(ta.value);
+    savedEl.textContent = "کاپی ہو گیا ✓";
+    beep(990,120);
+  });
+  
+  function applyHC(on){ document.body.classList.toggle('hc', on); }
+  applyHC(lsGet('ud_hc','') === '1');
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    var on = !document.body.classList.contains('hc');
+    applyHC(on); lsSet('ud_hc', on ? '1' : ''); beep(on ? 880 : 440, 100);
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function(){
+    stopAudio();
+    finalText = ""; ta.value = ""; lsSet(KEY, ""); autosave();
+    status.textContent = "نیا مضمون تیار ہے";
+  });
+})();
+</script>
+</body>
+</html>
