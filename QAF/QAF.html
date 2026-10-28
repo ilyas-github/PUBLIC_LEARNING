@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qur'anic Arabic Root & Morphology Explorer</title>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Light Theme Variables */
+    :root {
+      --primary: #105652;
+      --primary-light: #187771;
+      --primary-dark: #093936;
+      --accent: #c49751;
+      --accent-light: #f7ebd4;
+      --bg-main: #fbf9f5;
+      --surface: #ffffff;
+      --surface-subtle: #faf7f2;
+      --border: #e6dfd5;
+      --text-dark: #1f2421;
+      --text-muted: #5c6460;
+      --table-alt: #faf8f5;
+      --font-arabic: 'Amiri', 'Amiri Quran', serif;
+      --font-urdu: 'Noto Nastaliq Urdu', serif;
+      --font-latin: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --radius: 12px;
+    }
+
+    /* Dark Theme Variables */
+    [data-theme="dark"] {
+      --primary: #2fa198;
+      --primary-light: #3dbcb1;
+      --primary-dark: #121f1d;
+      --accent: #d8aa60;
+      --accent-light: #2b2518;
+      --bg-main: #121514;
+      --surface: #1a1f1d;
+      --surface-subtle: #222926;
+      --border: #2c3632;
+      --text-dark: #e8ece9;
+      --text-muted: #9ba5a0;
+      --table-alt: #161a18;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      font-family: var(--font-latin);
+      line-height: 1.6;
+      padding-bottom: 60px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, #105652 100%);
+      color: #fff;
+      padding: 26px 20px;
+      text-align: center;
+      border-bottom: 4px solid var(--accent);
+      position: relative;
+    }
+
+    [data-theme="dark"] header {
+      background: linear-gradient(135deg, #09100e 0%, #142825 100%);
+    }
+
+    header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
+    header p { color: var(--accent-light); font-size: 0.92rem; }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    .controls-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-subtle);
+      color: var(--text-dark);
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 86, 82, 0.2);
+    }
+
+    .btn-reset {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reset:hover { background: var(--primary-light); }
+
+    .root-chips-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .root-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-dark);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-family: var(--font-arabic);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chip:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .surah-block-header {
+      margin: 32px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .surah-block-header h2 {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .ayah-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ayah-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .ayah-badge {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(196, 151, 81, 0.3);
+    }
+
+    .ayah-arabic {
+      font-family: var(--font-arabic);
+      font-size: 2rem;
+      text-align: right;
+      direction: rtl;
+      line-height: 2.2;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .translations-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .translations-grid { grid-template-columns: 1fr; }
+      .theme-toggle-btn { position: static; margin: 10px auto 0 auto; }
+    }
+
+    .trans-box h4 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .trans-urdu {
+      font-family: var(--font-urdu);
+      direction: rtl;
+      font-size: 1.15rem;
+      line-height: 2;
+    }
+
+    .trans-english { font-size: 0.95rem; }
+
+    .table-container {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--surface-subtle);
+      color: var(--text-dark);
+      font-weight: 600;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:nth-child(even) td { background: var(--table-alt); }
+
+    .word-arabic {
+      font-family: var(--font-arabic);
+      font-size: 1.35rem;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .word-arabic:hover { color: var(--accent); }
+
+    .root-tag {
+      font-family: var(--font-arabic);
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .root-tag:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-inspect {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-inspect:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-card {
+      background: var(--surface);
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      max-width: 740px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 26px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--surface-subtle);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 34px; height: 34px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .context-phrase {
+      font-family: var(--font-arabic);
+      direction: rtl;
+      font-size: 1.25rem;
+      color: var(--primary);
+      line-height: 1.9;
+      background: var(--surface-subtle);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-right: 3px solid var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-muted);
+    }
+  </style>
+
+  <!-- Load Separate Data File -->
+  <script src="data.js"></script>
+</head>
+<body>
+
+  <header>
+    <button class="theme-toggle-btn" id="themeToggleBtn">
+      <span id="themeIcon">🌙</span> <span id="themeText">Dark Theme</span>
+    </button>
+    <h1>📖 Qur'anic Arabic Root & Morphology Explorer</h1>
+    <p>Comprehensive bilingual dictionary, morphological metrics, and authenticated Qur'anic context</p>
+  </header>
+
+  <div class="container">
+    <div class="controls-card">
+      <div class="search-row">
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Search by Root (e.g. ك ت ب or كتب), Arabic word, English, or Urdu..."
+        />
+        <button id="resetBtn" class="btn-reset">Reset Filters</button>
+      </div>
+
+      <div class="root-chips-title">🌿 Quick Root Filter (Click any root)</div>
+      <div id="rootChipsContainer" class="root-chips"></div>
+    </div>
+
+    <div id="resultsContainer"></div>
+  </div>
+
+  <!-- Detailed Modal -->
+  <div id="morphologyModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // THEME MANAGEMENT
+    // ==========================================
+    const currentTheme = localStorage.getItem("quranAppTheme") || "light";
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    updateThemeButtonUI(currentTheme);
+
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      const activeTheme = document.documentElement.getAttribute("data-theme");
+      const nextTheme = activeTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", nextTheme);
+      localStorage.setItem("quranAppTheme", nextTheme);
+      updateThemeButtonUI(nextTheme);
+    });
+
+    function updateThemeButtonUI(theme) {
+      const icon = document.getElementById("themeIcon");
+      const text = document.getElementById("themeText");
+      if (theme === "dark") {
+        icon.innerText = "☀️";
+        text.innerText = "Light Theme";
+      } else {
+        icon.innerText = "🌙";
+        text.innerText = "Dark Theme";
+      }
+    }
+
+    // ==========================================
+    // DATABASE & APP ENGINE
+    // ==========================================
+    const db = window.quranDatabase || [];
+    let activeFilterRoot = null;
+
+    // Normalize Arabic string for tolerant search
+    function normalizeArabic(str) {
+      if (!str) return "";
+      return str
+        .replace(/[\u064B-\u065F\u0670]/g, "") // remove tashkeel
+        .replace(/[إأآا]/g, "ا")
+        .replace(/ة/g, "ه")
+        .replace(/ي/g, "ى")
+        .replace(/\s+/g, "")
+        .trim()
+        .toLowerCase();
+    }
+
+    // Extract all unique roots across all Surahs
+    function getAllUniqueRoots() {
+      const set = new Set();
+      db.forEach(surah => {
+        if (surah.allRoots) {
+          surah.allRoots.forEach(r => set.add(r));
+        }
+      });
+      return Array.from(set);
+    }
+
+    // Find root details from dictionary across surahs
+    function getRootDetails(root) {
+      for (const surah of db) {
+        if (surah.rootsDictionary && surah.rootsDictionary[root]) {
+          return surah.rootsDictionary[root];
+        }
+      }
+      return { root: root, urdu: "", english: "", type: "" };
+    }
+
+    // Render Root Filter Chips
+    function renderRootChips() {
+      const container = document.getElementById("rootChipsContainer");
+      container.innerHTML = "";
+      
+      const allRoots = getAllUniqueRoots();
+      allRoots.forEach(root => {
+        const chip = document.createElement("div");
+        chip.className = `chip ${activeFilterRoot === root ? 'active' : ''}`;
+        chip.innerText = root;
+        chip.onclick = () => {
+          activeFilterRoot = (activeFilterRoot === root) ? null : root;
+          document.getElementById("searchInput").value = "";
+          renderRootChips();
+          renderApp();
+        };
+        container.appendChild(chip);
+      });
+    }
+
+    // Render Surahs & Ayahs with Robust Multi-lingual Search
+    function renderApp() {
+      const container = document.getElementById("resultsContainer");
+      if (!db || db.length === 0) {
+        container.innerHTML = `<div class="empty-state"><h3>⚠️ Error loading data.js</h3><p>Make sure 'data.js' is loaded properly.</p></div>`;
+        return;
+      }
+
+      const searchRaw = document.getElementById("searchInput").value.trim();
+      const searchNorm = normalizeArabic(searchRaw);
+      const searchLower = searchRaw.toLowerCase();
+
+      container.innerHTML = "";
+      let totalMatchedAyahs = 0;
+
+      db.forEach(surah => {
+        let surahHasMatches = false;
+        const surahBlock = document.createElement("div");
+
+        let surahContent = `
+          <div class="surah-block-header">
+            <h2>Surah ${surah.surahNameEnglish} — <span style="font-family:var(--font-arabic);">${surah.surahNameArabic}</span></h2>
+            <span style="font-size:0.85rem; color:var(--text-muted);">Ayat ${surah.ayahRange}</span>
+          </div>
+        `;
+
+        let ayahsHtml = "";
+
+        surah.ayahs.forEach(ayah => {
+          let wordsToDisplay = ayah.words;
+
+          if (activeFilterRoot) {
+            wordsToDisplay = ayah.words.filter(w => w.root === activeFilterRoot);
+            if (wordsToDisplay.length === 0) return;
+          } else if (searchRaw) {
+            // Check if Ayah matches directly in Arabic, English, or Urdu
+            const ayahMatchesDirectly = 
+              normalizeArabic(ayah.arabicText).includes(searchNorm) ||
+              ayah.englishTranslation.toLowerCase().includes(searchLower) ||
+              ayah.urduTranslation.toLowerCase().includes(searchLower);
+
+            // Filter matching words
+            wordsToDisplay = ayah.words.filter(w => {
+              const rootNorm = normalizeArabic(w.root);
+              const wordNorm = normalizeArabic(w.word);
+              const rootInfo = getRootDetails(w.root);
+
+              return (
+                rootNorm.includes(searchNorm) ||
+                wordNorm.includes(searchNorm) ||
+                (w.contextualEnglish && w.contextualEnglish.toLowerCase().includes(searchLower)) ||
+                (w.contextualUrdu && w.contextualUrdu.includes(searchRaw)) ||
+                (rootInfo.english && rootInfo.english.toLowerCase().includes(searchLower)) ||
+                (rootInfo.urdu && rootInfo.urdu.includes(searchRaw))
+              );
+            });
+
+            if (!ayahMatchesDirectly && wordsToDisplay.length === 0) return;
+            if (ayahMatchesDirectly && wordsToDisplay.length === 0) wordsToDisplay = ayah.words;
+          }
+
+          surahHasMatches = true;
+          totalMatchedAyahs++;
+
+          let tableRows = wordsToDisplay.map(w => {
+            const rootData = getRootDetails(w.root);
+            return `
+              <tr>
+                <td>
+                  <span class="word-arabic" onclick='openModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>${w.word}</span>
+                </td>
+                <td>
+                  ${w.root !== "—" ? `<span class="root-tag" onclick='filterByRoot("${w.root}")'>${w.root}</span>` : '—'}
+                </td>
+                <td>
+                  <div style="font-size:0.88rem; font-weight:600; color:var(--primary);">${rootData.english || '—'}</div>
+                  <div style="font-size:0.88rem; color:var(--text-muted); font-family:var(--font-urdu); direction:rtl; text-align:right;">${rootData.urdu || ''}</div>
+                </td>
+                <td><code>${w.wazn || '—'}</code></td>
+                <td>
+                  <div style="font-size:0.9rem;">${w.contextualEnglish || '—'}</div>
+                  <div style="font-family:var(--font-urdu); direction:rtl; text-align:right; font-size:1.02rem;">${w.contextualUrdu || ''}</div>
+                </td>
+                <td>
+                  <button class="btn-inspect" onclick='openModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>Inspect</button>
+                </td>
+              </tr>
+            `;
+          }).join("");
+
+          ayahsHtml += `
+            <div class="ayah-card">
+              <div class="ayah-header">
+                <span class="ayah-badge">Ayah ${ayah.ayahKey}</span>
+                <span style="font-size:0.85rem; color:var(--text-muted);">${surah.surahNameEnglish}</span>
+              </div>
+
+              <div class="ayah-arabic">${ayah.arabicText}</div>
+
+              <div class="translations-grid">
+                <div class="trans-box">
+                  <h4>Urdu Translation</h4>
+                  <div class="trans-urdu">${ayah.urduTranslation}</div>
+                </div>
+                <div class="trans-box">
+                  <h4>English Translation</h4>
+                  <div class="trans-english">${ayah.englishTranslation}</div>
+                </div>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Word (اللفظ)</th>
+                      <th>Root (الجذر)</th>
+                      <th>Root Meaning (اصل المعنى)</th>
+                      <th>Form / Pattern (الوزن)</th>
+                      <th>Contextual Meaning (سیاقی معنی)</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tableRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        });
+
+        if (surahHasMatches) {
+          surahBlock.innerHTML = surahContent + ayahsHtml;
+          container.appendChild(surahBlock);
+        }
+      });
+
+      if (totalMatchedAyahs === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No matching roots, words, or meanings found</h3>
+            <p>Try searching for a different keyword or reset active filters.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Modal Details Inspector
+    window.openModal = function(wordObj) {
+      const rootData = getRootDetails(wordObj.root);
+      const modal = document.getElementById("morphologyModal");
+      const modalBody = document.getElementById("modalBody");
+
+      let derivativesHtml = "";
+      if (wordObj.derivatives && wordObj.derivatives.length > 0) {
+        derivativesHtml = `
+          <div style="margin-top:20px; background:var(--surface-subtle); padding:16px; border-radius:8px; border:1px solid var(--border);">
+            <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:12px; color:var(--primary);">
+              🌱 Qur'anic Derivatives & Context Phrases (مشتقات مع سیاقِ قرآنی)
+            </h4>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              ${wordObj.derivatives.map(d => `
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-family:var(--font-arabic); font-size:1.35rem; font-weight:700; color:var(--primary);">${d.word}</span>
+                    <span class="ayah-badge">Ayah ${d.ayah}</span>
+                  </div>
+                  
+                  <div class="context-phrase">${d.contextPhrase}</div>
+
+                  <div style="font-size:0.92rem; margin-top:4px;">${d.meaningEn}</div>
+                  <div style="font-family:var(--font-urdu); direction:rtl; text-align:right; font-size:1rem; margin-top:2px;">${d.meaningUr}</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      modalBody.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div>
+            <span style="background:var(--accent-light); color:var(--accent); padding:2px 8px; border-radius:4px; font-size:0.8rem; font-weight:600;">${wordObj.pos || 'Morphology'}</span>
+            <h2 style="font-family:var(--font-arabic); font-size:2.2rem; color:var(--primary); margin-top:4px;">${wordObj.word}</h2>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Root</div>
+            <div style="font-family:var(--font-arabic); font-size:1.6rem; font-weight:700; color:var(--accent);">${wordObj.root}</div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface-subtle); border-radius:8px; padding:12px; margin-bottom:16px; border:1px solid var(--border);">
+          <div style="font-weight:700; font-size:0.88rem; color:var(--primary); margin-bottom:4px;">Primary Root Meaning:</div>
+          <div style="font-size:0.95rem; margin-bottom:4px;">${rootData.english || '—'}</div>
+          <div style="font-family:var(--font-urdu); direction:rtl; text-align:right; font-size:1.05rem;">${rootData.urdu || ''}</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.9rem; margin-bottom:16px;">
+          <div><b>Pattern / Wazn:</b> <code>${wordObj.wazn || '—'}</code></div>
+          <div><b>Part of Speech:</b> ${wordObj.pos || '—'}</div>
+          <div><b>Grammar:</b> ${wordObj.grammarEnglish || '—'}</div>
+          <div style="direction:rtl; text-align:right; font-family:var(--font-urdu);"><b>ترکیب:</b> ${wordObj.grammarUrdu || '—'}</div>
+        </div>
+
+        ${derivativesHtml}
+      `;
+
+      modal.style.display = "flex";
+    };
+
+    window.filterByRoot = function(root) {
+      activeFilterRoot = root;
+      document.getElementById("searchInput").value = "";
+      renderRootChips();
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    document.getElementById("modalCloseBtn").onclick = () => {
+      document.getElementById("morphologyModal").style.display = "none";
+    };
+
+    window.onclick = (e) => {
+      const modal = document.getElementById("morphologyModal");
+      if (e.target === modal) modal.style.display = "none";
+    };
+
+    document.getElementById("searchInput").addEventListener("input", () => {
+      activeFilterRoot = null;
+      renderRootChips();
+      renderApp();
+    });
+
+    document.getElementById("resetBtn").onclick = () => {
+      document.getElementById("searchInput").value = "";
+      activeFilterRoot = null;
+      renderRootChips();
+      renderApp();
+    };
+
+    // Initial render
+    renderRootChips();
+    renderApp();
+  </script>
+</body>
+</html>
