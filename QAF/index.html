@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qur'anic Arabic Root & Morphology Explorer</title>
 
-  <!-- Typography -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Light Theme Variables */
     :root {
       --primary: #105652;
       --primary-light: #187771;
@@ -34,7 +33,6 @@
       --radius: 12px;
     }
 
-    /* Dark Theme Variables */
     [data-theme="dark"] {
       --primary: #2fa198;
       --primary-light: #3dbcb1;
@@ -80,7 +78,6 @@
     header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
     header p { color: var(--accent-light); font-size: 0.92rem; }
 
-    /* Theme Toggle Button */
     .theme-toggle-btn {
       position: absolute;
       top: 20px;
@@ -99,9 +96,7 @@
       transition: all 0.2s;
     }
 
-    .theme-toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
+    .theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.25); }
 
     .container {
       max-width: 1100px;
@@ -128,7 +123,7 @@
 
     .search-input {
       flex: 1;
-      min-width: 250px;
+      min-width: 260px;
       padding: 12px 16px;
       border: 1.5px solid var(--border);
       background: var(--surface-subtle);
@@ -194,6 +189,57 @@
       background: var(--primary);
       color: #fff;
       border-color: var(--primary);
+    }
+
+    /* Active Root Lexicon Card */
+    .root-lexicon-card {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .root-lexicon-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .root-lexicon-title {
+      font-family: var(--font-arabic);
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: var(--accent);
+      direction: rtl;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+
+    .root-lexicon-title:hover {
+      transform: scale(1.05);
+      color: var(--primary);
+    }
+
+    .root-derivatives-panel {
+      margin-top: 18px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
     }
 
     .surah-block-header {
@@ -416,7 +462,6 @@
     }
   </style>
 
-  <!-- Load Separate Data File -->
   <script src="data.js"></script>
 </head>
 <body>
@@ -426,7 +471,7 @@
       <span id="themeIcon">🌙</span> <span id="themeText">Dark Theme</span>
     </button>
     <h1>📖 Qur'anic Arabic Root & Morphology Explorer</h1>
-    <p>Comprehensive bilingual dictionary, morphological metrics, and authenticated Qur'anic context</p>
+    <p>Search roots in Arabic or English transliteration (e.g. KTB, RBB), click roots to view all derived words with Qur'anic context</p>
   </header>
 
   <div class="container">
@@ -436,15 +481,19 @@
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="Search by Root (e.g. ك ت ب or كتب), Arabic word, English, or Urdu..."
+          placeholder="Search Root (e.g. RBB, KTB, ر ب ب, ك ت ب), English, or Urdu..."
         />
         <button id="resetBtn" class="btn-reset">Reset Filters</button>
       </div>
 
-      <div class="root-chips-title">🌿 Quick Root Filter (Click any root)</div>
+      <div class="root-chips-title">🌿 Quick Root Filter (Click any root to view full root lexicon & derivatives)</div>
       <div id="rootChipsContainer" class="root-chips"></div>
     </div>
 
+    <!-- Dynamic Root Lexicon Display -->
+    <div id="rootLexiconContainer"></div>
+
+    <!-- Ayahs Section -->
     <div id="resultsContainer"></div>
   </div>
 
@@ -458,7 +507,7 @@
 
   <script>
     // ==========================================
-    // THEME MANAGEMENT
+    // 1. THEME MANAGEMENT
     // ==========================================
     const currentTheme = localStorage.getItem("quranAppTheme") || "light";
     document.documentElement.setAttribute("data-theme", currentTheme);
@@ -485,16 +534,47 @@
     }
 
     // ==========================================
-    // DATABASE & APP ENGINE
+    // 2. ENGLISH TRANSLITERATION MAPPER
+    // ==========================================
+    const translitMap = {
+      'a': 'ا', 'b': 'ب', 't': 'ت', 'th': 'ث', 'j': 'ج', 'h': 'ح', 'kh': 'خ',
+      'd': 'د', 'dh': 'ذ', 'r': 'ر', 'z': 'ز', 's': 'س', 'sh': 'ش', 's': 'ص',
+      'd': 'ض', 't': 'ط', 'z': 'ظ', 'ayn': 'ع', 'gh': 'غ', 'f': 'ف', 'q': 'ق',
+      'k': 'ك', 'l': 'ل', 'm': 'م', 'n': 'ن', 'h': 'ه', 'w': 'و', 'y': 'ي',
+      'hamza': 'ء', 'alif': 'ا'
+    };
+
+    function transliterateToArabic(englishInput) {
+      let clean = englishInput.toLowerCase().replace(/[^a-z]/g, '');
+      if (!clean) return "";
+
+      let arabicChars = [];
+      let i = 0;
+      while (i < clean.length) {
+        if (i + 1 < clean.length && translitMap[clean.substring(i, i + 2)]) {
+          arabicChars.push(translitMap[clean.substring(i, i + 2)]);
+          i += 2;
+        } else if (translitMap[clean[i]]) {
+          arabicChars.push(translitMap[clean[i]]);
+          i += 1;
+        } else {
+          i += 1;
+        }
+      }
+      return arabicChars.join(" ");
+    }
+
+    // ==========================================
+    // 3. DATABASE ENGINE & DERIVATIVES COLLECTOR
     // ==========================================
     const db = window.quranDatabase || [];
     let activeFilterRoot = null;
+    let showDerivativesForRoot = null;
 
-    // Normalize Arabic string for tolerant search
     function normalizeArabic(str) {
       if (!str) return "";
       return str
-        .replace(/[\u064B-\u065F\u0670]/g, "") // remove tashkeel
+        .replace(/[\u064B-\u065F\u0670\u0653]/g, "")
         .replace(/[إأآا]/g, "ا")
         .replace(/ة/g, "ه")
         .replace(/ي/g, "ى")
@@ -503,7 +583,6 @@
         .toLowerCase();
     }
 
-    // Extract all unique roots across all Surahs
     function getAllUniqueRoots() {
       const set = new Set();
       db.forEach(surah => {
@@ -514,7 +593,6 @@
       return Array.from(set);
     }
 
-    // Find root details from dictionary across surahs
     function getRootDetails(root) {
       for (const surah of db) {
         if (surah.rootsDictionary && surah.rootsDictionary[root]) {
@@ -524,7 +602,26 @@
       return { root: root, urdu: "", english: "", type: "" };
     }
 
-    // Render Root Filter Chips
+    // Collect all derivatives belonging to a root across all words and ayahs
+    function getAllDerivativesForRoot(root) {
+      const derivativesMap = new Map();
+      db.forEach(surah => {
+        surah.ayahs.forEach(ayah => {
+          ayah.words.forEach(w => {
+            if (w.root === root && w.derivatives && w.derivatives.length > 0) {
+              w.derivatives.forEach(d => {
+                const key = `${d.word}_${d.ayah}`;
+                if (!derivativesMap.has(key)) {
+                  derivativesMap.set(key, d);
+                }
+              });
+            }
+          });
+        });
+      });
+      return Array.from(derivativesMap.values());
+    }
+
     function renderRootChips() {
       const container = document.getElementById("rootChipsContainer");
       container.innerHTML = "";
@@ -535,7 +632,13 @@
         chip.className = `chip ${activeFilterRoot === root ? 'active' : ''}`;
         chip.innerText = root;
         chip.onclick = () => {
-          activeFilterRoot = (activeFilterRoot === root) ? null : root;
+          if (activeFilterRoot === root) {
+            activeFilterRoot = null;
+            showDerivativesForRoot = null;
+          } else {
+            activeFilterRoot = root;
+            showDerivativesForRoot = root;
+          }
           document.getElementById("searchInput").value = "";
           renderRootChips();
           renderApp();
@@ -544,9 +647,10 @@
       });
     }
 
-    // Render Surahs & Ayahs with Robust Multi-lingual Search
     function renderApp() {
       const container = document.getElementById("resultsContainer");
+      const rootLexiconContainer = document.getElementById("rootLexiconContainer");
+
       if (!db || db.length === 0) {
         container.innerHTML = `<div class="empty-state"><h3>⚠️ Error loading data.js</h3><p>Make sure 'data.js' is loaded properly.</p></div>`;
         return;
@@ -555,6 +659,86 @@
       const searchRaw = document.getElementById("searchInput").value.trim();
       const searchNorm = normalizeArabic(searchRaw);
       const searchLower = searchRaw.toLowerCase();
+      
+      const transliteratedRoot = transliterateToArabic(searchRaw);
+      const transliteratedNorm = normalizeArabic(transliteratedRoot);
+
+      let currentActiveRoot = activeFilterRoot;
+      if (!currentActiveRoot && searchRaw) {
+        const allRoots = getAllUniqueRoots();
+        const matchedRoot = allRoots.find(r => 
+          normalizeArabic(r) === searchNorm || 
+          normalizeArabic(r) === transliteratedNorm
+        );
+        if (matchedRoot) {
+          currentActiveRoot = matchedRoot;
+          showDerivativesForRoot = matchedRoot;
+        }
+      }
+
+      // Render Dynamic Root Lexicon + Derivatives Matrix
+      if (currentActiveRoot) {
+        const rData = getRootDetails(currentActiveRoot);
+        const rootDerivatives = getAllDerivativesForRoot(currentActiveRoot);
+
+        let derivativesSectionHtml = "";
+        if (rootDerivatives.length > 0) {
+          derivativesSectionHtml = `
+            <div class="root-derivatives-panel">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h4 style="font-size:0.85rem; text-transform:uppercase; color:var(--primary); font-weight:700;">
+                  🌱 Derived Qur'anic Words for Root [ ${currentActiveRoot} ] (${rootDerivatives.length} Occurrences)
+                </h4>
+                <span class="ayah-badge">Click any word to inspect</span>
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+                ${rootDerivatives.map(d => `
+                  <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                      <span style="font-family:var(--font-arabic); font-size:1.4rem; font-weight:700; color:var(--primary);">${d.word}</span>
+                      <span class="ayah-badge">Ayah ${d.ayah}</span>
+                    </div>
+                    <div class="context-phrase" style="font-size:1.1rem; line-height:1.7;">${d.contextPhrase}</div>
+                    <div style="font-size:0.88rem; font-weight:600; color:var(--text-dark); margin-top:4px;">${d.meaningEn}</div>
+                    <div style="font-family:var(--font-urdu); direction:rtl; text-align:right; font-size:0.95rem; color:var(--text-muted); margin-top:2px;">${d.meaningUr}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        rootLexiconContainer.innerHTML = `
+          <div class="root-lexicon-card">
+            <div class="root-lexicon-header">
+              <div>
+                <span class="ayah-badge">${rData.type || 'Qur\'anic Root'}</span>
+                <div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+                  Transliteration: <b>${currentActiveRoot.split(' ').join('-').toUpperCase()}</b>
+                </div>
+              </div>
+              <div class="root-lexicon-title" title="Click to view all derived words" onclick='toggleRootDerivatives("${currentActiveRoot}")'>
+                ${currentActiveRoot} 🌿
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div>
+                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Lexical Root Meaning</div>
+                <div style="font-size:1.05rem; font-weight:600; color:var(--primary); margin-top:2px;">${rData.english || '—'}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">بنیادی مادہ و معنوی اصل</div>
+                <div style="font-family:var(--font-urdu); direction:rtl; font-size:1.15rem; color:var(--text-dark); margin-top:2px;">${rData.urdu || '—'}</div>
+              </div>
+            </div>
+
+            ${derivativesSectionHtml}
+          </div>
+        `;
+      } else {
+        rootLexiconContainer.innerHTML = "";
+      }
 
       container.innerHTML = "";
       let totalMatchedAyahs = 0;
@@ -575,17 +759,15 @@
         surah.ayahs.forEach(ayah => {
           let wordsToDisplay = ayah.words;
 
-          if (activeFilterRoot) {
-            wordsToDisplay = ayah.words.filter(w => w.root === activeFilterRoot);
+          if (currentActiveRoot) {
+            wordsToDisplay = ayah.words.filter(w => w.root === currentActiveRoot);
             if (wordsToDisplay.length === 0) return;
           } else if (searchRaw) {
-            // Check if Ayah matches directly in Arabic, English, or Urdu
             const ayahMatchesDirectly = 
               normalizeArabic(ayah.arabicText).includes(searchNorm) ||
               ayah.englishTranslation.toLowerCase().includes(searchLower) ||
               ayah.urduTranslation.toLowerCase().includes(searchLower);
 
-            // Filter matching words
             wordsToDisplay = ayah.words.filter(w => {
               const rootNorm = normalizeArabic(w.root);
               const wordNorm = normalizeArabic(w.word);
@@ -593,6 +775,7 @@
 
               return (
                 rootNorm.includes(searchNorm) ||
+                rootNorm.includes(transliteratedNorm) ||
                 wordNorm.includes(searchNorm) ||
                 (w.contextualEnglish && w.contextualEnglish.toLowerCase().includes(searchLower)) ||
                 (w.contextualUrdu && w.contextualUrdu.includes(searchRaw)) ||
@@ -616,7 +799,7 @@
                   <span class="word-arabic" onclick='openModal(${JSON.stringify(w).replace(/'/g, "&#39;")})'>${w.word}</span>
                 </td>
                 <td>
-                  ${w.root !== "—" ? `<span class="root-tag" onclick='filterByRoot("${w.root}")'>${w.root}</span>` : '—'}
+                  ${w.root && w.root !== "—" ? `<span class="root-tag" onclick='filterByRoot("${w.root}")'>${w.root}</span>` : '—'}
                 </td>
                 <td>
                   <div style="font-size:0.88rem; font-weight:600; color:var(--primary);">${rootData.english || '—'}</div>
@@ -685,13 +868,19 @@
         container.innerHTML = `
           <div class="empty-state">
             <h3>No matching roots, words, or meanings found</h3>
-            <p>Try searching for a different keyword or reset active filters.</p>
+            <p>Try searching with English transliteration (e.g. KTB, RHM, RBB), Arabic root, or reset filters.</p>
           </div>
         `;
       }
     }
 
-    // Modal Details Inspector
+    window.toggleRootDerivatives = function(root) {
+      activeFilterRoot = root;
+      showDerivativesForRoot = root;
+      renderRootChips();
+      renderApp();
+    };
+
     window.openModal = function(wordObj) {
       const rootData = getRootDetails(wordObj.root);
       const modal = document.getElementById("morphologyModal");
@@ -731,7 +920,7 @@
           </div>
           <div style="text-align:right;">
             <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Root</div>
-            <div style="font-family:var(--font-arabic); font-size:1.6rem; font-weight:700; color:var(--accent);">${wordObj.root}</div>
+            <div style="font-family:var(--font-arabic); font-size:1.6rem; font-weight:700; color:var(--accent);">${wordObj.root || '—'}</div>
           </div>
         </div>
 
@@ -756,6 +945,7 @@
 
     window.filterByRoot = function(root) {
       activeFilterRoot = root;
+      showDerivativesForRoot = root;
       document.getElementById("searchInput").value = "";
       renderRootChips();
       renderApp();
@@ -773,6 +963,7 @@
 
     document.getElementById("searchInput").addEventListener("input", () => {
       activeFilterRoot = null;
+      showDerivativesForRoot = null;
       renderRootChips();
       renderApp();
     });
@@ -780,11 +971,11 @@
     document.getElementById("resetBtn").onclick = () => {
       document.getElementById("searchInput").value = "";
       activeFilterRoot = null;
+      showDerivativesForRoot = null;
       renderRootChips();
       renderApp();
     };
 
-    // Initial render
     renderRootChips();
     renderApp();
   </script>

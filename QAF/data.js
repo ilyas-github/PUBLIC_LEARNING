@@ -1,12 +1,13 @@
 /**
  * Qur'anic Arabic Root & Morphology Database
- * Authenticated against Mushaf al-Madinah & Classical Lexicographical Corpora
+ * Master Dataset: Surah Al-Fatihah (1:1-7) & Surah Al-Baqarah (2:1-5)
+ * Authenticated against Mushaf al-Madinah & Corpus Morphology
  */
 
 window.quranDatabase = [
-  // ==========================================
+  // ========================================================
   // SURAH 1: AL-FATIHAH (1:1-7)
-  // ==========================================
+  // ========================================================
   {
     surahNumber: 1,
     surahNameArabic: "الفاتحة",
@@ -32,14 +33,11 @@ window.quranDatabase = [
       "ع و ن": { root: "ع و ن", urdu: "مدد کرنا، سہارا دینا، طاقت پہنچانا", english: "To aid, assist, support, relieve in hardship", type: "معتل اجوف واوی" },
       "ه د ي": { root: "ه د ي", urdu: "نرمی سے راہنمائی کرنا، منزل کا راستہ دکھانا، تحفہ دینا", english: "To guide gently, direct to destination, grant a gift", type: "معتل ناقص یائی" },
       "ص ر ط": { root: "ص ر ط", urdu: "نگلنا؛ کشادہ و واضح شاہراہ", english: "To swallow; a wide, clear highway that draws one in", type: "صحیح سالم" },
-      "ق و م": { root: "ق و م", urdu: "سیدھا کھڑا ہونا، درست و مضبوط ہونا", english: "To stand upright, be firm, direct, and straight", type: "معتل اجوف واوی" },
+      "ق و م": { root: "ق و م", urdu: "سیدھا کھڑا ہونا، درست و مضبوط ہونا، قائم کرنا", english: "To stand upright, establish, sustain, execute firmly", type: "معتل اجوف واوی" },
       "ن ع م": { root: "ن ع م", urdu: "نرمی، آسودگی، خوشحالی، احسان و فضل", english: "Softness, ease, comfort, blessing, delight", type: "صحیح سالم" },
       "غ ي ر": { root: "غ ي ر", urdu: "بدلنا، جدا ہونا، سوائے، دوری", english: "To alter, differ, other than, distinct", type: "معتل اجوف یائی" },
       "غ ض ب": { root: "غ ض ب", urdu: "شدت، غصہ، ناگواری، سخت چٹان", english: "Hard rock, severe displeasure, boiling anger, wrath", type: "صحیح سالم" },
-      "ض ل ل": { root: "ض ل ل", urdu: "سیدھے راستے سے بھٹک جانا، ضائع ہو جانا", english: "To lose the right way, stray, perish, deviate", type: "مضاعف ثلاثی" },
-      "ك ت ب": { root: "ك ت ب", urdu: "سلائی کرنا، جوڑنا، لکھنا، فرض و لازم کرنا", english: "To stitch together, bind, write, ordain or decree", type: "صحیح سالم" },
-      "ر ي ب": { root: "ر ي ب", urdu: "اضطراب، دل کی بے چینی، گہرا شک، تہمت", english: "Uneasiness, internal agitation, deep unsettling doubt, suspicion", type: "معتل اجوف یائی" },
-      "و ق ي": { root: "و ق ي", urdu: "بچاؤ کرنا، ڈھال بنانا، ضرر سے حفاظت کرنا", english: "To protect, shield, safeguard from harm, preserve", type: "لفیف مفروق" }
+      "ض ل ل": { root: "ض ل ل", urdu: "سیدھے راستے سے بھٹک جانا، ضائع ہو جانا", english: "To lose the right way, stray, perish, deviate", type: "مضاعف ثلاثی" }
     },
     ayahs: [
       {
@@ -92,7 +90,7 @@ window.quranDatabase = [
             derivatives: [
               { word: "الرَّحْمَٰنِ", ayah: "1:1", contextPhrase: "الرَّحْمَٰنِ الرَّحِيمِ", meaningUr: "بے پایاں رحمت والا", meaningEn: "The Boundlessly Merciful" },
               { word: "سَيَرْحَمُهُمُ", ayah: "9:71", contextPhrase: "أُولَٰئِكَ سَيَرْحَمُهُمُ اللهُ", meaningUr: "اللہ ضرور ان پر رحم فرمائے گا", meaningEn: "Allah will have mercy upon them" },
-              { word: "الْأَرْحَامَ", ayah: "4:1", contextPhrase: "وَاتَّقُوا اللهَ الَّذِي تَسَاءَلُونَ بِهِ وَالْأَرْحَامَ", meaningUr: "اور رشتوں ناطوں کا پاس رکھو", meaningEn: "And fear Allah and respect the wombs/ties of kinship" },
+              { word: "الْأَرْحَامَ", ayah: "4:1", contextPhrase: "وَاتَّقُوا اللهَ الَّذِي تَسَاءَلُونَ بِهِ وَالْأَرْحَامَ", meaningUr: "اور رشتوں ناطوں کا پاس رکھو", meaningEn: "And fear Allah and respect the ties of kinship" },
               { word: "رَحْمَتَ", ayah: "2:218", contextPhrase: "أُولَٰئِكَ يَرْجُونَ رَحْمَتَ اللهِ", meaningUr: "وہ اللہ کی رحمت کے امیدوار ہیں", meaningEn: "They hope for the mercy of Allah" }
             ]
           },
@@ -453,18 +451,34 @@ window.quranDatabase = [
     ]
   },
 
-  // ==========================================
-  // SURAH 2: AL-BAQARAH (2:1-2)
-  // ==========================================
+  // ========================================================
+  // SURAH 2: AL-BAQARAH (2:1-5)
+  // ========================================================
   {
     surahNumber: 2,
     surahNameArabic: "البقرة",
     surahNameEnglish: "Al-Baqarah (The Cow)",
-    ayahRange: "1-2",
+    ayahRange: "1-5",
     allRoots: [
-      "ك ت ب", "ر ي ب", "ه د ي", "و ق ي"
+      "ك ت ب", "ر ي ب", "ه د ي", "و ق ي", "أ م ن", 
+      "غ ي ب", "ق و م", "ص ل و", "ر ز ق", "ن ف ق", 
+      "ن ز ل", "ق ب ل", "أ خ ر", "ي ق ن", "ف ل ح"
     ],
-    rootsDictionary: {}, // Handled by master roots dictionary
+    rootsDictionary: {
+      "ك ت ب": { root: "ك ت ب", urdu: "سلائی کرنا، جوڑنا، لکھنا، فرض و لازم کرنا", english: "To stitch together, bind, write, ordain or decree", type: "صحیح سالم" },
+      "ر ي ب": { root: "ر ي ب", urdu: "اضطراب، دل کی بے چینی، گہرا شک، تہمت", english: "Uneasiness, internal agitation, deep unsettling doubt, suspicion", type: "معتل اجوف یائی" },
+      "و ق ي": { root: "و ق ي", urdu: "بچاؤ کرنا، ڈھال بنانا، ضرر سے حفاظت کرنا", english: "To protect, shield, safeguard from harm, preserve", type: "لفیف مفروق" },
+      "أ م ن": { root: "أ م ن", urdu: "امن و امان پانا، دل کا مطمئن ہونا، تصدیق کرنا", english: "To be secure, safe, find tranquility, to trust and believe", type: "مہموز الفاء" },
+      "غ ي ب": { root: "غ ي ب", urdu: "چھپ جانا، آنکھوں سے اوجھل ہونا، غیر حاضر ہونا", english: "To be hidden, absent, concealed from human sensory perception", type: "معتل اجوف یائی" },
+      "ص ل و": { root: "ص ل و", urdu: "پیٹھ کا درمیانی حصہ سیدھا کرنا، دعا و التجا، تعظیم", english: "To supplicate, pray, bow in reverence, connect", type: "معتل ناقص واوی" },
+      "ر ز ق": { root: "ر ز ق", urdu: "عطا کرنا، نصیب بنانا، روزی دینا", english: "To provide, grant sustenance, bestow livelihood", type: "صحیح سالم" },
+      "ن ف ق": { root: "ن ف ق", urdu: "سرنگ کے راستے نکل جانا، خرچ کرنا، کھپانا", english: "To tunnel through, pass out, spend wealth, disburse", type: "صحیح سالم" },
+      "ن ز ل": { root: "ن ز ل", urdu: "بلندی سے نیچے اترنا، نازل ہونا، قیام کرنا", english: "To descend from a high place, send down, alight", type: "صحیح سالم" },
+      "ق ب ل": { root: "ق ب ل", urdu: "سامنے آنا، رخ کرنا، پہلے ہونا، قبول کرنا", english: "To face toward, precede in time, be in front, accept", type: "صحیح سالم" },
+      "أ خ ر": { root: "أ خ ر", urdu: "پیچھے رہنا، مؤخر ہونا، آخری حصہ", english: "To delay, come after, the latter end, the hereafter", type: "مہموز الفاء" },
+      "ي ق ن": { root: "ي ق ن", urdu: "پانی کا ٹھہر کر صاف ہونا، اٹل یقین، پختہ علم", english: "To be settled and clear, certainty, unshakable conviction", type: "مثال یائی" },
+      "ف ل ح": { root: "ف ل ح", urdu: "زمین کو چیر کر شاداب ہونا، نجات و کامیابی پانا", english: "To furrow the earth; to attain flourishing success and ultimate triumph", type: "صحیح سالم" }
+    },
     ayahs: [
       {
         ayahNumber: 1,
@@ -555,6 +569,242 @@ window.quranDatabase = [
               { word: "تَتَّقُونَ", ayah: "2:21", contextPhrase: "اعْبُدُوا رَبَّكُمُ الَّذِي خَلَقَكُمْ وَالَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ", meaningUr: "اپنے رب کی بندگی کرو تاکہ تم پرہیزگار بن جاؤ", meaningEn: "Worship your Lord that you may become righteous" },
               { word: "التَّقْوَىٰ", ayah: "2:197", contextPhrase: "وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ", meaningUr: "اور زادِ راہ لے لو، اور بہترین زادِ راہ تقویٰ ہے", meaningEn: "And take provisions, but indeed, the best provision is Taqwa" },
               { word: "وَقِنَا", ayah: "2:201", contextPhrase: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", meaningUr: "اور ہمیں آگ کے عذاب سے بچا لے", meaningEn: "And protect us from the punishment of the Fire" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 3,
+        ayahKey: "2:3",
+        arabicText: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ",
+        urduTranslation: "جو غیب پر ایمان لاتے ہیں اور نماز قائم کرتے ہیں اور جو کچھ ہم نے انہیں دیا ہے اس میں سے خرچ کرتے ہیں۔",
+        englishTranslation: "Who believe in the unseen, establish prayer, and spend out of what We have provided for them.",
+        words: [
+          {
+            word: "يُؤْمِنُونَ",
+            root: "أ م ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural, Nominative by Nun",
+            contextualUrdu: "وہ ایمان لاتے ہیں",
+            contextualEnglish: "They believe",
+            derivatives: [
+              { word: "يُؤْمِنُونَ", ayah: "2:3", contextPhrase: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ", meaningUr: "جو غیب پر ایمان لاتے ہیں", meaningEn: "Who believe in the unseen" },
+              { word: "آمَنُوا", ayah: "2:9", contextPhrase: "يُخَادِعُونَ اللهَ وَالَّذِينَ آمَنُوا", meaningUr: "اور ان لوگوں کو جو ایمان لائے", meaningEn: "And those who believe" },
+              { word: "بِمُؤْمِنِينَ", ayah: "2:8", contextPhrase: "وَمَا هُم بِمُؤْمِنِينَ", meaningUr: "اور وہ ہرگز مومن نہیں ہیں", meaningEn: "And they are not believers" },
+              { word: "آمِنًا", ayah: "2:126", contextPhrase: "رَبِّ اجْعَلْ هَٰذَا بَلَدًا آمِنًا", meaningUr: "اے میرے رب! اس شہر کو امن والا بنا دے", meaningEn: "My Lord, make this a secure city" }
+            ]
+          },
+          {
+            word: "بِالْغَيْبِ",
+            root: "غ ي ب",
+            wazn: "فَعْل",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "جار و مجرور (الباء + الغَيْب)، متعلق بيُؤْمِنُون",
+            grammarEnglish: "Preposition + Genitive Noun (Bi + Al-Ghayb)",
+            contextualUrdu: "غیب پر (جو حواس سے پوشیدہ ہے)",
+            contextualEnglish: "In the unseen",
+            derivatives: [
+              { word: "بِالْغَيْبِ", ayah: "2:3", contextPhrase: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ", meaningUr: "غیب پر یقین رکھتے ہیں", meaningEn: "In the unseen" },
+              { word: "غَيْبَ", ayah: "2:33", contextPhrase: "أَعْلَمُ غَيْبَ السَّمَاوَاتِ وَالْأَرْضِ", meaningUr: "آسمانوں اور زمین کے غیب کو جانتا ہوں", meaningEn: "I know the unseen of the heavens and earth" },
+              { word: "غَيَابَتِ", ayah: "12:10", contextPhrase: "وَأَلْقُوهُ فِي غَيَابَتِ الْجُبِّ", meaningUr: "اور اسے کنویں کی گہرائی میں ڈال دو", meaningEn: "And drop him into the bottom of the pit" },
+              { word: "الْغُيُوبِ", ayah: "5:109", contextPhrase: "إِنَّكَ أَنتَ عَلَّامُ الْغُيُوبِ", meaningUr: "بیشک تو ہی تمام غیبوں کا خوب جاننے والا ہے", meaningEn: "Indeed, it is You who are Knower of the unseen" }
+            ]
+          },
+          {
+            word: "يُقِيمُونَ",
+            root: "ق و م",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ قائم کرتے ہیں",
+            contextualEnglish: "They establish",
+            derivatives: [
+              { word: "يُقِيمُونَ", ayah: "2:3", contextPhrase: "وَيُقِيمُونَ الصَّلَاةَ", meaningUr: "اور نماز قائم کرتے ہیں", meaningEn: "And establish prayer" },
+              { word: "أَقِيمُوا", ayah: "2:43", contextPhrase: "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ", meaningUr: "اور نماز قائم کرو اور زکوٰۃ دو", meaningEn: "And establish prayer and give Zakah" },
+              { word: "الْمُسْتَقِيمَ", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "سیدھا راستہ", meaningEn: "The straight path" },
+              { word: "مَقَامِ", ayah: "2:125", contextPhrase: "وَاتَّخِذُوا مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى", meaningUr: "مقامِ ابراہیم کو نماز کی جگہ بناؤ", meaningEn: "Take the standing place of Abraham as a place of prayer" }
+            ]
+          },
+          {
+            word: "الصَّلَاةَ",
+            root: "ص ل و",
+            wazn: "فَعَلَة (أصلها صَلَوَة)",
+            pos: "اسم / مصدر",
+            grammarUrdu: "مفعول به منصوب بالفتحہ",
+            grammarEnglish: "Direct Object, Accusative",
+            contextualUrdu: "نماز",
+            contextualEnglish: "The Prayer",
+            derivatives: [
+              { word: "الصَّلَاةَ", ayah: "2:3", contextPhrase: "وَيُقِيمُونَ الصَّلَاةَ", meaningUr: "نماز قائم کرتے ہیں", meaningEn: "Establish prayer" },
+              { word: "بِالصَّلَاةِ", ayah: "2:45", contextPhrase: "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", meaningUr: "صبر اور نماز کے ذریعے مدد طلب کرو", meaningEn: "Seek help through patience and prayer" },
+              { word: "مُصَلًّى", ayah: "2:125", contextPhrase: "مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى", meaningUr: "نماز ادا کرنے کی جگہ", meaningEn: "A place of prayer" },
+              { word: "يُصَلُّونَ", ayah: "33:56", contextPhrase: "إِنَّ اللهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ", meaningUr: "اللہ اور اس کے فرشتے نبی پر درود و رحمت بھیجتے ہیں", meaningEn: "Allah and His angels send blessings upon the Prophet" }
+            ]
+          },
+          {
+            word: "رَزَقْنَاهُمْ",
+            root: "ر ز ق",
+            wazn: "فَعَلْنَا + ضمير (باب نصر)",
+            pos: "فعل ماضی + ضمير مفعول",
+            grammarUrdu: "فعل ماضی مبني على السكون، و(نا) فاعل، و(هم) مفعول به",
+            grammarEnglish: "Past Verb + 1st Plural Subject + 3rd Masc. Plural Object",
+            contextualUrdu: "ہم نے ان کو عطا کیا",
+            contextualEnglish: "We provided them",
+            derivatives: [
+              { word: "رَزَقْنَاهُمْ", ayah: "2:3", contextPhrase: "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", meaningUr: "جو کچھ ہم نے انہیں دیا ہے اس میں سے خرچ کرتے ہیں", meaningEn: "Spend out of what We have provided them" },
+              { word: "ارْزُقْ", ayah: "2:126", contextPhrase: "وَارْزُقْ أَهْلَهُ مِنَ الثَّمَرَاتِ", meaningUr: "اور اس کے رہنے والوں کو پھلوں سے رزق عطا فرما", meaningEn: "And provide its people with fruits" },
+              { word: "رِزْقًا", ayah: "2:22", contextPhrase: "رِزْقًا لَّكُمْ ۖ فَلَا تَجْعَلُوا لِلَّهِ أَندَادًا", meaningUr: "تمہارے لیے روزی کے طور پر", meaningEn: "As provision for you" },
+              { word: "الرَّازِقِينَ", ayah: "5:114", contextPhrase: "وَأَنتَ خَيْرُ الرَّازِقِينَ", meaningUr: "اور تو بہترین رزق دینے والا ہے", meaningEn: "And You are the best of providers" }
+            ]
+          },
+          {
+            word: "يُنفِقُونَ",
+            root: "ن ف ق",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ خرچ کرتے ہیں",
+            contextualEnglish: "They spend / disburse",
+            derivatives: [
+              { word: "يُنفِقُونَ", ayah: "2:3", contextPhrase: "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", meaningUr: "وہ خرچ کرتے ہیں", meaningEn: "They spend" },
+              { word: "أَنفِقُوا", ayah: "2:195", contextPhrase: "وَأَنفِقُوا فِي سَبِيلِ اللهِ", meaningUr: "اور اللہ کی راہ میں خرچ کرو", meaningEn: "And spend in the way of Allah" },
+              { word: "نَفَقَةٍ", ayah: "2:270", contextPhrase: "وَمَا أَنفَقْتُم مِّن نَّفَقَةٍ", meaningUr: "اور تم جو کچھ بھی خرچ کرو", meaningEn: "And whatever you spend in expenditures" },
+              { word: "الْمُنفِقِينَ", ayah: "3:17", contextPhrase: "وَالْمُنفِقِينَ وَالْمُسْتَغْفِرِينَ بِالْأَسْحَارِ", meaningUr: "اور راہِ خدا میں خرچ کرنے والے", meaningEn: "And those who spend in the way of Allah" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 4,
+        ayahKey: "2:4",
+        arabicText: "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ",
+        urduTranslation: "اور جو ایمان لاتے ہیں اس پر جو آپ کی طرف نازل کیا گیا اور جو آپ سے پہلے نازل کیا گیا، اور وہ آخرت پر پختہ یقین رکھتے ہیں۔",
+        englishTranslation: "And who believe in what has been sent down to you and what was sent down before you, and of the Hereafter they are certain.",
+        words: [
+          {
+            word: "يُؤْمِنُونَ",
+            root: "أ م ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ ایمان لاتے ہیں",
+            contextualEnglish: "They believe",
+            derivatives: []
+          },
+          {
+            word: "أُنزِلَ",
+            root: "ن ز ل",
+            wazn: "أُفْعِلَ (باب افعال - مبني للمجهول)",
+            pos: "فعل ماضی مجہول (Form IV Passive)",
+            grammarUrdu: "فعل ماضی مبني للمجهول مبني على الفتح، ونائب الفاعل ضمير مستتر",
+            grammarEnglish: "Past Passive Verb (Form IV), 3rd Masc. Singular",
+            contextualUrdu: "نازل کیا گیا",
+            contextualEnglish: "Was sent down / revealed",
+            derivatives: [
+              { word: "أُنزِلَ", ayah: "2:4", contextPhrase: "بِمَا أُنزِلَ إِلَيْكَ", meaningUr: "جو آپ کی طرف اتارا گیا", meaningEn: "What was revealed to you" },
+              { word: "نَزَّلْنَا", ayah: "2:23", contextPhrase: "مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا", meaningUr: "جو کچھ ہم نے اپنے بندے پر نازل کیا", meaningEn: "What We have sent down upon Our servant" },
+              { word: "أَنزَلَ", ayah: "2:22", contextPhrase: "وَأَنزَلَ مِنَ السَّمَاءِ مَاءً", meaningUr: "اور آسمان سے پانی برسایا", meaningEn: "And sent down rain from the sky" },
+              { word: "تَنزِيلُ", ayah: "32:2", contextPhrase: "تَنزِيلُ الْكِتَابِ لَا رَيْبَ فِيهِ", meaningUr: "اس کتاب کا اتارا جانا بلا شک و شبہ ہے", meaningEn: "The revelation of the Book without doubt" }
+            ]
+          },
+          {
+            word: "قَبْلِكَ",
+            root: "ق ب ل",
+            wazn: "فَعْل + ضمير",
+            pos: "اسم ظرف زمان",
+            grammarUrdu: "اسم مجرور بمن، وهو مضاف، والكاف مضاف إليه",
+            grammarEnglish: "Temporal Noun, Genitive after Min + 2nd Masc. Singular Pronoun",
+            contextualUrdu: "آپ سے پہلے",
+            contextualEnglish: "Before you",
+            derivatives: [
+              { word: "قَبْلِكَ", ayah: "2:4", contextPhrase: "وَمَا أُنزِلَ مِن قَبْلِكَ", meaningUr: "اور جو آپ سے پہلے نازل کیا گیا", meaningEn: "And what was sent down before you" },
+              { word: "قَبْلِكُمْ", ayah: "2:21", contextPhrase: "وَالَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ", meaningUr: "اور وہ لوگ جو تم سے پہلے تھے", meaningEn: "And those before you" },
+              { word: "قِبْلَتِهِمُ", ayah: "2:142", contextPhrase: "مَا وَلَّاهُمْ عَن قِبْلَتِهِمُ الَّتِي كَانُوا عَلَيْهَا", meaningUr: "کس چیز نے ان کو ان کے قبلے سے پھیر دیا", meaningEn: "What has turned them from their direction of prayer" },
+              { word: "تَقَبَّلْ", ayah: "2:127", contextPhrase: "رَبَّنَا تَقَبَّلْ مِنَّا", meaningUr: "اے ہمارے رب! ہم سے قبول فرما", meaningEn: "Our Lord, accept from us" }
+            ]
+          },
+          {
+            word: "وَبِالْآخِرَةِ",
+            root: "أ خ ر",
+            wazn: "فَاعِلَة",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "الواو عاطفة، جار و مجرور متعلق بيُوقِنُون",
+            grammarEnglish: "Conjunction + Preposition + Genitive Noun (Al-Akhirah)",
+            contextualUrdu: "اور آخرت پر",
+            contextualEnglish: "And in the Hereafter",
+            derivatives: [
+              { word: "وَبِالْآخِرَةِ", ayah: "2:4", contextPhrase: "وَبِالْآخِرَةِ هُمْ يُوقِنُونَ", meaningUr: "اور آخرت پر وہ یقین رکھتے ہیں", meaningEn: "And of the Hereafter they are certain" },
+              { word: "الْآخِرِ", ayah: "2:8", contextPhrase: "آمَنَّا بِاللهِ وَبِالْيَوْمِ الْآخِرِ", meaningUr: "ہم اللہ اور یومِ آخرت پر ایمان لائے", meaningEn: "We believe in Allah and the Last Day" },
+              { word: "تَأَخَّرَ", ayah: "2:203", contextPhrase: "وَمَن تَأَخَّرَ فَلَا إِثْمَ عَلَيْهِ", meaningUr: "اور جو تاخیر کرے اس پر کوئی گناہ نہیں", meaningEn: "And whoever delays, there is no sin upon him" },
+              { word: "يُؤَخِّرُهُمْ", ayah: "14:42", contextPhrase: "إِنَّمَا يُؤَخِّرُهُمْ لِيَوْمٍ تَشْخَصُ فِيهِ الْأَبْصَارُ", meaningUr: "وہ تو انہیں اس دن کے لیے مہلت دے رہا ہے جس میں آنکھیں پھٹی رہ جائیں گی", meaningEn: "He only delays them for a Day when eyes will stare in horror" }
+            ]
+          },
+          {
+            word: "يُوقِنُونَ",
+            root: "ي ق ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ پختہ یقین رکھتے ہیں",
+            contextualEnglish: "They are certain / have firm conviction",
+            derivatives: [
+              { word: "يُوقِنُونَ", ayah: "2:4", contextPhrase: "وَبِالْآخِرَةِ هُمْ يُوقِنُونَ", meaningUr: "وہ پختہ یقین رکھتے ہیں", meaningEn: "They are certain" },
+              { word: "الْيَقِينُ", ayah: "15:99", contextPhrase: "وَاعْبُدْ رَبَّكَ حَتَّىٰ يَأْتِيَكَ الْيَقِينُ", meaningUr: "اور اپنے رب کی عبادت کریں یہاں تک کہ آپ کو موت (یقینی وقت) آ جائے", meaningEn: "And worship your Lord until there comes unto you the certainty" },
+              { word: "الْمُوقِنِينَ", ayah: "6:75", contextPhrase: "وَكَذَٰلِكَ نُرِي إِبْرَاهِيمَ مَلَكُوتَ السَّمَاوَاتِ وَالْأَرْضِ وَلِيَكُونَ مِنَ الْمُوقِنِينَ", meaningUr: "اور تاکہ وہ یقین کرنے والوں میں سے ہو جائے", meaningEn: "And that he would be among the certain" },
+              { word: "يَقِينًا", ayah: "4:157", contextPhrase: "وَمَا قَتَلُوهُ يَقِينًا", meaningUr: "اور انہوں نے یقین کے ساتھ اسے قتل نہیں کیا", meaningEn: "And they did not kill him, for certain" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 5,
+        ayahKey: "2:5",
+        arabicText: "أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ",
+        urduTranslation: "یہی لوگ اپنے رب کی طرف سے ہدایت پر ہیں اور یہی لوگ فلاح پانے والے (کامیاب) ہیں۔",
+        englishTranslation: "Those are upon guidance from their Lord, and it is those who are the successful.",
+        words: [
+          {
+            word: "هُدًى",
+            root: "ه د ي",
+            wazn: "فُعَل",
+            pos: "اسم / مصدر",
+            grammarUrdu: "اسم مجرور بعلى، وعلامة جره كسرة مقدرة",
+            grammarEnglish: "Genitive Noun after 'Ala with implied Kasrah",
+            contextualUrdu: "ہدایت پر",
+            contextualEnglish: "Upon guidance",
+            derivatives: []
+          },
+          {
+            word: "رَّبِّهِمْ",
+            root: "ر ب ب",
+            wazn: "فَعْل + ضمير",
+            pos: "اسم / مضاف",
+            grammarUrdu: "اسم مجرور بمن، وهو مضاف، و(هم) مضاف إليه",
+            grammarEnglish: "Genitive Noun after Min + 3rd Masc. Plural Possessive Pronoun",
+            contextualUrdu: "ان کے رب کی طرف سے",
+            contextualEnglish: "From their Lord",
+            derivatives: []
+          },
+          {
+            word: "الْمُفْلِحُونَ",
+            root: "ف ل ح",
+            wazn: "مُفْعِلُونَ (باب افعال)",
+            pos: "اسم فاعل (جمع مذکر سالم)",
+            grammarUrdu: "خبر المبتدأ (أُولَٰئِكَ)، و(هُمْ) ضمير فصل، مرفوع بالواو",
+            grammarEnglish: "Predicate of Mubtada (Ula'ika) with separating pronoun (Hum), Nominative by Waw",
+            contextualUrdu: "فلاح پانے والے / کامیاب",
+            contextualEnglish: "The successful / triumphant",
+            derivatives: [
+              { word: "الْمُفْلِحُونَ", ayah: "2:5", contextPhrase: "وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ", meaningUr: "اور وہی فلاح پانے والے ہیں", meaningEn: "And it is those who are the successful" },
+              { word: "أَفْلَحَ", ayah: "20:64", contextPhrase: "وَقَدْ أَفْلَحَ الْيَوْمَ مَنِ اسْتَعْلَىٰ", meaningUr: "اور آج وہی کامیاب ہوا جو غالب رہا", meaningEn: "And he has certainly succeeded today who overcame" },
+              { word: "تُفْلِحُونَ", ayah: "2:189", contextPhrase: "وَاتَّقُوا اللهَ لَعَلَّكُمْ تُفْلِحُونَ", meaningUr: "اور اللہ سے ڈرو تاکہ تم فلاح پاؤ", meaningEn: "And fear Allah that you may succeed" },
+              { word: "يُفْلِحُ", ayah: "10:17", contextPhrase: "إِنَّهُ لَا يُفْلِحُ الْمُجْرِمُونَ", meaningUr: "بیشک مجرم کبھی فلاح نہیں پاتے", meaningEn: "Indeed, the criminals will not succeed" }
             ]
           }
         ]
