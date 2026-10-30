@@ -7,7 +7,7 @@
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -115,16 +115,22 @@
 
     .search-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       align-items: center;
-      margin-bottom: 16px;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
     .search-input {
-      flex: 1;
-      min-width: 260px;
-      padding: 12px 16px;
+      width: 100%;
+      padding: 12px 46px 12px 16px;
       border: 1.5px solid var(--border);
       background: var(--surface-subtle);
       color: var(--text-dark);
@@ -137,6 +143,40 @@
     .search-input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(16, 86, 82, 0.2);
+    }
+
+    /* Voice Search Button */
+    .btn-voice {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .btn-voice:hover {
+      color: var(--primary);
+      background: var(--surface);
+    }
+
+    .btn-voice.listening {
+      color: #e53935;
+      background: rgba(229, 57, 53, 0.15);
+      animation: pulseMic 1.2s infinite;
+    }
+
+    @keyframes pulseMic {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+      70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
     }
 
     .btn-reset {
@@ -152,46 +192,7 @@
 
     .btn-reset:hover { background: var(--primary-light); }
 
-    .root-chips-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-    }
-
-    .root-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip {
-      background: var(--surface-subtle);
-      border: 1px solid var(--border);
-      color: var(--text-dark);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.95rem;
-      font-family: var(--font-arabic);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .chip:hover {
-      background: var(--accent-light);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .chip.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    /* Active Root Lexicon Card */
+    /* Root Lexicon Card */
     .root-lexicon-card {
       background: var(--surface);
       border: 2px solid var(--accent);
@@ -222,16 +223,6 @@
       font-weight: 700;
       color: var(--accent);
       direction: rtl;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.2s;
-    }
-
-    .root-lexicon-title:hover {
-      transform: scale(1.05);
-      color: var(--primary);
     }
 
     .root-derivatives-panel {
@@ -471,23 +462,23 @@
       <span id="themeIcon">🌙</span> <span id="themeText">Dark Theme</span>
     </button>
     <h1>📖 Qur'anic Arabic Root & Morphology Explorer</h1>
-    <p>Search roots in Arabic or English transliteration (e.g. KTB, RBB), click roots to view all derived words with Qur'anic context</p>
+    <p>Search roots in Arabic or English transliteration (e.g. KTB, RBB), or click the microphone for voice search</p>
   </header>
 
   <div class="container">
     <div class="controls-card">
       <div class="search-row">
-        <input 
-          type="text" 
-          id="searchInput" 
-          class="search-input" 
-          placeholder="Search Root (e.g. RBB, KTB, ر ب ب, ك ت ب), English, or Urdu..."
-        />
-        <button id="resetBtn" class="btn-reset">Reset Filters</button>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search Root (e.g. KTB, RBB, كتب), English, or Urdu..."
+          />
+          <button id="voiceBtn" class="btn-voice" title="Voice Search (Click and speak)">🎤</button>
+        </div>
+        <button id="resetBtn" class="btn-reset">Reset</button>
       </div>
-
-      <div class="root-chips-title">🌿 Quick Root Filter (Click any root to view full root lexicon & derivatives)</div>
-      <div id="rootChipsContainer" class="root-chips"></div>
     </div>
 
     <!-- Dynamic Root Lexicon Display -->
@@ -565,11 +556,55 @@
     }
 
     // ==========================================
-    // 3. DATABASE ENGINE & DERIVATIVES COLLECTOR
+    // 3. VOICE SEARCH (WEB SPEECH API)
+    // ==========================================
+    const voiceBtn = document.getElementById("voiceBtn");
+    const searchInput = document.getElementById("searchInput");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US'; // Supports transliterated root spells or English terms
+
+      recognition.onstart = () => {
+        voiceBtn.classList.add("listening");
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        searchInput.value = transcript;
+        activeFilterRoot = null;
+        renderApp();
+      };
+
+      recognition.onerror = () => {
+        voiceBtn.classList.remove("listening");
+      };
+
+      recognition.onend = () => {
+        voiceBtn.classList.remove("listening");
+      };
+
+      voiceBtn.addEventListener("click", () => {
+        if (voiceBtn.classList.contains("listening")) {
+          recognition.stop();
+        } else {
+          recognition.start();
+        }
+      });
+    } else {
+      voiceBtn.title = "Voice search not supported in this browser";
+      voiceBtn.style.opacity = "0.5";
+      voiceBtn.onclick = () => alert("Voice search is not supported in this browser. Please use Chrome, Edge, or Safari.");
+    }
+
+    // ==========================================
+    // 4. DATABASE ENGINE & DERIVATIVES COLLECTOR
     // ==========================================
     const db = window.quranDatabase || [];
     let activeFilterRoot = null;
-    let showDerivativesForRoot = null;
 
     function normalizeArabic(str) {
       if (!str) return "";
@@ -602,7 +637,6 @@
       return { root: root, urdu: "", english: "", type: "" };
     }
 
-    // Collect all derivatives belonging to a root across all words and ayahs
     function getAllDerivativesForRoot(root) {
       const derivativesMap = new Map();
       db.forEach(surah => {
@@ -622,31 +656,6 @@
       return Array.from(derivativesMap.values());
     }
 
-    function renderRootChips() {
-      const container = document.getElementById("rootChipsContainer");
-      container.innerHTML = "";
-      
-      const allRoots = getAllUniqueRoots();
-      allRoots.forEach(root => {
-        const chip = document.createElement("div");
-        chip.className = `chip ${activeFilterRoot === root ? 'active' : ''}`;
-        chip.innerText = root;
-        chip.onclick = () => {
-          if (activeFilterRoot === root) {
-            activeFilterRoot = null;
-            showDerivativesForRoot = null;
-          } else {
-            activeFilterRoot = root;
-            showDerivativesForRoot = root;
-          }
-          document.getElementById("searchInput").value = "";
-          renderRootChips();
-          renderApp();
-        };
-        container.appendChild(chip);
-      });
-    }
-
     function renderApp() {
       const container = document.getElementById("resultsContainer");
       const rootLexiconContainer = document.getElementById("rootLexiconContainer");
@@ -656,7 +665,7 @@
         return;
       }
 
-      const searchRaw = document.getElementById("searchInput").value.trim();
+      const searchRaw = searchInput.value.trim();
       const searchNorm = normalizeArabic(searchRaw);
       const searchLower = searchRaw.toLowerCase();
       
@@ -672,7 +681,6 @@
         );
         if (matchedRoot) {
           currentActiveRoot = matchedRoot;
-          showDerivativesForRoot = matchedRoot;
         }
       }
 
@@ -685,12 +693,9 @@
         if (rootDerivatives.length > 0) {
           derivativesSectionHtml = `
             <div class="root-derivatives-panel">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h4 style="font-size:0.85rem; text-transform:uppercase; color:var(--primary); font-weight:700;">
-                  🌱 Derived Qur'anic Words for Root [ ${currentActiveRoot} ] (${rootDerivatives.length} Occurrences)
-                </h4>
-                <span class="ayah-badge">Click any word to inspect</span>
-              </div>
+              <h4 style="font-size:0.85rem; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:12px;">
+                🌱 Derived Qur'anic Words for Root [ ${currentActiveRoot} ] (${rootDerivatives.length} Occurrences)
+              </h4>
               <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
                 ${rootDerivatives.map(d => `
                   <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px;">
@@ -717,9 +722,7 @@
                   Transliteration: <b>${currentActiveRoot.split(' ').join('-').toUpperCase()}</b>
                 </div>
               </div>
-              <div class="root-lexicon-title" title="Click to view all derived words" onclick='toggleRootDerivatives("${currentActiveRoot}")'>
-                ${currentActiveRoot} 🌿
-              </div>
+              <div class="root-lexicon-title">${currentActiveRoot}</div>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
@@ -868,18 +871,11 @@
         container.innerHTML = `
           <div class="empty-state">
             <h3>No matching roots, words, or meanings found</h3>
-            <p>Try searching with English transliteration (e.g. KTB, RHM, RBB), Arabic root, or reset filters.</p>
+            <p>Try searching with English transliteration (e.g. KTB, RHM), Arabic root, or click the mic button.</p>
           </div>
         `;
       }
     }
-
-    window.toggleRootDerivatives = function(root) {
-      activeFilterRoot = root;
-      showDerivativesForRoot = root;
-      renderRootChips();
-      renderApp();
-    };
 
     window.openModal = function(wordObj) {
       const rootData = getRootDetails(wordObj.root);
@@ -945,9 +941,7 @@
 
     window.filterByRoot = function(root) {
       activeFilterRoot = root;
-      showDerivativesForRoot = root;
-      document.getElementById("searchInput").value = "";
-      renderRootChips();
+      searchInput.value = "";
       renderApp();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -961,22 +955,17 @@
       if (e.target === modal) modal.style.display = "none";
     };
 
-    document.getElementById("searchInput").addEventListener("input", () => {
+    searchInput.addEventListener("input", () => {
       activeFilterRoot = null;
-      showDerivativesForRoot = null;
-      renderRootChips();
       renderApp();
     });
 
     document.getElementById("resetBtn").onclick = () => {
-      document.getElementById("searchInput").value = "";
+      searchInput.value = "";
       activeFilterRoot = null;
-      showDerivativesForRoot = null;
-      renderRootChips();
       renderApp();
     };
 
-    renderRootChips();
     renderApp();
   </script>
 </body>
