@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="mint">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quranic Root Finder · جڑ تلاش</title>
+<style>
+:root{--ar:"Noto Naskh Arabic","Scheherazade New","Amiri","Geeza Pro","Traditional Arabic",serif;--ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Geeza Pro","Noto Naskh Arabic",serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html[data-theme=mint]{--bg:#eef8f3;--card:#fff;--ink:#17332a;--mut:#5b7a6e;--acc:#1f8a63;--soft:#dff3ea;--line:#cfe5db}
+html[data-theme=blue]{--bg:#eef4fb;--card:#fff;--ink:#16283d;--mut:#5a6f86;--acc:#2563b0;--soft:#dce9f8;--line:#c9daee}
+html[data-theme=charcoal]{--bg:#1c1d20;--card:#26282c;--ink:#ececec;--mut:#a0a4ab;--acc:#4fc79b;--soft:#2f3a35;--line:#3a3d42}
+html[data-theme=navy]{--bg:#0f1a2b;--card:#172740;--ink:#e6eefb;--mut:#9db0cc;--acc:#5aa9ff;--soft:#1f3556;--line:#2a4166}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:0 14px 40px}
+main{max-width:760px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 6px}
+h1{font-size:19px;margin:0}h1 span{font-family:var(--ur);color:var(--acc)}
+h2{font-size:15px;color:var(--mut);margin:26px 0 8px}
+.themes{display:flex;gap:8px}
+.themes button{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.themes button[aria-pressed=true]{outline:2px solid var(--acc);outline-offset:2px}
+.search{display:flex;gap:8px;margin-top:8px}
+.search input{flex:1;min-width:0;font:20px var(--ar);padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--acc)}
+.btn{border:0;border-radius:14px;padding:0 15px;font-size:20px;cursor:pointer;background:var(--soft);color:var(--ink);min-height:50px}
+.btn.mic{background:var(--acc);color:#fff}.btn.mic.on{animation:p 1s infinite}
+@keyframes p{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--acc) 30%,transparent)}}
+.vrow{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:14px;color:var(--mut);flex-wrap:wrap}
+.vrow select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.hint{font-size:13px;color:var(--mut);margin:2px 2px 10px}
+.note{font-size:14px;color:var(--mut);margin:12px 2px 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:10px 0;overflow:hidden}
+.head{all:unset;box-sizing:border-box;width:100%;display:flex;gap:14px;align-items:center;padding:14px 16px;cursor:pointer}
+.head:focus-visible{outline:2px solid var(--acc)}
+.rootAr{font:700 34px/1.5 var(--ar);color:var(--acc);letter-spacing:.12em;min-width:108px;text-align:center;direction:rtl}
+.mean{flex:1;min-width:0}
+.mean p,.der p{margin:0}
+.ur{font:600 17px/1.7 var(--ur);direction:rtl;text-align:right}
+.en{font:600 16px/1.7 system-ui,sans-serif;color:var(--mut)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tags span{font-size:12px;background:var(--soft);border-radius:99px;padding:1px 10px}
+.chev{font-size:24px;color:var(--mut);transition:transform .2s}.card.open .chev{transform:rotate(90deg)}
+.body{display:none;border-top:1px dashed var(--line);padding:6px 16px 14px;background:color-mix(in srgb,var(--soft) 35%,var(--card))}
+.card.open .body{display:block}
+.grp{font-size:13px;color:var(--mut);margin:12px 0 4px}
+.grp b{font:600 18px var(--ar);color:var(--ink);margin:0 4px}
+.der{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.dtop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.dw{font:700 26px/1.6 var(--ar);color:var(--acc)}
+.ref{font-size:12px;background:var(--acc);color:#fff;border-radius:8px;padding:2px 9px}
+.ctx{font:20px/1.9 var(--ar);direction:rtl;text-align:right;margin:2px 0}
+.none{font-size:14px;color:var(--mut)}
+#chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{all:unset;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 12px;font:600 20px/1.5 var(--ar);color:var(--acc);direction:rtl}
+.chip:hover{background:var(--soft)}
+@media(max-width:480px){.rootAr{min-width:84px;font-size:28px}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Quranic Root Finder · <span>جڑ تلاش</span></h1>
+<div class="themes" id="themes"></div></header>
+
+<div class="search">
+ <input id="q" type="search" dir="auto" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ktb · k t b · كتب · ک ت ب" aria-label="Search root">
+ <button class="btn mic" id="mic" title="Voice search / آواز سے تلاش" aria-label="Voice search">🎤</button>
+ <button class="btn" id="clr" title="Clear" aria-label="Clear">✕</button>
+</div>
+<div class="vrow"><label>🎙 <select id="vlang"><option value="ur-PK">اردو</option><option value="en-US">English</option><option value="ar-SA">العربية</option></select></label><span id="status"></span></div>
+<p class="hint">Type or say the three letters (e.g. “ktb”, “کاف تے بے”, “kay tee bee”). You can also search a derived word (الكتاب) or a meaning (“write”, “لکھنا”).</p>
+
+<div id="results" aria-live="polite"></div>
+<h2>All roots in dataset / ڈیٹاسیٹ کی تمام جڑیں <span id="count"></span></h2>
+<div id="chips"></div>
+</main>
+
+<script>
+/**
+ * Qur'anic Arabic Root & Morphology Database
+ * Master Dataset: Surah Al-Fatihah (1:1-7) & Surah Al-Baqarah (2:1-5)
+ * Authenticated against Mushaf al-Madinah & Corpus Morphology
+ */
+
+window.quranDatabase = [
+  // ========================================================
+  // SURAH 1: AL-FATIHAH (1:1-7)
+  // ========================================================
+  {
+    surahNumber: 1,
+    surahNameArabic: "الفاتحة",
+    surahNameEnglish: "Al-Fatihah (The Opening)",
+    ayahRange: "1-7",
+    allRoots: [
+      "س م و", "أ ل ه", "ر ح م", "ح م د", "ر ب ب", 
+      "ع ل م", "م ل ك", "ي و م", "د ي ن", "ع ب د", 
+      "ع و ن", "ه د ي", "ص ر ط", "ق و م", "ن ع م", 
+      "غ ي ر", "غ ض ب", "ض ل ل"
+    ],
+    rootsDictionary: {
+      "س م و": { root: "س م و", urdu: "بلندی، اونچائی، علامت و نشان بنانا", english: "Height, loftiness, to mark or distinguish", type: "معتل ناقص واوی" },
+      "أ ل ه": { root: "أ ل ه", urdu: "عبادت کرنا، حیرت زدہ ہو کر پناہ لینا", english: "To worship, to be awestruck, to seek refuge", type: "مہموز الفاء" },
+      "ر ح م": { root: "ر ح م", urdu: "نرمی، شفقت، ماں کی کوکھ (جائے حفاظت و پرورش)", english: "Tenderness, womb, protective encompassing compassion", type: "صحیح سالم" },
+      "ح م د": { root: "ح م د", urdu: "احسان و کمال پر اختیاری ستائش و شکر کرنا", english: "To praise with love, reverence, and gratitude for virtue", type: "صحیح سالم" },
+      "ر ب ب": { root: "ر ب ب", urdu: "کسی چیز کو تدریجاً کمال تک پہنچانا، پالنا، مالک ہونا", english: "To nurture step-by-step toward perfection, lordship", type: "مضاعف ثلاثی" },
+      "ع ل م": { root: "ع ل م", urdu: "علامت، نشان، جاننا، حقیقت کا ادراک کرنا", english: "Mark, sign, knowing, perceiving reality", type: "صحیح سالم" },
+      "م ل ك": { root: "م ل ك", urdu: "کسی شے پر مکمل قبضہ، اختیار و تصرف رکھنا", english: "To possess, hold dominion, command, and authority", type: "صحیح سالم" },
+      "ي و م": { root: "ي و م", urdu: "وقت کا دورانیہ، ایک دن، ظہور کا وقت", english: "Period of time, daytime, epoch, moment of occurrence", type: "مثال یائی معتل اجوف واوی" },
+      "د ي ن": { root: "د ي ن", urdu: "جزا و سزا، حساب کتاب، اطاعت، بدلہ، قرض", english: "Recompense, judgment, obedience, law, debt", type: "معتل اجوف یائی" },
+      "ع ب د": { root: "ع ب د", urdu: "انتہائی عاجزی و اطاعت، راستہ ہموار کرنا", english: "Subservience, ultimate humility, to pave a path", type: "صحیح سالم" },
+      "ع و ن": { root: "ع و ن", urdu: "مدد کرنا، سہارا دینا، طاقت پہنچانا", english: "To aid, assist, support, relieve in hardship", type: "معتل اجوف واوی" },
+      "ه د ي": { root: "ه د ي", urdu: "نرمی سے راہنمائی کرنا، منزل کا راستہ دکھانا، تحفہ دینا", english: "To guide gently, direct to destination, grant a gift", type: "معتل ناقص یائی" },
+      "ص ر ط": { root: "ص ر ط", urdu: "نگلنا؛ کشادہ و واضح شاہراہ", english: "To swallow; a wide, clear highway that draws one in", type: "صحیح سالم" },
+      "ق و م": { root: "ق و م", urdu: "سیدھا کھڑا ہونا، درست و مضبوط ہونا، قائم کرنا", english: "To stand upright, establish, sustain, execute firmly", type: "معتل اجوف واوی" },
+      "ن ع م": { root: "ن ع م", urdu: "نرمی، آسودگی، خوشحالی، احسان و فضل", english: "Softness, ease, comfort, blessing, delight", type: "صحیح سالم" },
+      "غ ي ر": { root: "غ ي ر", urdu: "بدلنا، جدا ہونا، سوائے، دوری", english: "To alter, differ, other than, distinct", type: "معتل اجوف یائی" },
+      "غ ض ب": { root: "غ ض ب", urdu: "شدت، غصہ، ناگواری، سخت چٹان", english: "Hard rock, severe displeasure, boiling anger, wrath", type: "صحیح سالم" },
+      "ض ل ل": { root: "ض ل ل", urdu: "سیدھے راستے سے بھٹک جانا، ضائع ہو جانا", english: "To lose the right way, stray, perish, deviate", type: "مضاعف ثلاثی" }
+    },
+    ayahs: [
+      {
+        ayahNumber: 1,
+        ayahKey: "1:1",
+        arabicText: "بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        urduTranslation: "اللہ کے نام سے جو نہایت مہربان، رحم فرمانے والا ہے۔",
+        englishTranslation: "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
+        words: [
+          {
+            word: "بِسْمِ",
+            root: "س م و",
+            wazn: "اِفْع (أصله سِمْو)",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "جار و مجرور (بِـ + اسْم)، متعلق بمحذوف تقديره أبتدئ",
+            grammarEnglish: "Preposition + Genitive Noun (Bi + Ism)",
+            contextualUrdu: "کے نام سے",
+            contextualEnglish: "In the name of",
+            derivatives: [
+              { word: "بِسْمِ", ayah: "1:1", contextPhrase: "بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ", meaningUr: "اللہ کے نام سے", meaningEn: "In the name of Allah" },
+              { word: "السَّمَاءِ", ayah: "2:22", contextPhrase: "وَأَنزَلَ مِنَ السَّمَاءِ مَاءً", meaningUr: "اور آسمان سے پانی اتارا", meaningEn: "And sent down rain from the sky" },
+              { word: "سَمَّيْتُمُوهَا", ayah: "12:40", contextPhrase: "أَسْمَاءً سَمَّيْتُمُوهَا أَنتُمْ وَآبَاؤُكُم", meaningUr: "چند نام ہیں جو تم نے اور تمہارے باپ دادا نے رکھ لیے", meaningEn: "Names which you have named, you and your fathers" },
+              { word: "سَمِيًّا", ayah: "19:65", contextPhrase: "هَلْ تَعْلَمُ لَهُ سَمِيًّا", meaningUr: "کیا تیرے علم میں اس کا کوئی ہم نام ہے؟", meaningEn: "Do you know of any namesake unto Him?" }
+            ]
+          },
+          {
+            word: "اللهِ",
+            root: "أ ل ه",
+            wazn: "عَلَم (جامد / أصله الإِلَاه)",
+            pos: "اسم ذات (علم)",
+            grammarUrdu: "مضاف الیہ، مجرور بالکسرہ",
+            grammarEnglish: "Proper Divine Noun, Genitive",
+            contextualUrdu: "معبودِ برحق",
+            contextualEnglish: "The One True God",
+            derivatives: [
+              { word: "اللهِ", ayah: "1:1", contextPhrase: "بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ", meaningUr: "اللہ (معبودِ برحق)", meaningEn: "Allah (The True God)" },
+              { word: "إِلَٰهٌ", ayah: "2:163", contextPhrase: "وَإِلَٰهُكُمْ إِلَٰهٌ وَاحِدٌ", meaningUr: "اور تمہارا معبود ایک ہی معبود ہے", meaningEn: "And your deity is one Deity" },
+              { word: "بِآلِهَتِنَا", ayah: "21:59", contextPhrase: "مَن فَعَلَ هَٰذَا بِآلِهَتِنَا", meaningUr: "ہمارے معبودوں کے ساتھ یہ کس نے کیا؟", meaningEn: "Who has done this to our gods?" }
+            ]
+          },
+          {
+            word: "الرَّحْمَٰنِ",
+            root: "ر ح م",
+            wazn: "فَعْلَان",
+            pos: "صفت مشبہ",
+            grammarUrdu: "نعت أولى لاسم الجلالة، مجرور بالکسرہ",
+            grammarEnglish: "First Divine Attribute, Genitive",
+            contextualUrdu: "بے حد وسیع رحمت والا",
+            contextualEnglish: "The Entirely Merciful",
+            derivatives: [
+              { word: "الرَّحْمَٰنِ", ayah: "1:1", contextPhrase: "الرَّحْمَٰنِ الرَّحِيمِ", meaningUr: "بے پایاں رحمت والا", meaningEn: "The Boundlessly Merciful" },
+              { word: "سَيَرْحَمُهُمُ", ayah: "9:71", contextPhrase: "أُولَٰئِكَ سَيَرْحَمُهُمُ اللهُ", meaningUr: "اللہ ضرور ان پر رحم فرمائے گا", meaningEn: "Allah will have mercy upon them" },
+              { word: "الْأَرْحَامَ", ayah: "4:1", contextPhrase: "وَاتَّقُوا اللهَ الَّذِي تَسَاءَلُونَ بِهِ وَالْأَرْحَامَ", meaningUr: "اور رشتوں ناطوں کا پاس رکھو", meaningEn: "And fear Allah and respect the ties of kinship" },
+              { word: "رَحْمَتَ", ayah: "2:218", contextPhrase: "أُولَٰئِكَ يَرْجُونَ رَحْمَتَ اللهِ", meaningUr: "وہ اللہ کی رحمت کے امیدوار ہیں", meaningEn: "They hope for the mercy of Allah" }
+            ]
+          },
+          {
+            word: "الرَّحِيمِ",
+            root: "ر ح م",
+            wazn: "فَعِيل",
+            pos: "صفت مشبہ",
+            grammarUrdu: "نعت ثانية لاسم الجلالة، مجرور بالکسرہ",
+            grammarEnglish: "Second Divine Attribute, Genitive",
+            contextualUrdu: "مسلسل رحم فرمانے والا",
+            contextualEnglish: "The Especially Merciful",
+            derivatives: [
+              { word: "الرَّحِيمِ", ayah: "1:1", contextPhrase: "بِسْمِ اللهِ الرَّحْمَٰنِ الرَّحِيمِ", meaningUr: "ہمیشہ رحم کرنے والا", meaningEn: "The Constantly Merciful" },
+              { word: "رَحِيمٌ", ayah: "2:218", contextPhrase: "وَاللهُ غَفُورٌ رَّحِيمٌ", meaningUr: "اور اللہ بخشنے والا رحم فرمانے والا ہے", meaningEn: "And Allah is Forgiving and Merciful" },
+              { word: "ارْحَمْنَا", ayah: "2:286", contextPhrase: "وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا", meaningUr: "اور ہم سے درگزر فرما اور ہم پر رحم کر", meaningEn: "And pardon us; and forgive us; and have mercy upon us" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 2,
+        ayahKey: "1:2",
+        arabicText: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        urduTranslation: "تمام تعریفیں اللہ ہی کے لیے ہیں جو تمام جہانوں کا پالنے والا ہے۔",
+        englishTranslation: "All praise is due to Allah, Lord of all the worlds.",
+        words: [
+          {
+            word: "الْحَمْدُ",
+            root: "ح م د",
+            wazn: "فَعْل",
+            pos: "مصدر معرف باللام",
+            grammarUrdu: "مبتدا، مرفوع بالضمہ",
+            grammarEnglish: "Subject (Mubtada), Nominative",
+            contextualUrdu: "تمام تعریفیں و شکر",
+            contextualEnglish: "All praise and gratitude",
+            derivatives: [
+              { word: "الْحَمْدُ", ayah: "1:2", contextPhrase: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", meaningUr: "تمام تعریفیں اللہ کے لیے ہیں", meaningEn: "All praise belongs to Allah" },
+              { word: "مَّحْمُودًا", ayah: "17:79", contextPhrase: "عَسَىٰ أَن يَبْعَثَكَ رَبُّكَ مَقَامًا مَّحْمُودًا", meaningUr: "کہ آپ کا رب آپ کو مقامِ محمود پر فائز کرے گا", meaningEn: "That your Lord will raise you to a praised station" },
+              { word: "مُحَمَّدٌ", ayah: "3:144", contextPhrase: "وَمَا مُحَمَّدٌ إِلَّا رَسُولٌ", meaningUr: "اور محمد ﷺ تو بس ایک رسول ہیں", meaningEn: "Muhammad is not but a messenger" },
+              { word: "الْحَامِدُونَ", ayah: "9:112", contextPhrase: "التَّائِبُونَ الْعَابِدُونَ الْحَامِدُونَ", meaningUr: "توبہ کرنے والے، بندگی کرنے والے، تعریف کرنے والے", meaningEn: "The repentant, the worshipers, the praisers" }
+            ]
+          },
+          {
+            word: "لِلَّهِ",
+            root: "أ ل ه",
+            wazn: "عَلَم (جامد)",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "جار و مجرور (اللام + الله)، متعلق بمحذوف خبر",
+            grammarEnglish: "Preposition + Proper Divine Noun, Semi-sentence as Predicate",
+            contextualUrdu: "اللہ ہی کے لیے",
+            contextualEnglish: "Belongs to Allah",
+            derivatives: [
+              { word: "لِلَّهِ", ayah: "1:2", contextPhrase: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", meaningUr: "اللہ ہی کے لیے", meaningEn: "Due to Allah" }
+            ]
+          },
+          {
+            word: "رَبِّ",
+            root: "ر ب ب",
+            wazn: "فَعْل",
+            pos: "اسم / صفت مشبہ",
+            grammarUrdu: "نعت لاسم الجلالة أو بدل، مجرور بالکسرہ",
+            grammarEnglish: "Attribute/Apposition to Allah, Genitive",
+            contextualUrdu: "پالنے والا، مربی",
+            contextualEnglish: "Lord / Sustainer",
+            derivatives: [
+              { word: "رَبِّ", ayah: "1:2", contextPhrase: "رَبِّ الْعَالَمِينَ", meaningUr: "تمام جہانوں کا پالنے والا", meaningEn: "Lord of the worlds" },
+              { word: "رَبَّانِيِّينَ", ayah: "3:79", contextPhrase: "كُونُوا رَبَّانِيِّينَ بِمَا كُنتُمْ تُعَلِّمُونَ الْكِتَابَ", meaningUr: "تم رب والے بن جاؤ اس لیے کہ تم کتاب سکھاتے ہو", meaningEn: "Be devout servants of the Lord because of what you teach" },
+              { word: "رَبَائِبُكُمُ", ayah: "4:23", contextPhrase: "وَرَبَائِبُكُمُ اللَّاتِي فِي حُجُورِكُم", meaningUr: "اور تمہاری پرورش کردہ سوتیلی بیٹیاں جو تمہاری گود میں ہیں", meaningEn: "And your stepdaughters under your guardianship" },
+              { word: "أَرْبَابًا", ayah: "9:31", contextPhrase: "اتَّخَذُوا أَحْبَارَهُمْ وَرُهْبَانَهُمْ أَرْبَابًا مِّن دُونِ اللهِ", meaningUr: "انہوں نے اپنے علماء اور درویشوں کو رب بنا لیا", meaningEn: "They took their rabbis and monks as lords besides Allah" }
+            ]
+          },
+          {
+            word: "الْعَالَمِينَ",
+            root: "ع ل م",
+            wazn: "فَاعَل + جمع مذكر سالم",
+            pos: "اسم جمع (ملحق بجمع المذكر السالم)",
+            grammarUrdu: "مضاف الیہ، مجرور بالیاء",
+            grammarEnglish: "Possessive Noun (Mudaf Ilayh), Genitive by Ya",
+            contextualUrdu: "تمام جہان",
+            contextualEnglish: "All the worlds / realms",
+            derivatives: [
+              { word: "الْعَالَمِينَ", ayah: "1:2", contextPhrase: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", meaningUr: "تمام جہانوں کا پروردگار", meaningEn: "Lord of all realms" },
+              { word: "عَلَّمَ", ayah: "2:31", contextPhrase: "وَعَلَّمَ آدَمَ الْأَسْمَاءَ كُلَّهَا", meaningUr: "اور اس نے آدم کو تمام نام سکھائے", meaningEn: "And He taught Adam the names - all of them" },
+              { word: "عَلِيمٌ", ayah: "2:29", contextPhrase: "وَهُوَ بِكُلِّ شَيْءٍ عَلِيمٌ", meaningUr: "اور وہ ہر چیز کا خوب جاننے والا ہے", meaningEn: "And He is Knowing of all things" },
+              { word: "يَعْلَمُونَ", ayah: "2:13", contextPhrase: "أَلَا إِنَّهُمْ هُمُ السُّفَهَاءُ وَلَٰكِن لَّا يَعْلَمُونَ", meaningUr: "خبردار! وہی بے وقوف ہیں لیکن وہ جانتے نہیں", meaningEn: "Unquestionably, it is they who are the foolish, but they know not" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 3,
+        ayahKey: "1:3",
+        arabicText: "الرَّحْمَٰنِ الرَّحِيمِ",
+        urduTranslation: "نہایت مہربان، رحم فرمانے والا ہے۔",
+        englishTranslation: "The Entirely Merciful, the Especially Merciful.",
+        words: [
+          {
+            word: "الرَّحْمَٰنِ",
+            root: "ر ح م",
+            wazn: "فَعْلَان",
+            pos: "صفت مشبہ",
+            grammarUrdu: "نعت مجرورة بالکسرہ",
+            grammarEnglish: "Attribute, Genitive",
+            contextualUrdu: "بے حد وسیع رحمت والا",
+            contextualEnglish: "The Entirely Merciful",
+            derivatives: []
+          },
+          {
+            word: "الرَّحِيمِ",
+            root: "ر ح م",
+            wazn: "فَعِيل",
+            pos: "صفت مشبہ",
+            grammarUrdu: "نعت مجرورة بالکسرہ",
+            grammarEnglish: "Attribute, Genitive",
+            contextualUrdu: "مسلسل رحم فرمانے والا",
+            contextualEnglish: "The Especially Merciful",
+            derivatives: []
+          }
+        ]
+      },
+      {
+        ayahNumber: 4,
+        ayahKey: "1:4",
+        arabicText: "مَالِكِ يَوْمِ الدِّينِ",
+        urduTranslation: "بدلے کے دن کا مالک ہے۔",
+        englishTranslation: "Sovereign of the Day of Recompense.",
+        words: [
+          {
+            word: "مَالِكِ",
+            root: "م ل ك",
+            wazn: "فَاعِل",
+            pos: "اسم فاعل",
+            grammarUrdu: "نعت لاسم الجلالة، مجرور بالکسرہ",
+            grammarEnglish: "Active Participle / Attribute, Genitive",
+            contextualUrdu: "مالک و حاکم",
+            contextualEnglish: "Master / Sovereign",
+            derivatives: [
+              { word: "مَالِكِ", ayah: "1:4", contextPhrase: "مَالِكِ يَوْمِ الدِّينِ", meaningUr: "روزِ جزا کا مالک", meaningEn: "Sovereign of the Day of Recompense" },
+              { word: "مُلْكُ", ayah: "2:107", contextPhrase: "أَلَمْ تَعْلَمْ أَنَّ اللهَ لَهُ مُلْكُ السَّمَاوَاتِ وَالْأَرْضِ", meaningUr: "آسمانوں اور زمین کی بادشاہت اللہ ہی کے لیے ہے", meaningEn: "To Allah belongs the dominion of the heavens and earth" },
+              { word: "مَلِكًا", ayah: "2:246", contextPhrase: "ابْعَثْ لَنَا مَلِكًا نُّقَاتِلْ فِي سَبِيلِ اللهِ", meaningUr: "ہمارے لیے ایک بادشاہ مقرر کر دیں", meaningEn: "Appoint for us a king and we will fight" },
+              { word: "تَمْلِكُ", ayah: "82:19", contextPhrase: "يَوْمَ لَا تَمْلِكُ نَفْسٌ لِّنَفْسٍ شَيْئًا", meaningUr: "جس دن کوئی جان کسی جان کے لیے کسی چیز کا اختیار نہ رکھے گی", meaningEn: "A Day when no soul will possess for another soul power to do anything" }
+            ]
+          },
+          {
+            word: "يَوْمِ",
+            root: "ي و م",
+            wazn: "فَعْل",
+            pos: "اسم ظرف / مضاف",
+            grammarUrdu: "مضاف الیہ برائے مالک، مجرور بالکسرہ",
+            grammarEnglish: "Genitive Noun (Mudaf Ilayh)",
+            contextualUrdu: "دن / دورانیہ",
+            contextualEnglish: "Day / Period",
+            derivatives: [
+              { word: "يَوْمِ", ayah: "1:4", contextPhrase: "مَالِكِ يَوْمِ الدِّينِ", meaningUr: "جزا کا دن", meaningEn: "The Day of Recompense" },
+              { word: "أَيَّامًا", ayah: "2:184", contextPhrase: "أَيَّامًا مَّعْدُودَاتٍ", meaningUr: "گنتی کے چند دن", meaningEn: "A limited number of days" },
+              { word: "يَوْمَئِذٍ", ayah: "75:10", contextPhrase: "يَقُولُ الْإِنسَانُ يَوْمَئِذٍ أَيْنَ الْمَفَرُّ", meaningUr: "انسان اس دن کہے گا کہ بھاگنے کی جگہ کہاں ہے؟", meaningEn: "Man will say on that Day, 'Where is the escape?'" },
+              { word: "الْيَوْمَ", ayah: "5:3", contextPhrase: "الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ", meaningUr: "آج میں نے تمہارے لیے تمہارا دین مکمل کر دیا", meaningEn: "This day I have perfected for you your religion" }
+            ]
+          },
+          {
+            word: "الدِّينِ",
+            root: "د ي ن",
+            wazn: "فِعْل",
+            pos: "مصدر / اسم",
+            grammarUrdu: "مضاف الیہ برائے یوم، مجرور بالکسرہ",
+            grammarEnglish: "Genitive Noun (Mudaf Ilayh)",
+            contextualUrdu: "جزا و سزا، بدلہ، حساب",
+            contextualEnglish: "Recompense / Judgment",
+            derivatives: [
+              { word: "الدِّينِ", ayah: "1:4", contextPhrase: "مَالِكِ يَوْمِ الدِّينِ", meaningUr: "بدلہ اور حساب", meaningEn: "The Final Judgment" },
+              { word: "الدِّينَ", ayah: "3:19", contextPhrase: "إِنَّ الدِّينَ عِندَ اللهِ الْإِسْلَامُ", meaningUr: "بیشک اللہ کے نزدیک دین اسلام ہی ہے", meaningEn: "Indeed, the religion in the sight of Allah is Islam" },
+              { word: "لَمَدِينُونَ", ayah: "37:53", contextPhrase: "أَإِنَّا لَمَدِينُونَ", meaningUr: "کیا واقعی ہمیں جزا و سزا دی جائے گی؟", meaningEn: "Are we indeed to be judged and recompensed?" },
+              { word: "تَدَايَنتُم", ayah: "2:282", contextPhrase: "إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ", meaningUr: "جب تم آپس میں قرض کا لین دین کرو تو اسے لکھ لیا کرو", meaningEn: "When you contract a debt for a specified term, write it down" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 5,
+        ayahKey: "1:5",
+        arabicText: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        urduTranslation: "ہم تیری ہی بندگی کرتے ہیں اور تجھ ہی سے مدد مانگتے ہیں۔",
+        englishTranslation: "It is You we worship and You we ask for help.",
+        words: [
+          {
+            word: "نَعْبُدُ",
+            root: "ع ب د",
+            wazn: "نَفْعُلُ (باب نصر)",
+            pos: "فعل مضارع",
+            grammarUrdu: "فعل مضارع مرفوع، والفاعل ضمير مستتر تقديره نحن",
+            grammarEnglish: "Present Verb, 1st Plural Subject implied",
+            contextualUrdu: "ہم بندگی کرتے ہیں",
+            contextualEnglish: "We worship exclusively",
+            derivatives: [
+              { word: "نَعْبُدُ", ayah: "1:5", contextPhrase: "إِيَّاكَ نَعْبُدُ", meaningUr: "ہم تیری ہی بندگی کرتے ہیں", meaningEn: "It is You we worship" },
+              { word: "عَبْدِنَا", ayah: "2:23", contextPhrase: "وَإِن كُنتُمْ فِي رَيْبٍ مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا", meaningUr: "جو کچھ ہم نے اپنے بندے پر اتارا", meaningEn: "What We have sent down upon Our servant" },
+              { word: "عِبَادِي", ayah: "2:186", contextPhrase: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ", meaningUr: "اور جب میرے بندے آپ سے میرے متعلق پوچھیں", meaningEn: "And when My servants ask you concerning Me" },
+              { word: "عَابِدُونَ", ayah: "2:138", contextPhrase: "وَنَحْنُ لَهُ عَابِدُونَ", meaningUr: "اور ہم اسی کی بندگی کرنے والے ہیں", meaningEn: "And we are worshippers of Him alone" }
+            ]
+          },
+          {
+            word: "نَسْتَعِينُ",
+            root: "ع و ن",
+            wazn: "نَسْتَفْعِلُ (باب استفعال)",
+            pos: "فعل مضارع (Form X)",
+            grammarUrdu: "فعل مضارع مرفوع، والفاعل ضمير مستتر تقديره نحن",
+            grammarEnglish: "Present Verb (Form X: seeking aid), 1st Plural",
+            contextualUrdu: "ہم مدد مانگتے ہیں",
+            contextualEnglish: "We ask for help",
+            derivatives: [
+              { word: "نَسْتَعِينُ", ayah: "1:5", contextPhrase: "وَإِيَّاكَ نَسْتَعِينُ", meaningUr: "اور تجھ ہی سے مدد مانگتے ہیں", meaningEn: "And You alone we ask for help" },
+              { word: "اسْتَعِينُوا", ayah: "2:45", contextPhrase: "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", meaningUr: "اور صبر اور نماز کے ذریعے مدد طلب کرو", meaningEn: "And seek help through patience and prayer" },
+              { word: "تَعَاوَنُوا", ayah: "5:2", contextPhrase: "وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ", meaningUr: "اور نیکی اور پرہیزگاری پر باہم ایک دوسرے کی مدد کرو", meaningEn: "And cooperate in righteousness and piety" },
+              { word: "الْمُسْتَعَانُ", ayah: "12:18", contextPhrase: "وَاللهُ الْمُسْتَعَانُ عَلَىٰ مَا تَصِفُونَ", meaningUr: "اور تم جو بیان کرتے ہو اس پر اللہ ہی سے مدد مانگی جا سکتی ہے", meaningEn: "And Allah is the One sought for help against what you describe" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 6,
+        ayahKey: "1:6",
+        arabicText: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        urduTranslation: "ہمیں سیدھے راستے کی ہدایت فرما۔",
+        englishTranslation: "Guide us to the straight path.",
+        words: [
+          {
+            word: "اهْدِنَا",
+            root: "ه د ي",
+            wazn: "اِفْعِلْ (باب ضرب)",
+            pos: "فعل امر (دعا) + ضمير مفعول",
+            grammarUrdu: "فعل دعاء مبني على حذف حرف العلة، و(نا) مفعول به أول",
+            grammarEnglish: "Imperative Verb (Prayer) + 1st Plural Direct Object",
+            contextualUrdu: "ہمیں ہدایت فرما",
+            contextualEnglish: "Guide us",
+            derivatives: [
+              { word: "اهْدِنَا", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "ہمیں سیدھا راستہ دکھا", meaningEn: "Guide us to the straight path" },
+              { word: "هُدًى", ayah: "2:2", contextPhrase: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ", meaningUr: "پرہیزگاروں کے لیے ہدایت ہے", meaningEn: "A guidance for the conscious of Allah" },
+              { word: "الْمُهْتَدُونَ", ayah: "2:157", contextPhrase: "وَأُولَٰئِكَ هُمُ الْمُهْتَدُونَ", meaningUr: "اور یہی ہدایت یافتہ ہیں", meaningEn: "And it is they who are the rightly guided" },
+              { word: "بِهَدِيَّةٍ", ayah: "27:35", contextPhrase: "وَإِنِّي مُرْسِلَةٌ إِلَيْهِم بِهَدِيَّةٍ", meaningUr: "اور میں ان کی طرف ایک تحفہ بھیجتی ہوں", meaningEn: "And indeed, I will send to them a gift" }
+            ]
+          },
+          {
+            word: "الصِّرَاطَ",
+            root: "ص ر ط",
+            wazn: "فِعَال",
+            pos: "اسم",
+            grammarUrdu: "مفعول به ثانٍ، منصوب بالفتحہ",
+            grammarEnglish: "Second Direct Object, Accusative",
+            contextualUrdu: "سیدھا اور کشادہ راستہ",
+            contextualEnglish: "The Path",
+            derivatives: [
+              { word: "الصِّرَاطَ", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "سیدھا اور کشادہ راستہ", meaningEn: "The Straight Path" },
+              { word: "صِرَاطِي", ayah: "6:153", contextPhrase: "وَأَنَّ هَٰذَا صِرَاطِي مُسْتَقِيمًا فَاتَّبِعُوهُ", meaningUr: "اور یہ کہ یہ میرا سیدھا راستہ ہے لہٰذا اس کی پیروی کرو", meaningEn: "And this is My path, which is straight, so follow it" },
+              { word: "صِرَاطَكَ", ayah: "7:16", contextPhrase: "لَأَقْعُدَنَّ لَهُمْ صِرَاطَكَ الْمُسْتَقِيمَ", meaningUr: "میں ضرور ان کے لیے تیری سیدھی راہ پر بیٹھوں گا", meaningEn: "I will surely sit in wait for them on Your straight path" }
+            ]
+          },
+          {
+            word: "الْمُسْتَقِيمَ",
+            root: "ق و م",
+            wazn: "مُسْتَفْعِل (باب استفعال)",
+            pos: "اسم فاعل / صفت",
+            grammarUrdu: "نعت للصراط، منصوب بالفتحہ",
+            grammarEnglish: "Adjective (Active Participle Form X), Accusative",
+            contextualUrdu: "بالکل سیدھا",
+            contextualEnglish: "The Straight / Upright",
+            derivatives: [
+              { word: "الْمُسْتَقِيمَ", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "سیدھا اور مضبوط راستہ", meaningEn: "The Straight / Upright Path" },
+              { word: "يُقِيمُونَ", ayah: "2:3", contextPhrase: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ", meaningUr: "جو غیب پر ایمان لاتے ہیں اور نماز قائم کرتے ہیں", meaningEn: "Who believe in the unseen, establish prayer" },
+              { word: "الْقَيُّومُ", ayah: "2:255", contextPhrase: "اللهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", meaningUr: "وہ زندہ ہے سب کا تھامنے والا", meaningEn: "The Ever-Living, the Sustainer of all existence" },
+              { word: "الْقِيَامَةِ", ayah: "2:85", contextPhrase: "وَيَوْمَ الْقِيَامَةِ يُرَدُّونَ إِلَىٰ أَشَدِّ الْعَذَابِ", meaningUr: "اور قیامت کے دن وہ سخت ترین عذاب کی طرف لوٹائے جائیں گے", meaningEn: "And on the Day of Resurrection they will be sent back to the severest punishment" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 7,
+        ayahKey: "1:7",
+        arabicText: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        urduTranslation: "ان لوگوں کا راستہ جن پر تو نے انعام فرمایا، نہ کہ ان کا جن پر غضب ہوا اور نہ ہی گمراہوں کا۔",
+        englishTranslation: "The path of those upon whom You have bestowed favor, not of those who have evoked anger or of those who are astray.",
+        words: [
+          {
+            word: "صِرَاطَ",
+            root: "ص ر ط",
+            wazn: "فِعَال",
+            pos: "اسم",
+            grammarUrdu: "بدل من الصراط الأول، منصوب بالفتحہ",
+            grammarEnglish: "Apposition (Badal), Accusative",
+            contextualUrdu: "راستہ",
+            contextualEnglish: "The path of",
+            derivatives: []
+          },
+          {
+            word: "أَنْعَمْتَ",
+            root: "ن ع م",
+            wazn: "أَفْعَلْتَ (باب افعال)",
+            pos: "فعل ماضی (Form IV)",
+            grammarUrdu: "فعل ماضی مبني على السكون، والتاء فاعل",
+            grammarEnglish: "Past Verb (Form IV), 2nd Masc. Singular Subject",
+            contextualUrdu: "تو نے انعام فرمایا",
+            contextualEnglish: "You bestowed favor",
+            derivatives: [
+              { word: "أَنْعَمْتَ", ayah: "1:7", contextPhrase: "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ", meaningUr: "جن پر تو نے انعام فرمایا", meaningEn: "Those upon whom You bestowed favor" },
+              { word: "نِعْمَتِيَ", ayah: "2:40", contextPhrase: "يَا بَنِي إِسْرَائِيلَ اذْكُرُوا نِعْمَتِيَ الَّتِي أَنْعَمْتُ عَلَيْكُمْ", meaningUr: "اے بنی اسرائیل! میری اس نعمت کو یاد کرو", meaningEn: "O Children of Israel, remember My favor" },
+              { word: "نَعِيمٍ", ayah: "56:89", contextPhrase: "فَرَوْحٌ وَرَيْحَانٌ وَجَنَّتُ نَعِيمٍ", meaningUr: "تو اس کے لیے راحت، خوشبو اور نعمتوں والی جنت ہے", meaningEn: "Then for him is rest and satisfaction and a garden of pleasure" },
+              { word: "الْأَنْعَامِ", ayah: "6:142", contextPhrase: "وَمِنَ الْأَنْعَامِ حَمُولَةً وَفَرْشًا", meaningUr: "اور مویشیوں میں سے بوجھ اٹھانے والے جانور پیدا کیے", meaningEn: "And of the cattle are some for burden and some for meat" }
+            ]
+          },
+          {
+            word: "غَيْرِ",
+            root: "غ ي ر",
+            wazn: "فَعْل",
+            pos: "اسم مغايرة (بدل / نعت)",
+            grammarUrdu: "بدل من (الَّذِينَ) أو نعت له، مجرور بالکسرہ",
+            grammarEnglish: "Apposition or Attribute to (alladhina), Genitive",
+            contextualUrdu: "نہ کہ / سوائے",
+            contextualEnglish: "Not of / other than",
+            derivatives: [
+              { word: "غَيْرِ", ayah: "1:7", contextPhrase: "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ", meaningUr: "نہ کہ ان کا جن پر غضب ہوا", meaningEn: "Not of those who evoked anger" },
+              { word: "يُغَيِّرُوا", ayah: "13:11", contextPhrase: "حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ", meaningUr: "جب تک کہ وہ خود اپنی حالت نہ بدل لیں", meaningEn: "Until they change what is in themselves" }
+            ]
+          },
+          {
+            word: "الْمَغْضُوبِ",
+            root: "غ ض ب",
+            wazn: "مَفْعُول",
+            pos: "اسم مفعول",
+            grammarUrdu: "مضاف الیہ برائے غیر، مجرور بالکسرہ",
+            grammarEnglish: "Passive Participle, Genitive",
+            contextualUrdu: "جن پر غضب ہوا",
+            contextualEnglish: "Those who incurred wrath",
+            derivatives: [
+              { word: "الْمَغْضُوبِ", ayah: "1:7", contextPhrase: "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ", meaningUr: "جن پر غضب نازل ہوا", meaningEn: "Those who earned wrath" },
+              { word: "غَضِبَ", ayah: "4:93", contextPhrase: "وَغَضِبَ اللهُ عَلَيْهِ وَلَعَنَهُ", meaningUr: "اور اللہ اس پر غضبناک ہوا اور اس پر لعنت کی", meaningEn: "And Allah has become angry with him and has cursed him" },
+              { word: "بِغَضَبٍ", ayah: "2:61", contextPhrase: "وَبَاءُوا بِغَضَبٍ مِّنَ اللهِ", meaningUr: "اور وہ اللہ کا غضب لے کر لوٹے", meaningEn: "And they drew on themselves wrath from Allah" },
+              { word: "غَضْبَانَ", ayah: "7:150", contextPhrase: "وَلَمَّا رَجَعَ مُوسَىٰ إِلَىٰ قَوْمِهِ غَضْبَانَ أَسِفًا", meaningUr: "اور جب موسیٰ اپنی قوم کی طرف غصے اور افسوس میں بھرے ہوئے لوٹے", meaningEn: "And when Moses returned to his people, angry and grieved" }
+            ]
+          },
+          {
+            word: "الضَّالِّينَ",
+            root: "ض ل ل",
+            wazn: "فَاعِلِين",
+            pos: "اسم فاعل (جمع مذکر سالم)",
+            grammarUrdu: "معطوف على المغضوب، مجرور بالیاء",
+            grammarEnglish: "Active Participle Plural, Genitive by Ya",
+            contextualUrdu: "بھٹک جانے والے",
+            contextualEnglish: "Those who are astray",
+            derivatives: [
+              { word: "الضَّالِّينَ", ayah: "1:7", contextPhrase: "وَلَا الضَّالِّينَ", meaningUr: "اور نہ ہی گمراہوں کا راستہ", meaningEn: "Nor of those who are astray" },
+              { word: "ضَلَّ", ayah: "2:108", contextPhrase: "فَقَدْ ضَلَّ سَوَاءَ السَّبِيلِ", meaningUr: "تو وہ یقیناً سیدھی راہ سے بھٹک گیا", meaningEn: "He has certainly strayed from the right path" },
+              { word: "أَضَلَّ", ayah: "4:88", contextPhrase: "أَتُرِيدُونَ أَن تَهْدُوا مَنْ أَضَلَّ اللهُ", meaningUr: "کیا تم اسے ہدایت دینا چاہتے ہو جسے اللہ نے گمراہ کر دیا؟", meaningEn: "Do you wish to guide him whom Allah has sent astray?" },
+              { word: "ضَلَالٍ", ayah: "3:164", contextPhrase: "وَإِن كَانُوا مِن قَبْلُ لَفِي ضَلَالٍ مُّبِينٍ", meaningUr: "اگرچہ وہ اس سے پہلے کھلی گمراہی میں تھے", meaningEn: "Although they were before in manifest error" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // ========================================================
+  // SURAH 2: AL-BAQARAH (2:1-5)
+  // ========================================================
+  {
+    surahNumber: 2,
+    surahNameArabic: "البقرة",
+    surahNameEnglish: "Al-Baqarah (The Cow)",
+    ayahRange: "1-5",
+    allRoots: [
+      "ك ت ب", "ر ي ب", "ه د ي", "و ق ي", "أ م ن", 
+      "غ ي ب", "ق و م", "ص ل و", "ر ز ق", "ن ف ق", 
+      "ن ز ل", "ق ب ل", "أ خ ر", "ي ق ن", "ف ل ح"
+    ],
+    rootsDictionary: {
+      "ك ت ب": { root: "ك ت ب", urdu: "سلائی کرنا، جوڑنا، لکھنا، فرض و لازم کرنا", english: "To stitch together, bind, write, ordain or decree", type: "صحیح سالم" },
+      "ر ي ب": { root: "ر ي ب", urdu: "اضطراب، دل کی بے چینی، گہرا شک، تہمت", english: "Uneasiness, internal agitation, deep unsettling doubt, suspicion", type: "معتل اجوف یائی" },
+      "و ق ي": { root: "و ق ي", urdu: "بچاؤ کرنا، ڈھال بنانا، ضرر سے حفاظت کرنا", english: "To protect, shield, safeguard from harm, preserve", type: "لفیف مفروق" },
+      "أ م ن": { root: "أ م ن", urdu: "امن و امان پانا، دل کا مطمئن ہونا، تصدیق کرنا", english: "To be secure, safe, find tranquility, to trust and believe", type: "مہموز الفاء" },
+      "غ ي ب": { root: "غ ي ب", urdu: "چھپ جانا، آنکھوں سے اوجھل ہونا، غیر حاضر ہونا", english: "To be hidden, absent, concealed from human sensory perception", type: "معتل اجوف یائی" },
+      "ص ل و": { root: "ص ل و", urdu: "پیٹھ کا درمیانی حصہ سیدھا کرنا، دعا و التجا، تعظیم", english: "To supplicate, pray, bow in reverence, connect", type: "معتل ناقص واوی" },
+      "ر ز ق": { root: "ر ز ق", urdu: "عطا کرنا، نصیب بنانا، روزی دینا", english: "To provide, grant sustenance, bestow livelihood", type: "صحیح سالم" },
+      "ن ف ق": { root: "ن ف ق", urdu: "سرنگ کے راستے نکل جانا، خرچ کرنا، کھپانا", english: "To tunnel through, pass out, spend wealth, disburse", type: "صحیح سالم" },
+      "ن ز ل": { root: "ن ز ل", urdu: "بلندی سے نیچے اترنا، نازل ہونا، قیام کرنا", english: "To descend from a high place, send down, alight", type: "صحیح سالم" },
+      "ق ب ل": { root: "ق ب ل", urdu: "سامنے آنا، رخ کرنا، پہلے ہونا، قبول کرنا", english: "To face toward, precede in time, be in front, accept", type: "صحیح سالم" },
+      "أ خ ر": { root: "أ خ ر", urdu: "پیچھے رہنا، مؤخر ہونا، آخری حصہ", english: "To delay, come after, the latter end, the hereafter", type: "مہموز الفاء" },
+      "ي ق ن": { root: "ي ق ن", urdu: "پانی کا ٹھہر کر صاف ہونا، اٹل یقین، پختہ علم", english: "To be settled and clear, certainty, unshakable conviction", type: "مثال یائی" },
+      "ف ل ح": { root: "ف ل ح", urdu: "زمین کو چیر کر شاداب ہونا، نجات و کامیابی پانا", english: "To furrow the earth; to attain flourishing success and ultimate triumph", type: "صحیح سالم" }
+    },
+    ayahs: [
+      {
+        ayahNumber: 1,
+        ayahKey: "2:1",
+        arabicText: "الٓمٓ",
+        urduTranslation: "الف، لام، میم (حروفِ مقطعات)۔",
+        englishTranslation: "Alif, Lam, Meem.",
+        words: [
+          {
+            word: "الٓمٓ",
+            root: "—",
+            wazn: "—",
+            pos: "حروف مقطعة",
+            grammarUrdu: "حروف مقطعة لا محل لها من الإعراب مبنية على السكون",
+            grammarEnglish: "Disconnected Letters, Indeclinable with no grammatical place",
+            contextualUrdu: "الف، لام، میم",
+            contextualEnglish: "Alif, Lam, Meem",
+            derivatives: []
+          }
+        ]
+      },
+      {
+        ayahNumber: 2,
+        ayahKey: "2:2",
+        arabicText: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
+        urduTranslation: "یہ وہ کتاب ہے جس میں کوئی شک نہیں، پرہیزگاروں کے لیے ہدایت ہے۔",
+        englishTranslation: "This is the Book about which there is no doubt, a guidance for those conscious of Allah.",
+        words: [
+          {
+            word: "الْكِتَابُ",
+            root: "ك ت ب",
+            wazn: "فِعَال",
+            pos: "اسم / مصدر بمعنی مفعول",
+            grammarUrdu: "بدل من اسم الإشارة (ذَٰلِكَ) أو خبره، مرفوع بالضمہ",
+            grammarEnglish: "Apposition or Predicate, Nominative",
+            contextualUrdu: "وہ عظیم کتاب (قرآن)",
+            contextualEnglish: "The Book (The Qur'an)",
+            derivatives: [
+              { word: "الْكِتَابُ", ayah: "2:2", contextPhrase: "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ", meaningUr: "یہ وہ عظیم کتاب ہے", meaningEn: "This is the Book" },
+              { word: "كُتِبَ", ayah: "2:183", contextPhrase: "كُتِبَ عَلَيْكُمُ الصِّيَامُ", meaningUr: "تم پر روزے فرض کیے گئے", meaningEn: "Fasting has been prescribed for you" },
+              { word: "فَاكْتُبُوهُ", ayah: "2:282", contextPhrase: "إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ", meaningUr: "تو اسے لکھ لیا کرو", meaningEn: "Then write it down" },
+              { word: "كَاتِبٌ", ayah: "2:282", contextPhrase: "وَلْيَكْتُب بَّيْنَكُمْ كَاتِبٌ بِالْعَدْلِ", meaningUr: "اور چاہیے کہ کوئی لکھنے والا تمہارے درمیان انصاف سے لکھے", meaningEn: "And let a scribe write between you in justice" }
+            ]
+          },
+          {
+            word: "رَيْبَ",
+            root: "ر ي ب",
+            wazn: "فَعْل",
+            pos: "اسم نكرة",
+            grammarUrdu: "اسم (لَا) النافية للجنس، مبني على الفتح في محل نصب",
+            grammarEnglish: "Noun of Absolute Negation (La), indeclinable with Fatha",
+            contextualUrdu: "کوئی شک و شبہ",
+            contextualEnglish: "Any doubt or suspicion",
+            derivatives: [
+              { word: "رَيْبَ", ayah: "2:2", contextPhrase: "لَا رَيْبَ ۛ فِيهِ", meaningUr: "اس میں کسی شک کی گنجائش نہیں", meaningEn: "There is no doubt in it" },
+              { word: "رَيْبٍ", ayah: "2:23", contextPhrase: "وَإِن كُنتُمْ فِي رَيْبٍ مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا", meaningUr: "اور اگر تم اس کلام میں شک رکھتے ہو جو ہم نے اتارا", meaningEn: "And if you are in doubt about what We have sent down" },
+              { word: "ارْتَابُوا", ayah: "24:50", contextPhrase: "أَفِي قُلُوبِهِم مَّرَضٌ أَمِ ارْتَابُوا", meaningUr: "کیا ان کے دلوں میں بیماری ہے یا وہ شک میں پڑ گئے؟", meaningEn: "Is there disease in their hearts or have they doubted?" },
+              { word: "مُرِيبٍ", ayah: "11:62", contextPhrase: "وَإِنَّنَا لَفِي شَكٍّ مِّمَّا تَدْعُونَا إِلَيْهِ مُرِيبٍ", meaningUr: "اور جس کی طرف تم ہمیں بلاتے ہو ہم اس سے سخت بے چین کن شک میں ہیں", meaningEn: "And indeed we are in disquieting doubt about that to which you invite us" }
+            ]
+          },
+          {
+            word: "هُدًى",
+            root: "ه د ي",
+            wazn: "فُعَل",
+            pos: "مصدر / اسم",
+            grammarUrdu: "خبر ثانٍ للمبتدأ (أو حال)، مرفوع بضمة مقدرة",
+            grammarEnglish: "Predicate (or Circumstantial Hal), Nominative with implied Dammah",
+            contextualUrdu: "سرتاپا ہدایت و رہنمائی",
+            contextualEnglish: "Pure guidance",
+            derivatives: [
+              { word: "هُدًى", ayah: "2:2", contextPhrase: "هُدًى لِّلْمُتَّقِينَ", meaningUr: "پرہیزگاروں کے لیے ہدایت ہے", meaningEn: "A guidance for the conscious of Allah" },
+              { word: "اهْدِنَا", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "ہمیں سیدھا راستہ دکھا", meaningEn: "Guide us to the straight path" },
+              { word: "يَهْدِي", ayah: "2:142", contextPhrase: "يَهْدِي مَن يَشَاءُ إِلَىٰ صِرَاطٍ مُّسْتَقِيمٍ", meaningUr: "وہ جسے چاہتا ہے سیدھے راستے کی ہدایت دیتا ہے", meaningEn: "He guides whom He wills to a straight path" },
+              { word: "الْهُدَىٰ", ayah: "2:185", contextPhrase: "هُدًى لِّلنَّاسِ وَبَيِّنَاتٍ مِّنَ الْهُدَىٰ وَالْفُرْقَانِ", meaningUr: "لوگوں کے لیے رہنمائی اور واضح دلائل", meaningEn: "Guidance for the people and clear proofs of guidance" }
+            ]
+          },
+          {
+            word: "لِّلْمُتَّقِينَ",
+            root: "و ق ي",
+            wazn: "مُفْتَعِلِين (باب افتعال)",
+            pos: "اسم فاعل (جمع مذکر سالم)",
+            grammarUrdu: "جار و مجرور (اللام + المتَّقِين)، مجرور بالیاء",
+            grammarEnglish: "Preposition + Active Participle Plural (Form VIII), Genitive by Ya",
+            contextualUrdu: "تقویٰ اختیار کرنے والے / پرہیزگار",
+            contextualEnglish: "Those conscious of Allah / The Righteous",
+            derivatives: [
+              { word: "لِّلْمُتَّقِينَ", ayah: "2:2", contextPhrase: "هُدًى لِّلْمُتَّقِينَ", meaningUr: "پرہیزگاروں کے لیے ہدایت", meaningEn: "A guidance for the god-fearing" },
+              { word: "تَتَّقُونَ", ayah: "2:21", contextPhrase: "اعْبُدُوا رَبَّكُمُ الَّذِي خَلَقَكُمْ وَالَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ", meaningUr: "اپنے رب کی بندگی کرو تاکہ تم پرہیزگار بن جاؤ", meaningEn: "Worship your Lord that you may become righteous" },
+              { word: "التَّقْوَىٰ", ayah: "2:197", contextPhrase: "وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ", meaningUr: "اور زادِ راہ لے لو، اور بہترین زادِ راہ تقویٰ ہے", meaningEn: "And take provisions, but indeed, the best provision is Taqwa" },
+              { word: "وَقِنَا", ayah: "2:201", contextPhrase: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", meaningUr: "اور ہمیں آگ کے عذاب سے بچا لے", meaningEn: "And protect us from the punishment of the Fire" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 3,
+        ayahKey: "2:3",
+        arabicText: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ",
+        urduTranslation: "جو غیب پر ایمان لاتے ہیں اور نماز قائم کرتے ہیں اور جو کچھ ہم نے انہیں دیا ہے اس میں سے خرچ کرتے ہیں۔",
+        englishTranslation: "Who believe in the unseen, establish prayer, and spend out of what We have provided for them.",
+        words: [
+          {
+            word: "يُؤْمِنُونَ",
+            root: "أ م ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural, Nominative by Nun",
+            contextualUrdu: "وہ ایمان لاتے ہیں",
+            contextualEnglish: "They believe",
+            derivatives: [
+              { word: "يُؤْمِنُونَ", ayah: "2:3", contextPhrase: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ", meaningUr: "جو غیب پر ایمان لاتے ہیں", meaningEn: "Who believe in the unseen" },
+              { word: "آمَنُوا", ayah: "2:9", contextPhrase: "يُخَادِعُونَ اللهَ وَالَّذِينَ آمَنُوا", meaningUr: "اور ان لوگوں کو جو ایمان لائے", meaningEn: "And those who believe" },
+              { word: "بِمُؤْمِنِينَ", ayah: "2:8", contextPhrase: "وَمَا هُم بِمُؤْمِنِينَ", meaningUr: "اور وہ ہرگز مومن نہیں ہیں", meaningEn: "And they are not believers" },
+              { word: "آمِنًا", ayah: "2:126", contextPhrase: "رَبِّ اجْعَلْ هَٰذَا بَلَدًا آمِنًا", meaningUr: "اے میرے رب! اس شہر کو امن والا بنا دے", meaningEn: "My Lord, make this a secure city" }
+            ]
+          },
+          {
+            word: "بِالْغَيْبِ",
+            root: "غ ي ب",
+            wazn: "فَعْل",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "جار و مجرور (الباء + الغَيْب)، متعلق بيُؤْمِنُون",
+            grammarEnglish: "Preposition + Genitive Noun (Bi + Al-Ghayb)",
+            contextualUrdu: "غیب پر (جو حواس سے پوشیدہ ہے)",
+            contextualEnglish: "In the unseen",
+            derivatives: [
+              { word: "بِالْغَيْبِ", ayah: "2:3", contextPhrase: "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ", meaningUr: "غیب پر یقین رکھتے ہیں", meaningEn: "In the unseen" },
+              { word: "غَيْبَ", ayah: "2:33", contextPhrase: "أَعْلَمُ غَيْبَ السَّمَاوَاتِ وَالْأَرْضِ", meaningUr: "آسمانوں اور زمین کے غیب کو جانتا ہوں", meaningEn: "I know the unseen of the heavens and earth" },
+              { word: "غَيَابَتِ", ayah: "12:10", contextPhrase: "وَأَلْقُوهُ فِي غَيَابَتِ الْجُبِّ", meaningUr: "اور اسے کنویں کی گہرائی میں ڈال دو", meaningEn: "And drop him into the bottom of the pit" },
+              { word: "الْغُيُوبِ", ayah: "5:109", contextPhrase: "إِنَّكَ أَنتَ عَلَّامُ الْغُيُوبِ", meaningUr: "بیشک تو ہی تمام غیبوں کا خوب جاننے والا ہے", meaningEn: "Indeed, it is You who are Knower of the unseen" }
+            ]
+          },
+          {
+            word: "يُقِيمُونَ",
+            root: "ق و م",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ قائم کرتے ہیں",
+            contextualEnglish: "They establish",
+            derivatives: [
+              { word: "يُقِيمُونَ", ayah: "2:3", contextPhrase: "وَيُقِيمُونَ الصَّلَاةَ", meaningUr: "اور نماز قائم کرتے ہیں", meaningEn: "And establish prayer" },
+              { word: "أَقِيمُوا", ayah: "2:43", contextPhrase: "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ", meaningUr: "اور نماز قائم کرو اور زکوٰۃ دو", meaningEn: "And establish prayer and give Zakah" },
+              { word: "الْمُسْتَقِيمَ", ayah: "1:6", contextPhrase: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", meaningUr: "سیدھا راستہ", meaningEn: "The straight path" },
+              { word: "مَقَامِ", ayah: "2:125", contextPhrase: "وَاتَّخِذُوا مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى", meaningUr: "مقامِ ابراہیم کو نماز کی جگہ بناؤ", meaningEn: "Take the standing place of Abraham as a place of prayer" }
+            ]
+          },
+          {
+            word: "الصَّلَاةَ",
+            root: "ص ل و",
+            wazn: "فَعَلَة (أصلها صَلَوَة)",
+            pos: "اسم / مصدر",
+            grammarUrdu: "مفعول به منصوب بالفتحہ",
+            grammarEnglish: "Direct Object, Accusative",
+            contextualUrdu: "نماز",
+            contextualEnglish: "The Prayer",
+            derivatives: [
+              { word: "الصَّلَاةَ", ayah: "2:3", contextPhrase: "وَيُقِيمُونَ الصَّلَاةَ", meaningUr: "نماز قائم کرتے ہیں", meaningEn: "Establish prayer" },
+              { word: "بِالصَّلَاةِ", ayah: "2:45", contextPhrase: "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", meaningUr: "صبر اور نماز کے ذریعے مدد طلب کرو", meaningEn: "Seek help through patience and prayer" },
+              { word: "مُصَلًّى", ayah: "2:125", contextPhrase: "مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى", meaningUr: "نماز ادا کرنے کی جگہ", meaningEn: "A place of prayer" },
+              { word: "يُصَلُّونَ", ayah: "33:56", contextPhrase: "إِنَّ اللهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ", meaningUr: "اللہ اور اس کے فرشتے نبی پر درود و رحمت بھیجتے ہیں", meaningEn: "Allah and His angels send blessings upon the Prophet" }
+            ]
+          },
+          {
+            word: "رَزَقْنَاهُمْ",
+            root: "ر ز ق",
+            wazn: "فَعَلْنَا + ضمير (باب نصر)",
+            pos: "فعل ماضی + ضمير مفعول",
+            grammarUrdu: "فعل ماضی مبني على السكون، و(نا) فاعل، و(هم) مفعول به",
+            grammarEnglish: "Past Verb + 1st Plural Subject + 3rd Masc. Plural Object",
+            contextualUrdu: "ہم نے ان کو عطا کیا",
+            contextualEnglish: "We provided them",
+            derivatives: [
+              { word: "رَزَقْنَاهُمْ", ayah: "2:3", contextPhrase: "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", meaningUr: "جو کچھ ہم نے انہیں دیا ہے اس میں سے خرچ کرتے ہیں", meaningEn: "Spend out of what We have provided them" },
+              { word: "ارْزُقْ", ayah: "2:126", contextPhrase: "وَارْزُقْ أَهْلَهُ مِنَ الثَّمَرَاتِ", meaningUr: "اور اس کے رہنے والوں کو پھلوں سے رزق عطا فرما", meaningEn: "And provide its people with fruits" },
+              { word: "رِزْقًا", ayah: "2:22", contextPhrase: "رِزْقًا لَّكُمْ ۖ فَلَا تَجْعَلُوا لِلَّهِ أَندَادًا", meaningUr: "تمہارے لیے روزی کے طور پر", meaningEn: "As provision for you" },
+              { word: "الرَّازِقِينَ", ayah: "5:114", contextPhrase: "وَأَنتَ خَيْرُ الرَّازِقِينَ", meaningUr: "اور تو بہترین رزق دینے والا ہے", meaningEn: "And You are the best of providers" }
+            ]
+          },
+          {
+            word: "يُنفِقُونَ",
+            root: "ن ف ق",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ خرچ کرتے ہیں",
+            contextualEnglish: "They spend / disburse",
+            derivatives: [
+              { word: "يُنفِقُونَ", ayah: "2:3", contextPhrase: "وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", meaningUr: "وہ خرچ کرتے ہیں", meaningEn: "They spend" },
+              { word: "أَنفِقُوا", ayah: "2:195", contextPhrase: "وَأَنفِقُوا فِي سَبِيلِ اللهِ", meaningUr: "اور اللہ کی راہ میں خرچ کرو", meaningEn: "And spend in the way of Allah" },
+              { word: "نَفَقَةٍ", ayah: "2:270", contextPhrase: "وَمَا أَنفَقْتُم مِّن نَّفَقَةٍ", meaningUr: "اور تم جو کچھ بھی خرچ کرو", meaningEn: "And whatever you spend in expenditures" },
+              { word: "الْمُنفِقِينَ", ayah: "3:17", contextPhrase: "وَالْمُنفِقِينَ وَالْمُسْتَغْفِرِينَ بِالْأَسْحَارِ", meaningUr: "اور راہِ خدا میں خرچ کرنے والے", meaningEn: "And those who spend in the way of Allah" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 4,
+        ayahKey: "2:4",
+        arabicText: "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ",
+        urduTranslation: "اور جو ایمان لاتے ہیں اس پر جو آپ کی طرف نازل کیا گیا اور جو آپ سے پہلے نازل کیا گیا، اور وہ آخرت پر پختہ یقین رکھتے ہیں۔",
+        englishTranslation: "And who believe in what has been sent down to you and what was sent down before you, and of the Hereafter they are certain.",
+        words: [
+          {
+            word: "يُؤْمِنُونَ",
+            root: "أ م ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ ایمان لاتے ہیں",
+            contextualEnglish: "They believe",
+            derivatives: []
+          },
+          {
+            word: "أُنزِلَ",
+            root: "ن ز ل",
+            wazn: "أُفْعِلَ (باب افعال - مبني للمجهول)",
+            pos: "فعل ماضی مجہول (Form IV Passive)",
+            grammarUrdu: "فعل ماضی مبني للمجهول مبني على الفتح، ونائب الفاعل ضمير مستتر",
+            grammarEnglish: "Past Passive Verb (Form IV), 3rd Masc. Singular",
+            contextualUrdu: "نازل کیا گیا",
+            contextualEnglish: "Was sent down / revealed",
+            derivatives: [
+              { word: "أُنزِلَ", ayah: "2:4", contextPhrase: "بِمَا أُنزِلَ إِلَيْكَ", meaningUr: "جو آپ کی طرف اتارا گیا", meaningEn: "What was revealed to you" },
+              { word: "نَزَّلْنَا", ayah: "2:23", contextPhrase: "مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا", meaningUr: "جو کچھ ہم نے اپنے بندے پر نازل کیا", meaningEn: "What We have sent down upon Our servant" },
+              { word: "أَنزَلَ", ayah: "2:22", contextPhrase: "وَأَنزَلَ مِنَ السَّمَاءِ مَاءً", meaningUr: "اور آسمان سے پانی برسایا", meaningEn: "And sent down rain from the sky" },
+              { word: "تَنزِيلُ", ayah: "32:2", contextPhrase: "تَنزِيلُ الْكِتَابِ لَا رَيْبَ فِيهِ", meaningUr: "اس کتاب کا اتارا جانا بلا شک و شبہ ہے", meaningEn: "The revelation of the Book without doubt" }
+            ]
+          },
+          {
+            word: "قَبْلِكَ",
+            root: "ق ب ل",
+            wazn: "فَعْل + ضمير",
+            pos: "اسم ظرف زمان",
+            grammarUrdu: "اسم مجرور بمن، وهو مضاف، والكاف مضاف إليه",
+            grammarEnglish: "Temporal Noun, Genitive after Min + 2nd Masc. Singular Pronoun",
+            contextualUrdu: "آپ سے پہلے",
+            contextualEnglish: "Before you",
+            derivatives: [
+              { word: "قَبْلِكَ", ayah: "2:4", contextPhrase: "وَمَا أُنزِلَ مِن قَبْلِكَ", meaningUr: "اور جو آپ سے پہلے نازل کیا گیا", meaningEn: "And what was sent down before you" },
+              { word: "قَبْلِكُمْ", ayah: "2:21", contextPhrase: "وَالَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ", meaningUr: "اور وہ لوگ جو تم سے پہلے تھے", meaningEn: "And those before you" },
+              { word: "قِبْلَتِهِمُ", ayah: "2:142", contextPhrase: "مَا وَلَّاهُمْ عَن قِبْلَتِهِمُ الَّتِي كَانُوا عَلَيْهَا", meaningUr: "کس چیز نے ان کو ان کے قبلے سے پھیر دیا", meaningEn: "What has turned them from their direction of prayer" },
+              { word: "تَقَبَّلْ", ayah: "2:127", contextPhrase: "رَبَّنَا تَقَبَّلْ مِنَّا", meaningUr: "اے ہمارے رب! ہم سے قبول فرما", meaningEn: "Our Lord, accept from us" }
+            ]
+          },
+          {
+            word: "وَبِالْآخِرَةِ",
+            root: "أ خ ر",
+            wazn: "فَاعِلَة",
+            pos: "مرکب جار و مجرور",
+            grammarUrdu: "الواو عاطفة، جار و مجرور متعلق بيُوقِنُون",
+            grammarEnglish: "Conjunction + Preposition + Genitive Noun (Al-Akhirah)",
+            contextualUrdu: "اور آخرت پر",
+            contextualEnglish: "And in the Hereafter",
+            derivatives: [
+              { word: "وَبِالْآخِرَةِ", ayah: "2:4", contextPhrase: "وَبِالْآخِرَةِ هُمْ يُوقِنُونَ", meaningUr: "اور آخرت پر وہ یقین رکھتے ہیں", meaningEn: "And of the Hereafter they are certain" },
+              { word: "الْآخِرِ", ayah: "2:8", contextPhrase: "آمَنَّا بِاللهِ وَبِالْيَوْمِ الْآخِرِ", meaningUr: "ہم اللہ اور یومِ آخرت پر ایمان لائے", meaningEn: "We believe in Allah and the Last Day" },
+              { word: "تَأَخَّرَ", ayah: "2:203", contextPhrase: "وَمَن تَأَخَّرَ فَلَا إِثْمَ عَلَيْهِ", meaningUr: "اور جو تاخیر کرے اس پر کوئی گناہ نہیں", meaningEn: "And whoever delays, there is no sin upon him" },
+              { word: "يُؤَخِّرُهُمْ", ayah: "14:42", contextPhrase: "إِنَّمَا يُؤَخِّرُهُمْ لِيَوْمٍ تَشْخَصُ فِيهِ الْأَبْصَارُ", meaningUr: "وہ تو انہیں اس دن کے لیے مہلت دے رہا ہے جس میں آنکھیں پھٹی رہ جائیں گی", meaningEn: "He only delays them for a Day when eyes will stare in horror" }
+            ]
+          },
+          {
+            word: "يُوقِنُونَ",
+            root: "ي ق ن",
+            wazn: "يُفْعِلُونَ (باب افعال)",
+            pos: "فعل مضارع (Form IV)",
+            grammarUrdu: "فعل مضارع مرفوع بثبوت النون، والواو فاعل",
+            grammarEnglish: "Imperfect Verb (Form IV), 3rd Masc. Plural",
+            contextualUrdu: "وہ پختہ یقین رکھتے ہیں",
+            contextualEnglish: "They are certain / have firm conviction",
+            derivatives: [
+              { word: "يُوقِنُونَ", ayah: "2:4", contextPhrase: "وَبِالْآخِرَةِ هُمْ يُوقِنُونَ", meaningUr: "وہ پختہ یقین رکھتے ہیں", meaningEn: "They are certain" },
+              { word: "الْيَقِينُ", ayah: "15:99", contextPhrase: "وَاعْبُدْ رَبَّكَ حَتَّىٰ يَأْتِيَكَ الْيَقِينُ", meaningUr: "اور اپنے رب کی عبادت کریں یہاں تک کہ آپ کو موت (یقینی وقت) آ جائے", meaningEn: "And worship your Lord until there comes unto you the certainty" },
+              { word: "الْمُوقِنِينَ", ayah: "6:75", contextPhrase: "وَكَذَٰلِكَ نُرِي إِبْرَاهِيمَ مَلَكُوتَ السَّمَاوَاتِ وَالْأَرْضِ وَلِيَكُونَ مِنَ الْمُوقِنِينَ", meaningUr: "اور تاکہ وہ یقین کرنے والوں میں سے ہو جائے", meaningEn: "And that he would be among the certain" },
+              { word: "يَقِينًا", ayah: "4:157", contextPhrase: "وَمَا قَتَلُوهُ يَقِينًا", meaningUr: "اور انہوں نے یقین کے ساتھ اسے قتل نہیں کیا", meaningEn: "And they did not kill him, for certain" }
+            ]
+          }
+        ]
+      },
+      {
+        ayahNumber: 5,
+        ayahKey: "2:5",
+        arabicText: "أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ",
+        urduTranslation: "یہی لوگ اپنے رب کی طرف سے ہدایت پر ہیں اور یہی لوگ فلاح پانے والے (کامیاب) ہیں۔",
+        englishTranslation: "Those are upon guidance from their Lord, and it is those who are the successful.",
+        words: [
+          {
+            word: "هُدًى",
+            root: "ه د ي",
+            wazn: "فُعَل",
+            pos: "اسم / مصدر",
+            grammarUrdu: "اسم مجرور بعلى، وعلامة جره كسرة مقدرة",
+            grammarEnglish: "Genitive Noun after 'Ala with implied Kasrah",
+            contextualUrdu: "ہدایت پر",
+            contextualEnglish: "Upon guidance",
+            derivatives: []
+          },
+          {
+            word: "رَّبِّهِمْ",
+            root: "ر ب ب",
+            wazn: "فَعْل + ضمير",
+            pos: "اسم / مضاف",
+            grammarUrdu: "اسم مجرور بمن، وهو مضاف، و(هم) مضاف إليه",
+            grammarEnglish: "Genitive Noun after Min + 3rd Masc. Plural Possessive Pronoun",
+            contextualUrdu: "ان کے رب کی طرف سے",
+            contextualEnglish: "From their Lord",
+            derivatives: []
+          },
+          {
+            word: "الْمُفْلِحُونَ",
+            root: "ف ل ح",
+            wazn: "مُفْعِلُونَ (باب افعال)",
+            pos: "اسم فاعل (جمع مذکر سالم)",
+            grammarUrdu: "خبر المبتدأ (أُولَٰئِكَ)، و(هُمْ) ضمير فصل، مرفوع بالواو",
+            grammarEnglish: "Predicate of Mubtada (Ula'ika) with separating pronoun (Hum), Nominative by Waw",
+            contextualUrdu: "فلاح پانے والے / کامیاب",
+            contextualEnglish: "The successful / triumphant",
+            derivatives: [
+              { word: "الْمُفْلِحُونَ", ayah: "2:5", contextPhrase: "وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ", meaningUr: "اور وہی فلاح پانے والے ہیں", meaningEn: "And it is those who are the successful" },
+              { word: "أَفْلَحَ", ayah: "20:64", contextPhrase: "وَقَدْ أَفْلَحَ الْيَوْمَ مَنِ اسْتَعْلَىٰ", meaningUr: "اور آج وہی کامیاب ہوا جو غالب رہا", meaningEn: "And he has certainly succeeded today who overcame" },
+              { word: "تُفْلِحُونَ", ayah: "2:189", contextPhrase: "وَاتَّقُوا اللهَ لَعَلَّكُمْ تُفْلِحُونَ", meaningUr: "اور اللہ سے ڈرو تاکہ تم فلاح پاؤ", meaningEn: "And fear Allah that you may succeed" },
+              { word: "يُفْلِحُ", ayah: "10:17", contextPhrase: "إِنَّهُ لَا يُفْلِحُ الْمُجْرِمُونَ", meaningUr: "بیشک مجرم کبھی فلاح نہیں پاتے", meaningEn: "Indeed, the criminals will not succeed" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+</script>
+
+<script id="app">
+(function(){
+var DB=window.quranDatabase||[];
+var $=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var FIX={'ک':'ك','ی':'ي','ى':'ي','ے':'ي','ې':'ي','ہ':'ه','ھ':'ه','ۃ':'ه','ة':'ه','ں':'ن','ٹ':'ت','ڈ':'د','ڑ':'ر','پ':'ب','چ':'ج','ژ':'ز','ؤ':'و','ئ':'ي','أ':'ا','إ':'ا','آ':'ا','ٱ':'ا','ء':'ا'};
+var norm=function(s){return String(s).replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u200c\u200d]/g,'').replace(/[\u0621-\u06FF]/g,function(c){return FIX[c]||c})};
+var AR=function(s){return norm(s).replace(/[^\u0621-\u06FF]/g,'')};
+var SN='Al-Fatihah|Al-Baqarah|Al-Imran|An-Nisa|Al-Ma\'idah|Al-An\'am|Al-A\'raf|Al-Anfal|At-Tawbah|Yunus|Hud|Yusuf|Ar-Ra\'d|Ibrahim|Al-Hijr|An-Nahl|Al-Isra|Al-Kahf|Maryam|Ta-Ha|Al-Anbiya|Al-Hajj|Al-Mu\'minun|An-Nur|Al-Furqan|Ash-Shu\'ara|An-Naml|Al-Qasas|Al-Ankabut|Ar-Rum|Luqman|As-Sajdah|Al-Ahzab|Saba|Fatir|Ya-Sin|As-Saffat|Sad|Az-Zumar|Ghafir|Fussilat|Ash-Shura|Az-Zukhruf|Ad-Dukhan|Al-Jathiyah|Al-Ahqaf|Muhammad|Al-Fath|Al-Hujurat|Qaf|Adh-Dhariyat|At-Tur|An-Najm|Al-Qamar|Ar-Rahman|Al-Waqi\'ah|Al-Hadid|Al-Mujadilah|Al-Hashr|Al-Mumtahanah|As-Saff|Al-Jumu\'ah|Al-Munafiqun|At-Taghabun|At-Talaq|At-Tahrim|Al-Mulk|Al-Qalam|Al-Haqqah|Al-Ma\'arij|Nuh|Al-Jinn|Al-Muzzammil|Al-Muddaththir|Al-Qiyamah|Al-Insan|Al-Mursalat|An-Naba|An-Nazi\'at|Abasa|At-Takwir|Al-Infitar|Al-Mutaffifin|Al-Inshiqaq|Al-Buruj|At-Tariq|Al-A\'la|Al-Ghashiyah|Al-Fajr|Al-Balad|Ash-Shams|Al-Layl|Ad-Duha|Ash-Sharh|At-Tin|Al-Alaq|Al-Qadr|Al-Bayyinah|Az-Zalzalah|Al-Adiyat|Al-Qari\'ah|At-Takathur|Al-Asr|Al-Humazah|Al-Fil|Quraysh|Al-Ma\'un|Al-Kawthar|Al-Kafirun|An-Nasr|Al-Masad|Al-Ikhlas|Al-Falaq|An-Nas'.split('|');
+var ref=function(k){var p=String(k).split(':');return k+(SN[+p[0]-1]?' · '+SN[+p[0]-1]:'')};
+
+/* ---------- build index (merged across all surahs) ---------- */
+var dict={},MAP={},LIST=[];
+DB.forEach(function(s){var d=s.rootsDictionary||{};Object.keys(d).forEach(function(k){if(!dict[AR(k)])dict[AR(k)]=d[k]})});
+function get(rootStr){var key=AR(rootStr);if(key.length!==3)return null;if(!MAP[key]){var d=dict[key]||{};MAP[key]={key:key,letters:String(rootStr).trim().split(/\s+/),ur:d.urdu||'',en:d.english||'',type:d.type||'',inst:[],surahs:{},hay:'',wk:[]};LIST.push(MAP[key])}return MAP[key]}
+DB.forEach(function(s){(s.allRoots||[]).forEach(get);(s.ayahs||[]).forEach(function(a){(a.words||[]).forEach(function(w){var r=get(w.root||'');if(!r)return;r.surahs[s.surahNumber]=1;r.inst.push({word:w.word,ayah:a.ayahKey,d:w.derivatives||[]})})})});
+LIST.forEach(function(r){var h=[r.ur,r.en];r.inst.forEach(function(i){r.wk.push(wk(i.word));i.d.forEach(function(d){r.wk.push(wk(d.word));h.push(d.meaningUr,d.meaningEn)})});r.hay=norm(h.join(' ')).toLowerCase();r.count=r.inst.reduce(function(n,i){return n+i.d.length},0)});
+function wk(w){return AR(w).replace(/^ال/,'')}
+
+/* ---------- letter tables ---------- */
+var S={a:'اع',e:'اعي',i:'يا',o:'وع',u:'وع',b:'ب',p:'ب',t:'تط',j:'ج',g:'غج',h:'هح',x:'خ',d:'دض',r:'ر',z:'زذظض',s:'سصث',f:'ف',v:'ف',q:'ق',k:'كق',l:'ل',m:'م',n:'ن',w:'و',y:'ي',c:'كس',"'":'ا','’':'ا','`':'ع','ʿ':'ع','ʾ':'ا','3':'ع','7':'ح','5':'خ','9':'ص','6':'ط','2':'ا'};
+var D={kh:'خ',sh:'ش',gh:'غ',th:'ثذظ',dh:'ذضظ'};
+var NAMES={};
+('ا:الف ألف ہمزہ همزة ay اے|ب:بے باء با بی پی بیه bee be bay pee|ت:تے تاء تا ٹے ٹی تی tee tea tay te|ط:طے طاء طا طوئے طو taa tee ٹی|ث:ثے ثاء ثا|ج:جیم جيم چے جے جی jay jeem gee|غ:غین غين جی gee ghayn|ح:حے حاء حا ایچ haa aitch|خ:خے خاء خا khaa|د:دال ڈال ڈی دی dee dal daal|ض:ضاد ڈی dad dee|ذ:ذال zal|ر:رے راء را ڑے آر are ar raa|ز:زے زاي زای زا ژے زیڈ zed zee zay|س:سین سين ایس ess es see sin seen|ش:شین شين shin sheen|ص:صاد ایس sad ess|ظ:ظے ظاء ظا ظوئے ظو zaa zee|ع:عین عين ayn ain|ف:فے فاء فا ایف eff ef fay|ق:قاف کیو qaf kaf queue cue|ك:کاف كاف کے کیو kay kaaf kaf|ل:لام ایل el ell lam laam|م:میم ميم ایم em meem mim|ن:نون این en noon nun|و:واؤ واو ڈبلیو یو او waw wow you|ه:ہے ہاء ھے هاء ہا ایچ aitch age ha|ي:یے یاء ياء یا وائی آئی why wye ya yaa')
+.split('|').forEach(function(p){var l=p.split(':')[0];p.split(':')[1].split(' ').forEach(function(n){var k=tk(n);if(NAMES[k]&&NAMES[k].indexOf(l)<0)NAMES[k]+=l;else if(!NAMES[k])NAMES[k]=l})});
+function tk(t){return /[a-z]/i.test(t)?t.toLowerCase().replace(/[^a-z]/g,''):AR(t)}
+function tokSet(t){var k=tk(t);if(NAMES[k])return NAMES[k];if(k.length===1&&S[k])return S[k];if(k.length===1&&/[\u0621-\u06FF]/.test(k))return k;return null}
+
+function seqs(str){var out=[];(function go(i,acc){if(i>=str.length){out.push(acc);return}if(acc.length>=3)return;var d=str.slice(i,i+2);if(D[d])go(i+2,acc.concat(D[d]));var c=str[i];if(S[c])go(i+1,acc.concat(S[c]))})(0,[]);return out}
+function bySeq(sq){var full=[],part=[];LIST.forEach(function(r){var f=0,p=0;sq.forEach(function(s){if(s.length&&s.every(function(st,i){return st.indexOf(r.key[i])>=0})){s.length===3?f=1:p=1}});if(f)full.push(r);else if(p)part.push(r)});return{full:full,part:part}}
+
+/* ---------- search ---------- */
+function search(q){
+ q=q.trim();if(!q)return{mode:'none',roots:[]};
+ var hasAr=/[\u0600-\u06FF]/.test(q),n=AR(q),h;
+ if(hasAr&&n.length>=1&&n.length<=3){h=LIST.filter(function(r){return n.length===3?r.key===n:r.key.indexOf(n)===0});if(h.length)return{mode:n.length===3?'root':'prefix',roots:h}}
+ var tokens=q.split(/[\s,،\-]+/).filter(Boolean);
+ if(tokens.length===3){var sets=tokens.map(tokSet);if(sets.every(Boolean)){h=bySeq([sets]);if(h.full.length)return{mode:'spoken',roots:h.full}}}
+ if(!hasAr||/[a-z0-9]/i.test(q)){
+  var L=q.toLowerCase().replace(/[\s,\-.]+/g,'');
+  if(/^[a-z0-9'’`ʿʾ]+$/.test(L)){
+   var tries=[L,L.replace(/([aeiou])\1+/g,'$1')];
+   for(var i=0;i<2;i++){h=bySeq(seqs(tries[i]));if(h.full.length)return{mode:'root',roots:h.full}}
+   h=bySeq(seqs(L));if(L.length<=2&&h.part.length)return{mode:'prefix',roots:h.part.slice(0,12)}
+  }
+ }
+ if(wk(q).length>=2){var w=wk(q);h=LIST.filter(function(r){return r.wk.indexOf(w)>=0});if(!h.length&&w.length>=3)h=LIST.filter(function(r){return r.wk.some(function(x){return x.indexOf(w)>=0})});if(h.length)return{mode:'word',roots:h}}
+ if(q.length>=3){var ts=norm(q).toLowerCase().split(/\s+/);h=LIST.filter(function(r){return ts.every(function(t){return r.hay.indexOf(t)>=0})});if(h.length)return{mode:'meaning',roots:h}}
+ return{mode:'none',roots:[]}
+}
+
+/* ---------- render ---------- */
+function card(r){
+ var sur=Object.keys(r.surahs).map(function(s){return 'Surah '+(SN[s-1]||s)}).join(', ');
+ return '<article class="card" data-k="'+r.key+'"><button class="head" aria-expanded="false"><div class="rootAr">'+esc(r.letters.join(' '))+'</div><div class="mean"><p class="ur" lang="ur">'+esc(r.ur||'—')+'</p><p class="en">'+esc(r.en||'—')+'</p><div class="tags">'+(r.type?'<span lang="ur">'+esc(r.type)+'</span>':'')+'<span>'+r.count+' derived words · مشتقات</span>'+(sur?'<span>'+esc(sur)+'</span>':'')+'</div></div><span class="chev">›</span></button><div class="body"></div></article>'
+}
+function body(r){
+ if(!r.inst.length)return '<p class="none">No derived words recorded in the dataset for this root yet.</p>';
+ return r.inst.map(function(i){
+  var h='<div class="grp">From the word <b>'+esc(i.word)+'</b> · '+esc(ref(i.ayah))+'</div>';
+  if(!i.d.length)return h+'<p class="none">No derived words recorded for this form in the dataset.</p>';
+  return h+i.d.map(function(d){return '<div class="der"><div class="dtop"><span class="dw">'+esc(d.word)+'</span><span class="ref">'+esc(ref(d.ayah))+'</span></div><p class="ctx" lang="ar">'+esc(d.contextPhrase||'')+'</p><p class="ur" lang="ur">'+esc(d.meaningUr||'')+'</p><p class="en">'+esc(d.meaningEn||'')+'</p></div>'}).join('')
+ }).join('')
+}
+var NOTE={prefix:'Roots starting with these letters — keep going…',word:'Matched by derived word — this word belongs to:',meaning:'Matched by meaning:'};
+function show(res,q){
+ var el=$('results');
+ if(res.mode==='none'){el.innerHTML=q.trim()?'<p class="note">No root found for “'+esc(q)+'”. The dataset currently covers '+esc(DB.map(function(s){return s.surahNameEnglish+' '+s.ayahRange}).join(' & '))+'. جڑ نہیں ملی۔</p>':'';return}
+ el.innerHTML=(NOTE[res.mode]?'<p class="note">'+NOTE[res.mode]+'</p>':'')+res.roots.map(card).join('');
+ if(res.roots.length===1&&res.mode!=='prefix')toggle(el.querySelector('.card'),false)
+}
+function toggle(c,flip){
+ if(!c)return;var r=MAP[c.dataset.k],b=c.querySelector('.body');
+ if(!b.innerHTML)b.innerHTML=body(r);
+ var o=flip===false?false:!c.classList.contains('open');
+ c.classList.toggle('open',o);c.querySelector('.head').setAttribute('aria-expanded',o)
+}
+$('results').addEventListener('click',function(e){var h=e.target.closest('.head');if(h)toggle(h.parentNode)});
+var qi=$('q');
+function run(){show(search(qi.value),qi.value)}
+qi.addEventListener('input',run);
+$('clr').onclick=function(){qi.value='';run();status('');qi.focus()};
+function status(t){$('status').textContent=t}
+
+/* ---------- chips ---------- */
+$('count').textContent='('+LIST.length+')';
+$('chips').innerHTML=LIST.map(function(r){return '<button class="chip" data-r="'+esc(r.letters.join(' '))+'" title="'+esc(r.en)+'">'+esc(r.letters.join(' '))+'</button>'}).join('');
+$('chips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(!c)return;qi.value=c.dataset.r;run();$('results').scrollIntoView({behavior:'smooth',block:'start'})});
+
+/* ---------- voice ---------- */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic');
+var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here'};
+mic.onclick=function(){
+ if(!SR){status('Voice search isn’t supported in this browser — use Chrome, Edge or Safari. / اس براؤزر میں آواز سے تلاش دستیاب نہیں');return}
+ if(rec){rec.stop();return}
+ rec=new SR();rec.lang=$('vlang').value;rec.interimResults=false;rec.maxAlternatives=5;rec.continuous=false;
+ rec.onstart=function(){mic.classList.add('on');status('Listening… say the three letters / تین حروف بولیں')};
+ rec.onresult=function(e){var alts=[];for(var i=0;i<e.results[0].length;i++)alts.push(e.results[0][i].transcript);voice(alts)};
+ rec.onerror=function(e){status(ERR[e.error]||'Voice error: '+e.error)};
+ rec.onend=function(){mic.classList.remove('on');rec=null};
+ try{rec.start()}catch(x){rec=null;mic.classList.remove('on')}
+};
+function voice(alts){
+ var pick=null,i,r;
+ for(i=0;i<alts.length&&!pick;i++){r=search(alts[i]);if(r.mode==='root'||r.mode==='spoken')pick={a:alts[i],r:r}}
+ for(i=0;i<alts.length&&!pick;i++){r=search(alts[i]);if(r.roots.length)pick={a:alts[i],r:r}}
+ qi.value=pick?pick.a:alts[0];show(pick?pick.r:search(alts[0]),qi.value);
+ status('Heard / سنا: “'+alts[0]+'”'+(pick&&pick.a!==alts[0]?' → “'+pick.a+'”':''))
+}
+
+/* ---------- themes ---------- */
+var TH=[['mint','#bfe8d6'],['blue','#bcd6f3'],['charcoal','#2b2d31'],['navy','#16294a']],tb=$('themes');
+function setTheme(t){document.documentElement.dataset.theme=t;try{localStorage.setItem('qrf-theme',t)}catch(e){}[].forEach.call(tb.children,function(b){b.setAttribute('aria-pressed',b.dataset.t===t)})}
+tb.innerHTML=TH.map(function(t){return '<button data-t="'+t[0]+'" style="background:'+t[1]+'" aria-label="Theme '+t[0]+'" aria-pressed="false"></button>'}).join('');
+tb.onclick=function(e){if(e.target.dataset.t)setTheme(e.target.dataset.t)};
+var saved='mint';try{saved=localStorage.getItem('qrf-theme')||'mint'}catch(e){}setTheme(saved);
+if(!LIST.length)$('results').innerHTML='<p class="note">Dataset not found — make sure data.js sits next to this file.</p>';
+})();
+</script>
+</body>
+</html>
