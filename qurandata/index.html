@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="mint">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quranic Root Finder · جڑ تلاش</title>
+<style>
+:root{--ar:"Noto Naskh Arabic","Scheherazade New","Amiri","Geeza Pro","Traditional Arabic",serif;--ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Geeza Pro","Noto Naskh Arabic",serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html[data-theme=mint]{--bg:#eef8f3;--card:#fff;--ink:#17332a;--mut:#5b7a6e;--acc:#1f8a63;--soft:#dff3ea;--line:#cfe5db}
+html[data-theme=blue]{--bg:#eef4fb;--card:#fff;--ink:#16283d;--mut:#5a6f86;--acc:#2563b0;--soft:#dce9f8;--line:#c9daee}
+html[data-theme=charcoal]{--bg:#1c1d20;--card:#26282c;--ink:#ececec;--mut:#a0a4ab;--acc:#4fc79b;--soft:#2f3a35;--line:#3a3d42}
+html[data-theme=navy]{--bg:#0f1a2b;--card:#172740;--ink:#e6eefb;--mut:#9db0cc;--acc:#5aa9ff;--soft:#1f3556;--line:#2a4166}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:0 14px 40px}
+main{max-width:760px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 6px}
+h1{font-size:19px;margin:0}h1 span{font-family:var(--ur);color:var(--acc)}
+h2{font-size:15px;color:var(--mut);margin:26px 0 8px}
+.themes{display:flex;gap:8px}
+.themes button{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.themes button[aria-pressed=true]{outline:2px solid var(--acc);outline-offset:2px}
+.search{display:flex;gap:8px;margin-top:8px}
+.search input{flex:1;min-width:0;font:20px var(--ar);padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--acc)}
+.btn{border:0;border-radius:14px;padding:0 15px;font-size:20px;cursor:pointer;background:var(--soft);color:var(--ink);min-height:50px}
+.btn.mic{background:var(--acc);color:#fff}.btn.mic.on{animation:p 1s infinite}
+@keyframes p{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--acc) 30%,transparent)}}
+.vrow{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:14px;color:var(--mut);flex-wrap:wrap}
+.vrow select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.hint{font-size:13px;color:var(--mut);margin:2px 2px 10px}
+.note{font-size:14px;color:var(--mut);margin:12px 2px 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:10px 0;overflow:hidden}
+.head{all:unset;box-sizing:border-box;width:100%;display:flex;gap:14px;align-items:center;padding:14px 16px;cursor:pointer}
+.head:focus-visible{outline:2px solid var(--acc)}
+.rootAr{font:700 34px/1.5 var(--ar);color:var(--acc);letter-spacing:.12em;min-width:108px;text-align:center;direction:rtl}
+.mean{flex:1;min-width:0}
+.mean p,.der p{margin:0}
+.ur{font:600 17px/1.7 var(--ur);direction:rtl;text-align:right}
+.en{font:600 16px/1.7 system-ui,sans-serif;color:var(--mut)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tags span{font-size:12px;background:var(--soft);border-radius:99px;padding:1px 10px}
+.chev{font-size:20px;color:var(--mut);transition:transform .2s;padding:0 4px}.card.open .chev{transform:rotate(180deg)}
+.body{display:none;border-top:1px dashed var(--line);padding:6px 16px 14px;background:color-mix(in srgb,var(--soft) 35%,var(--card))}
+.card.open .body{display:block}
+.grp{font-size:13px;color:var(--mut);margin:12px 0 4px}
+.grp b{font:600 18px var(--ar);color:var(--ink);margin:0 4px}
+.der{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.dtop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.dw{font:700 26px/1.6 var(--ar);color:var(--acc)}
+.ref{font-size:12px;background:var(--acc);color:#fff;border-radius:8px;padding:2px 9px}
+.ctx{font:20px/1.9 var(--ar);direction:rtl;text-align:right;margin:2px 0}
+.none{font-size:14px;color:var(--mut)}
+.ayah{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:10px 0}
+.atxt{font:24px/2.1 var(--ar);direction:rtl;text-align:right;margin:6px 0}
+.ayah .ref{display:inline-block}
+.words{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;margin-top:8px}
+.w{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;background:var(--soft);border-radius:10px;padding:2px 10px;font:600 20px/1.5 var(--ar);color:var(--ink)}
+.w small{display:block;font:11px/1.3 system-ui,sans-serif;color:var(--mut);direction:ltr}
+.w.nr{opacity:.65;cursor:default}
+.w.act{background:var(--acc);color:#fff}.w.act small{color:#fff}
+.slot{margin-top:6px}
+@media(max-width:480px){.rootAr{min-width:84px;font-size:28px}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Quranic Root Finder · <span>جڑ تلاش</span></h1>
+<div class="themes" id="themes"></div></header>
+
+<div class="search">
+ <input id="q" type="search" dir="auto" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ktb · كتب · ک ت ب · 2:183" aria-label="Search root">
+ <button class="btn mic" id="mic" title="Voice search / آواز سے تلاش" aria-label="Voice search">🎤</button>
+ <button class="btn" id="clr" title="Clear" aria-label="Clear">✕</button>
+</div>
+<div class="vrow"><label>🎙 <select id="vlang"><option value="ur-PK">اردو</option><option value="en-US">English</option><option value="ar-SA">العربية</option></select></label><span id="status"></span></div>
+<p class="hint">Type or say the three letters (“ktb”, “کاف تے بے”, “kay tee bee”), a derived word (الكتاب), or a meaning (“write”, “لکھنا”). For verses: <b>2:183</b>, <b>2:1-5</b>, <b>surah 2</b> or <b>Baqarah</b> shows the ayahs with every word’s root.</p>
+
+<div id="results" aria-live="polite"></div>
+</main>
+
+<script src="data/index.js"></script>
+<script>
+/* Loads one surah file on demand (see loader.js). Each surah file adds itself to window.quranDatabase. */
+function loadSurah(n){
+  return new Promise(function(resolve,reject){
+    var db=(window.quranDatabase=window.quranDatabase||[]);
+    var found=db.find(function(s){return s.surahNumber===n});
+    if(found)return resolve(found);
+    var e=(window.quranIndex||[]).find(function(x){return x.surahNumber===n});
+    if(!e)return reject(new Error('Surah '+n+' is not in the index yet'));
+    var sc=document.createElement('script');
+    sc.src=e.file+'?v='+e.version;
+    sc.onload=function(){resolve(window.quranDatabase.find(function(s){return s.surahNumber===n}))};
+    sc.onerror=function(){reject(new Error('Could not load '+e.file))};
+    document.head.appendChild(sc);
+  });
+}
+</script>
+
+<script id="app">
+(function(){
+var DB=[];var ready=false;
+var $=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var FIX={'ک':'ك','ی':'ي','ى':'ي','ے':'ي','ې':'ي','ہ':'ه','ھ':'ه','ۃ':'ه','ة':'ه','ں':'ن','ٹ':'ت','ڈ':'د','ڑ':'ر','پ':'ب','چ':'ج','ژ':'ز','ؤ':'و','ئ':'ي','أ':'ا','إ':'ا','آ':'ا','ٱ':'ا','ء':'ا'};
+var norm=function(s){return String(s).replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u200c\u200d]/g,'').replace(/[\u0621-\u06FF]/g,function(c){return FIX[c]||c})};
+var AR=function(s){return norm(s).replace(/[^\u0621-\u06FF]/g,'')};
+var SN='Al-Fatihah|Al-Baqarah|Al-Imran|An-Nisa|Al-Ma\'idah|Al-An\'am|Al-A\'raf|Al-Anfal|At-Tawbah|Yunus|Hud|Yusuf|Ar-Ra\'d|Ibrahim|Al-Hijr|An-Nahl|Al-Isra|Al-Kahf|Maryam|Ta-Ha|Al-Anbiya|Al-Hajj|Al-Mu\'minun|An-Nur|Al-Furqan|Ash-Shu\'ara|An-Naml|Al-Qasas|Al-Ankabut|Ar-Rum|Luqman|As-Sajdah|Al-Ahzab|Saba|Fatir|Ya-Sin|As-Saffat|Sad|Az-Zumar|Ghafir|Fussilat|Ash-Shura|Az-Zukhruf|Ad-Dukhan|Al-Jathiyah|Al-Ahqaf|Muhammad|Al-Fath|Al-Hujurat|Qaf|Adh-Dhariyat|At-Tur|An-Najm|Al-Qamar|Ar-Rahman|Al-Waqi\'ah|Al-Hadid|Al-Mujadilah|Al-Hashr|Al-Mumtahanah|As-Saff|Al-Jumu\'ah|Al-Munafiqun|At-Taghabun|At-Talaq|At-Tahrim|Al-Mulk|Al-Qalam|Al-Haqqah|Al-Ma\'arij|Nuh|Al-Jinn|Al-Muzzammil|Al-Muddaththir|Al-Qiyamah|Al-Insan|Al-Mursalat|An-Naba|An-Nazi\'at|Abasa|At-Takwir|Al-Infitar|Al-Mutaffifin|Al-Inshiqaq|Al-Buruj|At-Tariq|Al-A\'la|Al-Ghashiyah|Al-Fajr|Al-Balad|Ash-Shams|Al-Layl|Ad-Duha|Ash-Sharh|At-Tin|Al-Alaq|Al-Qadr|Al-Bayyinah|Az-Zalzalah|Al-Adiyat|Al-Qari\'ah|At-Takathur|Al-Asr|Al-Humazah|Al-Fil|Quraysh|Al-Ma\'un|Al-Kawthar|Al-Kafirun|An-Nasr|Al-Masad|Al-Ikhlas|Al-Falaq|An-Nas'.split('|');
+var ref=function(k){var p=String(k).split(':');return k+(SN[+p[0]-1]?' · '+SN[+p[0]-1]:'')};
+
+/* ---------- build index (merged across all surahs) ---------- */
+var dict={},MAP={},LIST=[];
+function build(){
+DB=window.quranDatabase||[];dict={};MAP={};LIST=[];
+DB.forEach(function(s){var d=s.rootsDictionary||{};Object.keys(d).forEach(function(k){if(!dict[AR(k)])dict[AR(k)]=d[k]})});
+function get(rootStr){var key=AR(rootStr);if(key.length!==3)return null;if(!MAP[key]){var d=dict[key]||{};MAP[key]={key:key,letters:String(rootStr).trim().split(/\s+/),ur:d.urdu||'',en:d.english||'',type:d.type||'',inst:[],surahs:{},hay:'',wk:[]};LIST.push(MAP[key])}return MAP[key]}
+DB.forEach(function(s){(s.allRoots||[]).forEach(get);(s.ayahs||[]).forEach(function(a){(a.words||[]).forEach(function(w){var r=get(w.root||'');if(!r)return;r.surahs[s.surahNumber]=1;r.inst.push({word:w.word,ayah:a.ayahKey,d:w.derivatives||[]})})})});
+LIST.forEach(function(r){var h=[r.ur,r.en];r.inst.forEach(function(i){r.wk.push(wk(i.word));i.d.forEach(function(d){r.wk.push(wk(d.word));h.push(d.meaningUr,d.meaningEn)})});r.hay=norm(h.join(' ')).toLowerCase();r.count=r.inst.reduce(function(n,i){return n+i.d.length},0)});
+}
+function wk(w){return AR(w).replace(/^ال/,'')}
+
+/* ---------- letter tables ---------- */
+var S={a:'اع',e:'اعي',i:'يا',o:'وع',u:'وع',b:'ب',p:'ب',t:'تط',j:'ج',g:'غج',h:'هح',x:'خ',d:'دض',r:'ر',z:'زذظض',s:'سصث',f:'ف',v:'ف',q:'ق',k:'كق',l:'ل',m:'م',n:'ن',w:'و',y:'ي',c:'كس',"'":'ا','’':'ا','`':'ع','ʿ':'ع','ʾ':'ا','3':'ع','7':'ح','5':'خ','9':'ص','6':'ط','2':'ا'};
+var D={kh:'خ',sh:'ش',gh:'غ',th:'ثذظ',dh:'ذضظ'};
+var NAMES={};
+('ا:الف ألف ہمزہ همزة ay اے|ب:بے باء با بی پی بیه bee be bay pee|ت:تے تاء تا ٹے ٹی تی tee tea tay te|ط:طے طاء طا طوئے طو taa tee ٹی|ث:ثے ثاء ثا|ج:جیم جيم چے جے جی jay jeem gee|غ:غین غين جی gee ghayn|ح:حے حاء حا ایچ haa aitch|خ:خے خاء خا khaa|د:دال ڈال ڈی دی dee dal daal|ض:ضاد ڈی dad dee|ذ:ذال zal|ر:رے راء را ڑے آر are ar raa|ز:زے زاي زای زا ژے زیڈ zed zee zay|س:سین سين ایس ess es see sin seen|ش:شین شين shin sheen|ص:صاد ایس sad ess|ظ:ظے ظاء ظا ظوئے ظو zaa zee|ع:عین عين ayn ain|ف:فے فاء فا ایف eff ef fay|ق:قاف کیو qaf kaf queue cue|ك:کاف كاف کے کیو kay kaaf kaf|ل:لام ایل el ell lam laam|م:میم ميم ایم em meem mim|ن:نون این en noon nun|و:واؤ واو ڈبلیو یو او waw wow you|ه:ہے ہاء ھے هاء ہا ایچ aitch age ha|ي:یے یاء ياء یا وائی آئی why wye ya yaa')
+.split('|').forEach(function(p){var l=p.split(':')[0];p.split(':')[1].split(' ').forEach(function(n){var k=tk(n);if(NAMES[k]&&NAMES[k].indexOf(l)<0)NAMES[k]+=l;else if(!NAMES[k])NAMES[k]=l})});
+function tk(t){return /[a-z]/i.test(t)?t.toLowerCase().replace(/[^a-z]/g,''):AR(t)}
+function tokSet(t){var k=tk(t);if(NAMES[k])return NAMES[k];if(k.length===1&&S[k])return S[k];if(k.length===1&&/[\u0621-\u06FF]/.test(k))return k;return null}
+
+function seqs(str){var out=[];(function go(i,acc){if(i>=str.length){out.push(acc);return}if(acc.length>=3)return;var d=str.slice(i,i+2);if(D[d])go(i+2,acc.concat(D[d]));var c=str[i];if(S[c])go(i+1,acc.concat(S[c]))})(0,[]);return out}
+function bySeq(sq){var full=[],part=[];LIST.forEach(function(r){var f=0,p=0;sq.forEach(function(s){if(s.length&&s.every(function(st,i){return st.indexOf(r.key[i])>=0})){s.length===3?f=1:p=1}});if(f)full.push(r);else if(p)part.push(r)});return{full:full,part:part}}
+
+/* ---------- search ---------- */
+var STRIP=/^(ash|adh|al|an|ar|as|at|ad|az)(?=.{3})/;
+var SK=SN.map(function(n){return n.toLowerCase().replace(/[^a-z]/g,'').replace(STRIP,'')});
+function surahNo(q){var t=q.toLowerCase().replace(/^(surah|sura|surat)\s+/,'').replace(/[^a-z]/g,'');if(t.length<3)return 0;t=t.replace(STRIP,'');var i;for(i=0;i<SK.length;i++)if(SK[i]===t)return i+1;if(t.length>=4)for(i=0;i<SK.length;i++)if(SK[i].indexOf(t)===0)return i+1;return 0}
+function search(q){
+ q=q.trim().replace(/[٠-٩]/g,function(c){return c.charCodeAt(0)-1632}).replace(/[۰-۹]/g,function(c){return c.charCodeAt(0)-1776});if(!q)return{mode:'none',roots:[]};
+ var m=q.match(/^(?:surah|sura|surat|سورة|سورہ)?\s*(\d{1,3})\s*[:.\/\-\s]\s*(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?$/i);
+ if(m&&+m[1]>=1&&+m[1]<=114)return{mode:'ayah',s:+m[1],a:+m[2],b:m[3]?+m[3]:+m[2],roots:[]};
+ m=q.match(/^(?:surah|sura|surat|سورة|سورہ)?\s*(\d{1,3})$/i);
+ if(m&&+m[1]>=1&&+m[1]<=114)return{mode:'surah',s:+m[1],roots:[]};
+ var sn=/^(surah|sura|surat)\s+[a-z]/i.test(q)?surahNo(q):0;if(sn)return{mode:'surah',s:sn,roots:[]};
+ var hasAr=/[\u0600-\u06FF]/.test(q),n=AR(q),h;
+ if(hasAr&&n.length>=1&&n.length<=3){h=LIST.filter(function(r){return n.length===3?r.key===n:r.key.indexOf(n)===0});if(h.length)return{mode:n.length===3?'root':'prefix',roots:h}}
+ var tokens=q.split(/[\s,،\-]+/).filter(Boolean);
+ if(tokens.length===3){var sets=tokens.map(tokSet);if(sets.every(Boolean)){h=bySeq([sets]);if(h.full.length)return{mode:'spoken',roots:h.full}}}
+ if(!hasAr||/[a-z0-9]/i.test(q)){
+  var L=q.toLowerCase().replace(/[\s,\-.]+/g,'');
+  if(/^[a-z0-9'’`ʿʾ]+$/.test(L)){
+   var tries=[L,L.replace(/([aeiou])\1+/g,'$1')];
+   for(var i=0;i<2;i++){h=bySeq(seqs(tries[i]));if(h.full.length)return{mode:'root',roots:h.full}}
+   h=bySeq(seqs(L));if(L.length<=2&&h.part.length)return{mode:'prefix',roots:h.part.slice(0,12)}
+  }
+ }
+ if(wk(q).length>=2){var w=wk(q);h=LIST.filter(function(r){return r.wk.indexOf(w)>=0});if(!h.length&&w.length>=3)h=LIST.filter(function(r){return r.wk.some(function(x){return x.indexOf(w)>=0})});if(h.length)return{mode:'word',roots:h}}
+ if(q.length>=3){var ts=norm(q).toLowerCase().split(/\s+/);h=LIST.filter(function(r){return ts.every(function(t){return r.hay.indexOf(t)>=0})});if(h.length)return{mode:'meaning',roots:h}}
+ sn=surahNo(q);if(sn)return{mode:'surah',s:sn,roots:[]};
+ return{mode:'none',roots:[]}
+}
+
+/* ---------- render ---------- */
+function card(r){
+ return '<article class="card" data-k="'+r.key+'"><button class="head" aria-expanded="false"><div class="rootAr">'+esc(r.letters.join(' '))+'</div><div class="mean"><p class="ur" lang="ur">'+esc(r.ur||'—')+'</p><p class="en">'+esc(r.en||'—')+'</p></div><span class="chev" aria-hidden="true">▾</span></button><div class="body"></div></article>'
+}
+function body(r){var t=r.type?'<p class="none" lang="ur">'+esc(r.type)+'</p>':'';return t+body2(r)}
+function body2(r){
+ if(!r.inst.length)return '<p class="none">No derived words recorded in the dataset for this root yet.</p>';
+ return r.inst.map(function(i){
+  var h='<div class="grp">From the word <b>'+esc(i.word)+'</b> · '+esc(ref(i.ayah))+'</div>';
+  if(!i.d.length)return h+'<p class="none">No derived words recorded for this form in the dataset.</p>';
+  return h+i.d.map(function(d){return '<div class="der"><div class="dtop"><span class="dw">'+esc(d.word)+'</span><span class="ref">'+esc(ref(d.ayah))+'</span></div><p class="ctx" lang="ar">'+esc(d.contextPhrase||'')+'</p><p class="ur" lang="ur">'+esc(d.meaningUr||'')+'</p><p class="en">'+esc(d.meaningEn||'')+'</p></div>'}).join('')
+ }).join('')
+}
+var NOTE={prefix:'Roots starting with these letters — keep going…',word:'Matched by derived word — this word belongs to:',meaning:'Matched by meaning:'};
+function ayahBlock(a){
+ var ws=(a.words||[]).map(function(w){var k=AR(w.root||''),ok=k.length===3&&MAP[k];return '<button class="w'+(ok?'':' nr')+'"'+(ok?' data-k="'+k+'"':' disabled')+'>'+esc(w.word)+'<small>'+esc(ok?MAP[k].letters.join(' '):(w.pos||''))+'</small></button>'}).join('');
+ return '<section class="ayah"><span class="ref">'+esc(ref(a.ayahKey))+'</span><p class="atxt" lang="ar">'+esc(a.arabicText||'')+'</p><p class="ur" lang="ur">'+esc(a.urduTranslation||'')+'</p><p class="en">'+esc(a.englishTranslation||'')+'</p><div class="words">'+ws+'</div><div class="slot"></div></section>'
+}
+var PG={list:[],n:0};
+function more(){var c=PG.list.slice(PG.n,PG.n+30);PG.n+=c.length;$('ayl').insertAdjacentHTML('beforeend',c.map(ayahBlock).join(''));$('more').style.display=PG.n>=PG.list.length?'none':''}
+function show(res,q){
+ var el=$('results');
+ if(res.mode==='ayah'||res.mode==='surah'){
+  var sd=DB.filter(function(s){return +s.surahNumber===res.s})[0],nm=SN[res.s-1]||'';
+  if(!sd){el.innerHTML='<p class="note">Surah '+res.s+(nm?' · '+esc(nm):'')+' isn’t in the dataset yet. / یہ سورت ابھی ڈیٹاسیٹ میں شامل نہیں۔</p>';return}
+  var list=res.mode==='surah'?sd.ayahs:sd.ayahs.filter(function(a){return a.ayahNumber>=res.a&&a.ayahNumber<=res.b});
+  if(!list.length){el.innerHTML='<p class="note">Ayah '+res.a+(res.b>res.a?'–'+res.b:'')+' of '+esc(nm)+' isn’t in the dataset yet (it has '+esc(sd.ayahRange)+').</p>';return}
+  PG={list:list,n:0};
+  el.innerHTML='<p class="note">Surah '+res.s+' · '+esc(sd.surahNameEnglish||nm)+' <span lang="ar">'+esc(sd.surahNameArabic||'')+'</span> — ayahs '+esc(res.mode==='surah'?sd.ayahRange:list[0].ayahNumber+(list.length>1?'–'+list[list.length-1].ayahNumber:''))+'. Tap a word to see its root.</p><div id="ayl"></div><button class="btn" id="more" style="width:100%;font-size:16px">Show more ayahs / مزید آیات</button>';
+  more();return
+ }
+ if(res.mode==='none'){el.innerHTML=q.trim()?'<p class="note">No root, word, meaning or surah found for “'+esc(q)+'”. The dataset currently covers '+esc(DB.map(function(s){return s.surahNameEnglish+' '+s.ayahRange}).join(' & '))+'. نہیں ملا۔</p>':'';return}
+ el.innerHTML=(NOTE[res.mode]?'<p class="note">'+NOTE[res.mode]+'</p>':'')+res.roots.map(card).join('');
+ if(res.roots.length===1&&res.mode!=='prefix')toggle(el.querySelector('.card'),false)
+}
+function toggle(c,flip){
+ if(!c)return;var r=MAP[c.dataset.k],b=c.querySelector('.body');
+ if(!b.innerHTML)b.innerHTML=body(r);
+ var o=flip===false?false:!c.classList.contains('open');
+ c.classList.toggle('open',o);c.querySelector('.head').setAttribute('aria-expanded',o)
+}
+$('results').addEventListener('click',function(e){
+ var h=e.target.closest('.head');if(h){toggle(h.parentNode);return}
+ if(e.target.closest('#more')){more();return}
+ var w=e.target.closest('.w');if(w&&w.dataset.k){var sl=w.closest('.ayah').querySelector('.slot'),c=sl.firstChild;
+  if(c&&c.dataset.k===w.dataset.k){sl.innerHTML='';w.classList.remove('act');return}
+  [].forEach.call(w.parentNode.children,function(x){x.classList.remove('act')});w.classList.add('act');sl.innerHTML=card(MAP[w.dataset.k]);toggle(sl.firstChild)}
+});
+var qi=$('q');
+function run(){if(!ready)return;show(search(qi.value),qi.value)}
+qi.addEventListener('input',run);
+$('clr').onclick=function(){qi.value='';run();status('');qi.focus()};
+function status(t){$('status').textContent=t}
+
+/* ---------- voice ---------- */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic');
+var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here'};
+mic.onclick=function(){
+ if(!SR){status('Voice search isn’t supported in this browser — use Chrome, Edge or Safari. / اس براؤزر میں آواز سے تلاش دستیاب نہیں');return}
+ if(rec){rec.stop();return}
+ rec=new SR();rec.lang=$('vlang').value;rec.interimResults=false;rec.maxAlternatives=5;rec.continuous=false;
+ rec.onstart=function(){mic.classList.add('on');status('Listening… say the three letters / تین حروف بولیں')};
+ rec.onresult=function(e){var alts=[];for(var i=0;i<e.results[0].length;i++)alts.push(e.results[0][i].transcript);voice(alts)};
+ rec.onerror=function(e){status(ERR[e.error]||'Voice error: '+e.error)};
+ rec.onend=function(){mic.classList.remove('on');rec=null};
+ try{rec.start()}catch(x){rec=null;mic.classList.remove('on')}
+};
+function voice(alts){
+ if(!ready)return;
+ var pick=null,i,r;
+ for(i=0;i<alts.length&&!pick;i++){r=search(alts[i]);if(r.mode==='root'||r.mode==='spoken')pick={a:alts[i],r:r}}
+ for(i=0;i<alts.length&&!pick;i++){r=search(alts[i]);if(r.roots.length)pick={a:alts[i],r:r}}
+ qi.value=pick?pick.a:alts[0];show(pick?pick.r:search(alts[0]),qi.value);
+ status('Heard / سنا: “'+alts[0]+'”'+(pick&&pick.a!==alts[0]?' → “'+pick.a+'”':''))
+}
+
+/* ---------- themes ---------- */
+var TH=[['mint','#bfe8d6'],['blue','#bcd6f3'],['charcoal','#2b2d31'],['navy','#16294a']],tb=$('themes');
+function setTheme(t){document.documentElement.dataset.theme=t;try{localStorage.setItem('qrf-theme',t)}catch(e){}[].forEach.call(tb.children,function(b){b.setAttribute('aria-pressed',b.dataset.t===t)})}
+tb.innerHTML=TH.map(function(t){return '<button data-t="'+t[0]+'" style="background:'+t[1]+'" aria-label="Theme '+t[0]+'" aria-pressed="false"></button>'}).join('');
+tb.onclick=function(e){if(e.target.dataset.t)setTheme(e.target.dataset.t)};
+var saved='mint';try{saved=localStorage.getItem('qrf-theme')||'mint'}catch(e){}setTheme(saved);
+function boot(){
+ var idx=window.quranIndex||[];
+ if(!idx.length){$('results').innerHTML='<p class="note">Dataset not found — make sure the data folder (data/index.js) sits next to this file.</p>';return}
+ $('results').innerHTML='<p class="note">Loading dataset… / ڈیٹا لوڈ ہو رہا ہے…</p>';
+ Promise.all(idx.map(function(e){return loadSurah(e.surahNumber)})).then(function(){
+  build();ready=true;$('results').innerHTML='';if(qi.value)run()
+ }).catch(function(err){$('results').innerHTML='<p class="note">Could not load the dataset: '+esc(err.message)+'</p>'})
+}
+boot();
+})();
+</script>
+</body>
+</html>
