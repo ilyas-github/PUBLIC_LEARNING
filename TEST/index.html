@@ -216,16 +216,27 @@ $('clr').onclick=function(){qi.value='';run();status('');qi.focus()};
 function status(t){$('status').textContent=t}
 
 /* ---------- voice ---------- */
-var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic'),micStream=null;
-var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here','aborted':'Voice search stopped / آواز کی تلاش بند ہو گئی'};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic'),permissionStream=null;
+var ERR={
+ 'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں',
+ 'service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں',
+ 'no-speech':'Didn’t catch that — try again / آواز نہیں آئی',
+ 'network':'Voice recognition needs an internet connection / آواز کی پہچان کے لیے انٹرنیٹ درکار ہے',
+ 'audio-capture':'No microphone found or microphone is busy / مائیک نہیں ملا یا مصروف ہے',
+ 'language-not-supported':'This language is not supported here / یہ زبان یہاں سپورٹ نہیں',
+ 'aborted':'Voice search stopped / آواز کی تلاش بند ہو گئی'
+};
 
-function stopMicStream(){
- if(micStream){micStream.getTracks().forEach(function(t){t.stop()});micStream=null}
+function releasePermissionMic(){
+ if(permissionStream){
+  permissionStream.getTracks().forEach(function(t){t.stop()});
+  permissionStream=null;
+ }
 }
 
 function micError(err){
  var n=err&&err.name||'';
- if(n==='NotAllowedError'||n==='SecurityError')status('Microphone permission denied. Allow Microphone for this website in Safari Website Settings, then reload. / مائیک کی اجازت نہیں ملی');
+ if(n==='NotAllowedError'||n==='SecurityError')status('Microphone permission denied. Allow Microphone for this website, then reload. / مائیک کی اجازت نہیں ملی');
  else if(n==='NotFoundError'||n==='DevicesNotFoundError')status('No microphone found / مائیک نہیں ملا');
  else if(n==='NotReadableError')status('Microphone is busy in another app / مائیک کسی دوسری ایپ میں استعمال ہو رہا ہے');
  else if(n==='NotSupportedError')status('Microphone access is not supported by this browser / یہ براؤزر مائیک کو سپورٹ نہیں کرتا');
@@ -234,19 +245,20 @@ function micError(err){
 
 mic.onclick=async function(){
  if(rec){rec.stop();return}
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-  status('Microphone access is not available in this browser / اس براؤزر میں مائیک دستیاب نہیں');return
- }
  if(!SR){
   status('Speech recognition is not available in this browser / اس براؤزر میں آواز کی پہچان دستیاب نہیں');return
  }
 
  mic.disabled=true;
- status('Requesting microphone permission… / مائیک کی اجازت مانگی جا رہی ہے…');
-
  try{
-  /* Explicitly request iPadOS microphone permission while this click is active. */
-  micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  /* Ask iPadOS/Android for microphone permission, then immediately release it.
+     SpeechRecognition needs to open the microphone itself; keeping this stream
+     open can prevent recognition from hearing anything on Android. */
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+   status('Checking microphone permission… / مائیک کی اجازت چیک کی جا رہی ہے…');
+   permissionStream=await navigator.mediaDevices.getUserMedia({audio:true});
+   releasePermissionMic();
+  }
 
   rec=new SR();
   rec.lang=$('vlang').value;
@@ -255,9 +267,9 @@ mic.onclick=async function(){
   rec.continuous=false;
 
   rec.onstart=function(){
-   mic.classList.add('on');
    mic.disabled=false;
-   status('Listening… say the three letters / تین حروف بولیں');
+   mic.classList.add('on');
+   status('Listening… say the three letters / سن رہا ہوں… تین حروف بولیں');
   };
   rec.onresult=function(e){
    var alts=[];
@@ -265,25 +277,31 @@ mic.onclick=async function(){
    voice(alts);
   };
   rec.onerror=function(e){
-   status(ERR[e.error]||'Voice error: '+e.error);
+   /* Do not overwrite useful result text after a normal end. */
+   if(e.error!=='aborted')status(ERR[e.error]||'Voice error: '+e.error);
   };
   rec.onend=function(){
    mic.classList.remove('on');
    mic.disabled=false;
    rec=null;
-   stopMicStream();
+   releasePermissionMic();
   };
 
-  rec.start();
+  /* Start recognition only after the permission stream has been released. */
+  try{rec.start()}catch(x){
+   mic.disabled=false;
+   rec=null;
+   releasePermissionMic();
+   status('Could not start voice recognition: '+(x.message||x.name||'unknown error'));
+  }
  }catch(err){
-  if(rec){try{rec.abort()}catch(e){}}
-  rec=null;
-  mic.classList.remove('on');
   mic.disabled=false;
-  stopMicStream();
+  rec=null;
+  releasePermissionMic();
   micError(err);
  }
 };
+
 function voice(alts){
  if(!ready)return;
  var pick=null,i,r;
