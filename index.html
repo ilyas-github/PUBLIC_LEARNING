@@ -216,17 +216,73 @@ $('clr').onclick=function(){qi.value='';run();status('');qi.focus()};
 function status(t){$('status').textContent=t}
 
 /* ---------- voice ---------- */
-var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic');
-var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here'};
-mic.onclick=function(){
- if(!SR){status('Voice search isn’t supported in this browser — use Chrome, Edge or Safari. / اس براؤزر میں آواز سے تلاش دستیاب نہیں');return}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic'),micStream=null;
+var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here','aborted':'Voice search stopped / آواز کی تلاش بند ہو گئی'};
+
+function stopMicStream(){
+ if(micStream){micStream.getTracks().forEach(function(t){t.stop()});micStream=null}
+}
+
+function micError(err){
+ var n=err&&err.name||'';
+ if(n==='NotAllowedError'||n==='SecurityError')status('Microphone permission denied. Allow Microphone for this website in Safari Website Settings, then reload. / مائیک کی اجازت نہیں ملی');
+ else if(n==='NotFoundError'||n==='DevicesNotFoundError')status('No microphone found / مائیک نہیں ملا');
+ else if(n==='NotReadableError')status('Microphone is busy in another app / مائیک کسی دوسری ایپ میں استعمال ہو رہا ہے');
+ else if(n==='NotSupportedError')status('Microphone access is not supported by this browser / یہ براؤزر مائیک کو سپورٹ نہیں کرتا');
+ else status('Microphone error: '+(err&&err.message||n||'unknown error'));
+}
+
+mic.onclick=async function(){
  if(rec){rec.stop();return}
- rec=new SR();rec.lang=$('vlang').value;rec.interimResults=false;rec.maxAlternatives=5;rec.continuous=false;
- rec.onstart=function(){mic.classList.add('on');status('Listening… say the three letters / تین حروف بولیں')};
- rec.onresult=function(e){var alts=[];for(var i=0;i<e.results[0].length;i++)alts.push(e.results[0][i].transcript);voice(alts)};
- rec.onerror=function(e){status(ERR[e.error]||'Voice error: '+e.error)};
- rec.onend=function(){mic.classList.remove('on');rec=null};
- try{rec.start()}catch(x){rec=null;mic.classList.remove('on')}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  status('Microphone access is not available in this browser / اس براؤزر میں مائیک دستیاب نہیں');return
+ }
+ if(!SR){
+  status('Speech recognition is not available in this browser / اس براؤزر میں آواز کی پہچان دستیاب نہیں');return
+ }
+
+ mic.disabled=true;
+ status('Requesting microphone permission… / مائیک کی اجازت مانگی جا رہی ہے…');
+
+ try{
+  /* Explicitly request iPadOS microphone permission while this click is active. */
+  micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+
+  rec=new SR();
+  rec.lang=$('vlang').value;
+  rec.interimResults=false;
+  rec.maxAlternatives=5;
+  rec.continuous=false;
+
+  rec.onstart=function(){
+   mic.classList.add('on');
+   mic.disabled=false;
+   status('Listening… say the three letters / تین حروف بولیں');
+  };
+  rec.onresult=function(e){
+   var alts=[];
+   for(var i=0;i<e.results[0].length;i++)alts.push(e.results[0][i].transcript);
+   voice(alts);
+  };
+  rec.onerror=function(e){
+   status(ERR[e.error]||'Voice error: '+e.error);
+  };
+  rec.onend=function(){
+   mic.classList.remove('on');
+   mic.disabled=false;
+   rec=null;
+   stopMicStream();
+  };
+
+  rec.start();
+ }catch(err){
+  if(rec){try{rec.abort()}catch(e){}}
+  rec=null;
+  mic.classList.remove('on');
+  mic.disabled=false;
+  stopMicStream();
+  micError(err);
+ }
 };
 function voice(alts){
  if(!ready)return;
