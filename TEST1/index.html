@@ -79,7 +79,7 @@ h2{font-size:15px;color:var(--mut);margin:26px 0 8px}
 <body>
 <main>
 <header><h1>Quranic Root Finder · <span>جڑ تلاش</span></h1>
-<span style="font-size:11px;color:var(--mut);white-space:nowrap">v2.2 · iOS Urdu/Arabic voice fix</span>
+<span style="font-size:11px;color:var(--mut);white-space:nowrap">v2.3 · iOS voice — no Groq needed</span>
 <div class="themes" id="themes"></div></header>
 
 <div class="search">
@@ -87,7 +87,7 @@ h2{font-size:15px;color:var(--mut);margin:26px 0 8px}
  <button class="btn mic" id="mic" title="Voice search / آواز سے تلاش" aria-label="Voice search">🎤</button>
  <button class="btn" id="clr" title="Clear" aria-label="Clear">✕</button>
 </div>
-<div class="vrow"><label>🎙 <select id="vlang"><option value="ur-PK">اردو</option><option value="en-US">English</option><option value="ar-SA">العربية</option></select></label><span id="status"></span></div>
+<div class="vrow"><label>Voice <select id="vmode"><option value="auto">Auto (recommended)</option><option value="local">On-device — no cloud</option><option value="keyboard">Keyboard dictation</option><option value="whisper">Groq Whisper — most accurate</option><option value="native">Apple / Google voice</option></select></label><label>🎙 <select id="vlang"><option value="ur-PK">اردو</option><option value="en-US">English</option><option value="ar-SA">العربية</option></select></label><span id="status"></span></div>
 <div class="vdiag" id="vdiag" role="status"></div>
 <div class="vrow"><button class="gear" id="wgear" type="button">⚙️ Voice setup for Urdu / Arabic on iPhone</button><span id="wstate"></span></div>
 <div class="wsetup" id="wsetup">
@@ -97,6 +97,12 @@ h2{font-size:15px;color:var(--mut);margin:26px 0 8px}
 <input id="wkey" type="password" placeholder="Paste Groq API key here (gsk_…)" autocomplete="off" spellcheck="false">
 <div class="row"><button class="go" id="wsave" type="button">Save key</button><button id="wtest" type="button">Test key</button><button id="wclear" type="button">Remove key</button></div>
 <p id="wmsg" style="margin:6px 0"></p>
+<hr>
+<b>No Groq, no key — on-device voice (experimental)</b>
+<p style="margin:6px 0">Whisper-tiny runs <i>on your iPhone</i> — audio never leaves the phone, no account, no key. First time it downloads the model once (~43 MB: encoder 10 MB + decoder 31 MB + tokenizer), then it is cached. That first download is the slow part — after that each word takes a few seconds on the phone. Honest limit: tiny is rough for Urdu/Arabic — it can mishear short words. If it mishears, use Groq (accurate) or keyboard dictation (instant) instead.</p>
+<p style="margin:6px 0">GitHub-only hosting: put the model files in your repo under <code>models/onnx-community/whisper-tiny/</code> (see <code>download-whisper-model.sh</code> in the delivery note) and this page will load them from your own GitHub Pages site instead of Hugging Face. GitHub Pages itself cannot transcribe — it is static hosting only, no speech API — so on-device is the only way to have voice with GitHub alone and no other platform at run time.</p>
+<div class="row"><button class="go" id="wlocal" type="button">Download on-device model (~43 MB, once)</button><button id="wlocalclear" type="button">Forget on-device model</button></div>
+<p id="wlocalmsg" style="margin:6px 0"></p>
 </div>
 <div class="kbd" id="kbd"><b>Keyboard dictation — no key needed, but do this first:</b><br>1. iPhone Settings → General → Keyboard → Keyboards → Add New Keyboard → add <b>Urdu</b> and <b>العربية</b>.<br>2. Back in this app, tap the search box, then tap <b>🌐</b> on the keyboard to switch it to Urdu / Arabic — dictation follows the <i>keyboard</i>, not the language dropdown above.<br>3. Tap the keyboard <b>🎤</b> key and speak. Your words appear in the box and search automatically.</div>
 <p class="hint">Type or say the three letters (“ktb”, “کاف تے بے”, “kay tee bee”), a derived word (الكتاب), or a meaning (“write”, “لکھنا”). For verses: <b>2:183</b>, <b>2:1-5</b>, <b>surah 2</b> or <b>Baqarah</b> shows the ayahs with every word’s root.</p>
@@ -123,6 +129,18 @@ function loadSurah(n){
 }
 </script>
 
+<script type="module">
+/* On-device Whisper loader (v2.3). Loads Transformers.js only when the
+   user chooses on-device voice — nothing is downloaded on page load. */
+window.__tfLoad = async function(){
+  if(window.__tf) return window.__tf;
+  var m=null;
+  try{ m = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/dist/transformers.min.js'); }
+  catch(e){ m = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3'); }
+  window.__tf = (m && m.pipeline) ? m : (m && m.default ? m.default : m);
+  return window.__tf;
+};
+</script>
 <script id="app">
 (function(){
 var DB=[];var ready=false;
@@ -240,32 +258,25 @@ qi.addEventListener('input',run);
 $('clr').onclick=function(){qi.value='';run();status('');qi.focus()};
 function status(t){$('status').textContent=t}
 
-/* ---------- voice (v2.2) ----------
-   WHY URDU/ARABIC FAILED ON iOS (tested Nov 7, 2026):
-   Apple's own dictation-language list (support.apple.com iPhone
-   Tech Specs, "Dictation languages") includes Arabic (Saudi etc.)
-   but does NOT include Urdu at all. Urdu is a keyboard language,
-   not a dictation language — so Safari's webkitSpeechRecognition
-   with rec.lang='ur-PK' can never hear Urdu, however the code is
-   written. English works because Apple does offer English.
-   Arabic failed for Ilyas too in practice: Safari ties recognition
-   to the device/keyboard language, not reliably to rec.lang, and
-   needs the Arabic keyboard/dictation enabled — fragile, and it
-   gives no usable error when it silently falls back to English.
-   THE FIX: do not depend on Apple for Urdu/Arabic on iOS.
-   - English on iOS: keep native Safari voice (works, no key).
-   - Urdu/Arabic on Android/desktop Chrome: keep native Google
-     voice (works, no key).
-   - Urdu/Arabic on iOS (Safari AND Chrome): record with
-     MediaRecorder (works on iOS 14.5+, mp4/AAC) and transcribe
-     with Whisper via Groq's free tier — Whisper hears Urdu and
-     Arabic. Live-checked Nov 7, 2026: Groq's preflight returns
-     204 with access-control-allow-origin: *, so a direct browser
-     fetch works, no proxy/server needed. Key is the user's own,
-     free, no card, stored only in their browser localStorage.
-   - No key yet: keyboard dictation, WITH the missing step v2.1
-     omitted — switch the iOS keyboard itself to Urdu/Arabic with
-     the globe key first, or dictation stays in English. */
+/* ---------- voice (v2.3) ----------
+   v2.2 WORKED on iOS but felt slow. Likely cause, not Groq inference
+   (turbo is ~160x realtime): v2.2 made the user tap 🎤 to start, speak,
+   tap 🎤 AGAIN to stop, and if he did not tap again it waited the full
+   15 s auto-stop. v2.3 fixes that first: silence auto-stop (~1.4 s of
+   quiet ends the recording) on every recording path, and shows how
+   long each step took.
+   NO-GROQ PATH (what Ilyas asked for): GitHub Pages is static hosting
+   only — it has no speech-to-text API, and GitHub Actions cannot do
+   live transcription — so "GitHub only, no other platform" can only
+   mean on-device inference with the model files hosted on GitHub
+   itself. v2.3 adds exactly that: Whisper-tiny via Transformers.js,
+   running on the iPhone (WASM, 1 thread — iOS Safari kills tabs that
+   use too much memory). Model ~43 MB once, cached after. Audio never
+   leaves the phone, no key, no Groq. Honest limits: first download
+   is slow, tiny is rough for Urdu/Arabic, and a 3-second word still
+   takes a few seconds on a phone CPU. Groq stays as the accurate
+   fallback; keyboard dictation stays as the instant, on-device
+   fallback. Nothing is downloaded until the user chooses on-device. */
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null,mic=$('mic');
 var ERR={'not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','service-not-allowed':'Microphone permission denied / مائیک کی اجازت نہیں','no-speech':'Didn’t catch that — try again / آواز نہیں آئی','network':'Voice search needs an internet connection / انٹرنیٹ درکار ہے','audio-capture':'No microphone found / مائیک نہیں ملا','language-not-supported':'This language is not supported here','aborted':'Voice search stopped / آواز کی تلاش بند ہو گئی'};
 var _ua=navigator.userAgent||'';
@@ -276,43 +287,48 @@ var isPWA=(window.navigator.standalone===true)||window.matchMedia('(display-mode
 var isFile=location.protocol==='file:';
 var isSecure=window.isSecureContext;
 var LANG2={ 'ur-PK':'ur', 'ar-SA':'ar', 'en-US':'en' };
-
 function groqKey(){try{return (localStorage.getItem('qrf-groq-key')||'').trim()}catch(e){return ''}}
 function voiceLang(){return $('vlang').value}
-/* Routing: 'native' | 'whisper' | 'keyboard' */
+function voiceMode(){var m=$('vmode');return m?m.value:'auto'}
+function localReady(){try{return localStorage.getItem('qrf-local-ready')==='1'}catch(e){return false}}
+function setLocalReady(v){try{localStorage.setItem('qrf-local-ready',v?'1':'0')}catch(e){}}
+/* Routing: 'native' | 'local' | 'whisper' | 'keyboard' */
 function voiceEngine(){
-  var lang=voiceLang();
+  var mode=voiceMode(),lang=voiceLang();
+  if(mode==='keyboard')return 'keyboard';
+  if(mode==='local')return 'local';
+  if(mode==='whisper')return groqKey()?'whisper':'keyboard';
+  if(mode==='native')return SR?'native':'keyboard';
   if(!isIOS)return 'native';
   if(lang==='en-US')return SR?'native':'keyboard';
-  return groqKey()?'whisper':'keyboard';
+  if(localReady())return 'local';
+  return 'keyboard';
 }
 function voiceDiag(){
   var d=$('vdiag');if(!d)return;
   var lang=voiceLang(),eng=voiceEngine();
-  $('wstate').textContent=groqKey()?'Whisper key saved ✓':'Whisper key not set';
-  if(eng==='whisper'){
-    d.innerHTML='<b>Voice on this device:</b> '+(lang==='ur-PK'?'Urdu':'Arabic')+' on iPhone uses <b>Whisper (Groq, free key saved)</b> — tap 🎤, speak, tap again to stop. English still uses Apple voice. / آواز تیار ہے';
+  $('wstate').textContent=(groqKey()?'Whisper key saved ✓ · ':'')+(localReady()?'On-device model ready ✓':'On-device model not downloaded');
+  if(eng==='local'){
+    d.innerHTML='<b>Voice:</b> on-device Whisper on this phone — no cloud, no key. Tap 🎤 and speak; it stops by itself when you go quiet. / آواز فون پر ہی سنی جائے گی';
+  }else if(eng==='whisper'){
+    d.innerHTML='<b>Voice:</b> '+(lang==='ur-PK'?'Urdu':'Arabic')+' via <b>Whisper (Groq)</b> — tap 🎤, speak, it stops by itself when you go quiet. English still uses Apple voice.';
   }else if(eng==='keyboard'){
     if(isIOS&&(lang==='ur-PK'||lang==='ar-SA')){
-      d.innerHTML='<b>Voice on this device:</b> Apple cannot hear '+(lang==='ur-PK'?'Urdu':'Arabic')+' on iPhone, so tap 🎤 for <b>keyboard dictation</b> (switch the keyboard to Urdu / Arabic with 🌐 first — see steps below), or set up the free Whisper key in ⚙️ Voice setup for one-tap voice. English uses Apple voice.';
+      d.innerHTML='<b>Voice:</b> Apple cannot hear '+(lang==='ur-PK'?'Urdu':'Arabic')+' on iPhone. Tap 🎤 for <b>keyboard dictation</b> (switch the keyboard to Urdu / Arabic with 🌐 first — steps below). Or choose <b>On-device</b> in the Voice dropdown (no cloud, one 43 MB download) or <b>Groq Whisper</b> in ⚙️ Voice setup.';
     }else if(!SR){
-      d.innerHTML='<b>Voice on this device:</b> in-app voice is not available in this browser. Tap 🎤 and use the <b>keyboard 🎤 dictation</b> instead.';
+      d.innerHTML='<b>Voice:</b> in-app voice is not available in this browser. Tap 🎤 and use the <b>keyboard 🎤 dictation</b> instead.';
     }else if(isPWA&&isIOS){
-      d.innerHTML='<b>Voice on this device:</b> open this page in <b>Safari</b> (not the Home-Screen app) for in-app voice. Or tap 🎤 and use the keyboard 🎤 dictation.';
+      d.innerHTML='<b>Voice:</b> open this page in <b>Safari</b> (not the Home-Screen app) for in-app voice. Or tap 🎤 and use the keyboard 🎤 dictation.';
     }else if(isFile||!isSecure){
-      d.innerHTML='<b>Voice on this device:</b> in-app voice needs the HTTPS hosted copy. Tap 🎤 and use the keyboard 🎤 dictation, which works from this file too.';
+      d.innerHTML='<b>Voice:</b> in-app voice needs the HTTPS hosted copy. Tap 🎤 and use the keyboard 🎤 dictation, which works from this file too.';
     }else{
-      d.innerHTML='<b>Voice on this device:</b> voice is ready — tap 🎤 and speak.';
+      d.innerHTML='<b>Voice:</b> voice is ready — tap 🎤 and speak.';
     }
   }else{
-    d.innerHTML='<b>Voice on this device:</b> '+(isIOS?'Safari voice is ready — tap 🎤 and speak.':'Voice is ready — tap 🎤 and speak.');
+    d.innerHTML='<b>Voice:</b> '+(isIOS?'Safari voice is ready — tap 🎤 and speak.':'Voice is ready — tap 🎤 and speak.');
   }
   mic.classList.toggle('dict',eng==='keyboard');
 }
-
-/* Keyboard dictation: focus box, show the keyboard-switch steps.
-   Dictation follows the ACTIVE iOS keyboard, not the app dropdown —
-   that missing step is why v2.1's fallback also came back English. */
 function keyboardDictation(msg){
   $('kbd').classList.add('open');
   qi.focus();
@@ -322,8 +338,8 @@ function keyboardDictation(msg){
 }
 function hideKbd(){$('kbd').classList.remove('open')}
 
-/* ---------- Whisper via Groq (iOS Urdu/Arabic) ---------- */
-var mr=null,mrStream=null,mrChunks=[],mrTimer=null;
+/* ---------- shared recorder with silence auto-stop ---------- */
+var mr=null,mrStream=null,mrChunks=[],mrTimer=null,mrVAD=null,mrT0=0,mrEngine=null;
 function whisperMime(){
   if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return '';
   var cands=['audio/mp4','audio/mp4;codecs=mp4a.40.2','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
@@ -331,7 +347,26 @@ function whisperMime(){
   return '';
 }
 function whisperExt(mime){return mime.indexOf('mp4')>=0?'mp4':mime.indexOf('ogg')>=0?'ogg':'webm'}
-async function startWhisper(){
+function stopTracks(){if(mrStream){mrStream.getTracks().forEach(function(t){t.stop()});mrStream=null}}
+function stopVAD(){if(mrVAD){clearInterval(mrVAD.t);try{mrVAD.ctx.close()}catch(e){}mrVAD=null}}
+function stopRecording(){
+  if(mrTimer){clearTimeout(mrTimer);mrTimer=null}
+  stopVAD();
+  if(mr&&mr.state!=='inactive'){try{mr.stop()}catch(e){finishRecording()}}
+  mic.classList.remove('on');mic.classList.remove('rec');
+}
+function finishRecording(){
+  var chunks=mrChunks,eng=mrEngine;mr=null;stopTracks();
+  mic.classList.remove('on');mic.classList.remove('rec');
+  if(!chunks.length){status('Nothing recorded — try again / کچھ ریکارڈ نہیں ہوا');return}
+  var mime=whisperMime()||'audio/mp4';
+  var blob=new Blob(chunks,{type:mime});
+  if(blob.size<500){status('Recording was too short — say the word a little longer and try again.');return}
+  var secs=((Date.now()-mrT0)/1000).toFixed(1);
+  if(eng==='local')transcribeLocal(blob,secs);
+  else sendWhisper(blob,secs);
+}
+async function startRecording(engine){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){
     keyboardDictation('This browser cannot record audio. Use keyboard dictation (steps below).');return;
   }
@@ -340,41 +375,109 @@ async function startWhisper(){
   try{
     mrStream=await navigator.mediaDevices.getUserMedia({audio:true});
     var mime=whisperMime();
-    mrChunks=[];
+    mrChunks=[];mrEngine=engine;mrT0=Date.now();
     mr=new MediaRecorder(mrStream,mime?{mimeType:mime}:undefined);
     mr.ondataavailable=function(e){if(e.data&&e.data.size)mrChunks.push(e.data)};
-    mr.onstop=function(){sendWhisper()};
+    mr.onstop=function(){finishRecording()};
     mr.start(250);
     mic.classList.add('on');mic.classList.add('rec');
-    status('🔴 Recording — speak now, tap 🎤 again to stop (auto-stops in 15s) / بولیں، پھر 🎤 دبائیں');
-    mrTimer=setTimeout(function(){stopWhisper()},15000);
+    status('🔴 Listening — speak now, it stops by itself when you go quiet / بولیں');
+    /* Silence auto-stop: the v2.2 slowness fix. Energy VAD on the
+       live stream; 1.4 s of quiet after speech ends the take. */
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext;
+      var ctx=new AC(),src=ctx.createMediaStreamSource(mrStream),an=ctx.createAnalyser();
+      an.fftSize=512;src.connect(an);
+      var buf=new Uint8Array(an.fftSize),heard=false,lastSpeech=Date.now(),started=Date.now();
+      mrVAD={ctx:ctx,t:setInterval(function(){
+        an.getByteTimeDomainData(buf);
+        var sum=0;for(var i=0;i<buf.length;i++){var v=(buf[i]-128)/128;sum+=v*v}
+        var rms=Math.sqrt(sum/buf.length);
+        if(rms>0.02){heard=true;lastSpeech=Date.now()}
+        if(heard&&Date.now()-lastSpeech>1400)stopRecording();
+        else if(!heard&&Date.now()-started>6000){status('Didn’t hear anything — try again, a little louder.');stopRecording()}
+      },120)};
+    }catch(e){/* no VAD on this browser: tap-to-stop still works */}
+    mrTimer=setTimeout(function(){stopRecording()},12000);
   }catch(err){
-    stopWhisperTracks();
+    stopTracks();stopVAD();
     keyboardDictation('Microphone could not start ('+(err&&err.name||'error')+'). Allow Microphone for this site, or use keyboard dictation below.');
   }
 }
-function stopWhisperTracks(){if(mrStream){mrStream.getTracks().forEach(function(t){t.stop()});mrStream=null}}
-function stopWhisper(){
-  if(mrTimer){clearTimeout(mrTimer);mrTimer=null}
-  if(mr&&mr.state!=='inactive'){try{mr.stop()}catch(e){sendWhisper()}}else{sendWhisper()}
-  mic.classList.remove('on');mic.classList.remove('rec');
+
+/* ---------- on-device Whisper (Transformers.js, tiny) ---------- */
+var localPipe=null,localLoading=false;
+async function loadLocalModel(){
+  if(localPipe)return localPipe;
+  if(localLoading)return null;
+  localLoading=true;
+  var msg=$('wlocalmsg');
+  msg.textContent='Loading voice library… (first time only)';
+  try{
+    if(typeof window.__tfLoad!=='function')throw new Error('voice library could not start in this browser');
+    var tf=await window.__tfLoad();
+    if(!tf||!tf.pipeline)throw new Error('voice library loaded but has no speech pipeline');
+    var env=tf.env;
+    try{
+      env.allowLocalModels=true;env.useBrowserCache=true;
+      if(env.backends&&env.backends.onnx)env.backends.onnx.wasm={numThreads:isIOS?1:2};
+    }catch(e){}
+    /* GitHub self-hosting: if the model files live in this repo under
+       models/onnx-community/whisper-tiny/, use them (no Hugging Face
+       at run time). Otherwise load the pinned hub model once. */
+    var modelId='onnx-community/whisper-tiny',local=false;
+    try{
+      var chk=await fetch('models/onnx-community/whisper-tiny/config.json',{method:'GET',cache:'no-store'});
+      if(chk.ok){local=true;try{env.localModelPath='models/'}catch(e){}}
+    }catch(e){}
+    msg.textContent=local?'Loading on-device model from your GitHub Pages site…':'Downloading on-device model (~43 MB, once)…';
+    localPipe=await tf.pipeline('automatic-speech-recognition',modelId,{dtype:'q8',device:'wasm'});
+    setLocalReady(true);localLoading=false;
+    msg.textContent='On-device model ready ✓ '+(local?'(loaded from your GitHub site)':'(downloaded once, now cached on this phone)')+' — pick On-device in the Voice dropdown and tap 🎤.';
+    voiceDiag();return localPipe;
+  }catch(err){
+    localLoading=false;localPipe=null;setLocalReady(false);
+    msg.textContent='On-device model could not load on this iPhone ('+(err&&err.message||'out of memory')+'). Safari sometimes reloads the tab when the model loads — if that happened, try again on Wi-Fi, or use Groq / keyboard dictation instead.';
+    return null;
+  }
 }
-async function sendWhisper(){
-  var chunks=mrChunks;mr=null;stopWhisperTracks();
-  if(!chunks.length){status('Nothing recorded — try again / کچھ ریکارڈ نہیں ہوا');return}
-  var mime=whisperMime()||'audio/mp4';
-  var blob=new Blob(chunks,{type:mime});
-  if(blob.size<500){status('Recording was too short — hold the word a little longer and try again.');return}
-  status('Heard you — transcribing with Whisper… / سن لیا، لکھا جا رہا ہے…');
+async function transcribeLocal(blob,secs){
+  status('Transcribing on this phone… / فون پر سنا جا رہا ہے…');
+  var t0=Date.now();
+  try{
+    var pipe=localPipe||await loadLocalModel();
+    if(!pipe){status('On-device voice is not ready. Use Groq or keyboard dictation.');return}
+    var ab=await blob.arrayBuffer();
+    var AC=window.AudioContext||window.webkitAudioContext;
+    var actx=new AC();
+    var decoded=await actx.decodeAudioData(ab);
+    try{actx.close()}catch(e){}
+    var off=new OfflineAudioContext(1,Math.ceil(decoded.duration*16000),16000);
+    var src=off.createBufferSource();src.buffer=decoded;src.connect(off.destination);src.start(0);
+    var rendered=await off.startRendering();
+    var audio=rendered.getChannelData(0);
+    var out=await pipe(audio,{language:LANG2[voiceLang()]||'ur',task:'transcribe',chunk_length_s:30,return_timestamps:false});
+    var text=(out&&out.text||'').trim();
+    if(!text){status('On-device voice heard nothing — try Groq or keyboard dictation.');return}
+    var dt=((Date.now()-t0)/1000).toFixed(1);
+    voice([text]);
+    status('Heard / سنا: “'+text+'” (on-device, '+dt+'s)');
+  }catch(err){
+    status('On-device transcription failed ('+(err&&err.message||'error')+'). Try Groq or keyboard dictation.');
+  }
+}
+
+/* ---------- Groq Whisper (accurate fallback, now with auto-stop) ---------- */
+async function sendWhisper(blob,secs){
+  status('Heard you ('+secs+'s) — transcribing with Whisper… / سن لیا…');
   var fd=new FormData();
-  fd.append('file',blob,'voice.'+whisperExt(mime));
+  fd.append('file',blob,'voice.'+whisperExt(whisperMime()||'audio/mp4'));
   fd.append('model','whisper-large-v3-turbo');
   fd.append('language',LANG2[voiceLang()]||'ur');
   fd.append('response_format','json');
   try{
     var r=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+groqKey()},body:fd});
     if(!r.ok){
-      var txt='';try{txt=await r.text()}catch(e){}
       if(r.status===401){status('Whisper key was rejected (401). Re-paste the key in ⚙️ Voice setup — it must start gsk_.');$('wsetup').classList.add('open')}
       else if(r.status===429){status('Whisper is rate-limited right now (429). Wait a minute and try again, or use keyboard dictation below.');keyboardDictation()}
       else status('Whisper error '+r.status+'. Try again, or use keyboard dictation below.');return;
@@ -420,24 +523,31 @@ function startNative(){
 }
 
 mic.onclick=function(){
-  if(mr&&mr.state==='recording'){stopWhisper();return}
+  if(mr&&mr.state==='recording'){stopRecording();return}
   if(rec){try{rec.stop()}catch(e){}return}
   var eng=voiceEngine();
-  if(eng==='whisper'){startWhisper();return}
-  if(eng==='keyboard'){
-    /* No Whisper key on iOS Urdu/Arabic: offer the setup once, then
-       the keyboard path. The setup panel stays one tap away. */
-    if(isIOS&&(voiceLang()==='ur-PK'||voiceLang()==='ar-SA')&&!groqKey()){
+  if(eng==='local'){
+    if(!localPipe&&!localReady()){
       $('wsetup').classList.add('open');
-      status('For one-tap Urdu/Arabic voice, add the free Whisper key above (2 min). Or use keyboard dictation below — switch the keyboard with 🌐 first.');
+      status('On-device voice needs its model first (~43 MB, once). Tap “Download on-device model” in the panel, wait for “ready ✓”, then tap 🎤 again.');
+      return;
     }
-    keyboardDictation();return;
+    startRecording('local');return;
   }
-  /* native: on iOS only English reaches here; off iOS any language. */
-  if(isIOS&&(voiceLang()==='ur-PK'||voiceLang()==='ar-SA')){keyboardDictation();return}
+  if(eng==='whisper'){
+    if(!groqKey()){$('wsetup').classList.add('open');keyboardDictation('Add the free Groq key in ⚙️ Voice setup first, or use keyboard dictation below.');return}
+    startRecording('whisper');return;
+  }
+  if(eng==='keyboard'){keyboardDictation();return}
   startNative();
 };
 $('vlang').addEventListener('change',function(){hideKbd();voiceDiag()});
+$('vmode').addEventListener('change',function(){
+  try{localStorage.setItem('qrf-voice-mode',voiceMode())}catch(e){}
+  hideKbd();voiceDiag();
+  if(voiceMode()==='local'&&!localReady())$('wsetup').classList.add('open');
+});
+try{var _m=localStorage.getItem('qrf-voice-mode');if(_m)$('vmode').value=_m}catch(e){}
 $('wgear').onclick=function(){$('wsetup').classList.toggle('open')};
 $('wsave').onclick=function(){
   var k=$('wkey').value.trim();
@@ -446,7 +556,7 @@ $('wsave').onclick=function(){
   $('wkey').value='';$('wmsg').textContent='Key saved in this browser only ✓ Now pick اردو or العربية and tap 🎤.';
   voiceDiag();
 };
-$('wclear').onclick=function(){try{localStorage.removeItem('qrf-groq-key')}catch(e){}$('wmsg').textContent='Key removed. Urdu/Arabic on iPhone will use keyboard dictation.';voiceDiag()};
+$('wclear').onclick=function(){try{localStorage.removeItem('qrf-groq-key')}catch(e){}$('wmsg').textContent='Key removed. Urdu/Arabic on iPhone will use keyboard dictation or on-device voice.';voiceDiag()};
 $('wtest').onclick=async function(){
   var k=groqKey();
   if(!k){$('wmsg').textContent='No key saved yet — paste it above first.';return}
@@ -457,6 +567,8 @@ $('wtest').onclick=async function(){
   }catch(e){$('wmsg').textContent='Could not reach Groq ('+(e&&e.message||'network error')+'). Check internet and try again.'}
   voiceDiag();
 };
+$('wlocal').onclick=function(){loadLocalModel()};
+$('wlocalclear').onclick=function(){setLocalReady(false);localPipe=null;$('wlocalmsg').textContent='On-device model forgotten on this phone. The cached download stays in the browser cache until cleared in Safari settings.';voiceDiag()};
 voiceDiag();
 function voice(alts){
  if(!ready)return;
