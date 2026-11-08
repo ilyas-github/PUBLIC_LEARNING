@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quran roots - loader example</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 760px; margin: 24px auto; padding: 0 12px; }
+  .ar { font-size: 24px; direction: rtl; text-align: right; line-height: 2; }
+  button { margin: 0 6px 6px 0; padding: 6px 12px; }
+</style>
+</head>
+<body>
+<h3>Quran roots - loader example</h3>
+<div id="buttons"></div>
+<p id="status"></p>
+<div id="out"></div>
+
+<script src="data/index.js"></script>
+<script src="loader.js"></script>
+<script>
+  // one button per surah listed in data/index.js
+  var box = document.getElementById('buttons');
+  quranIndex.forEach(function (e) {
+    var b = document.createElement('button');
+    b.textContent = e.surahNumber + '. ' + e.surahNameEnglish + ' (' + e.ayahsCovered + '/' + e.totalAyahs + ')';
+    b.onclick = function () {
+      document.getElementById('status').textContent = 'Loading...';
+      loadSurah(e.surahNumber).then(function (s) {
+        document.getElementById('status').textContent =
+          s.surahNameEnglish + ': ' + s.ayahs.length + ' ayahs, ' + s.allRoots.length + ' roots';
+        document.getElementById('out').innerHTML = s.ayahs.map(function (a) {
+          return '<div class="ar">' + a.arabicText + ' <small>(' + a.ayahKey + ')</small></div>';
+        }).join('');
+      }).catch(function (err) { document.getElementById('status').textContent = err.message; });
+    };
+    box.appendChild(b);
+  });
+</script>
+</body>
+</html>
